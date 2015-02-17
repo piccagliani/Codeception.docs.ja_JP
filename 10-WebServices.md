@@ -139,7 +139,7 @@ will produce this XML header
 
 Use `sendSoapRequest` method to define the body of your request.
 
-リクエストの本体を定義するためには `sendSoapRequest` を使用します。
+リクエストのボディを定義するためには `sendSoapRequest` を使用します。
 
 ```php
 <?php
@@ -219,3 +219,5 @@ class ApiHelper extends \Codeception\Module {
 ## Conclusion
 
 Codeception has two modules that will help you to test various web services. They need a new `api` suite to be created. Remember, you are not limited to test only response body. By including `Db` module you may check if a user has been created after the `CreateUser` call. You can improve testing scenarios by using REST or SOAP responses in your helper methods.
+
+Codeceptionは様々なWebサービスをテストするために役立つモジュールを２つ備えています。それらを利用するために 新しく `api` スイートを作成する必要がありました。レスポンスボディだけのテストしかできないわけではないことを覚えておいてください。`Db` モジュールを使用することで、`CreateUser` の呼び出し後にユーザーが作成されているかどうかテストすることができます。ヘルパーメソッドを利用することでRESTやSOAPを使ったテストシナリオを向上することができます。
