@@ -1,14 +1,20 @@
-# Testing WebServices
+# Webサービスをテストする
 
 The same way we tested a web site, Codeception allows you to test web services. They are very hard to test manually, so it's really good idea to automate web service testing. As a standards we have SOAP and REST, which are represented in corresponding modules. We will cover them in this chapter.
 
+CodeceptionはWebサイトのテストと同じ方法で、Webサービスをテストすることができます。Webサービスを手動でテストすることはとても大変なので、テストを自動化することはとても良いアイディアです。CodeceptionにはSOAPとRESTに対応したモジュールが標準で備えています。この章ではそれらのモジュールについて説明します。
+
 You should start with creating a new test suite, which was not provided by the `bootstrap` command. We recommend to call it **api** and use the `ApiTester` class for it.
+
+新しくテストスイートを作成するところからはじめましょう。これは `bootstrap` コマンドでは提供されていません。テストスイートの名前は **api** とし、`ApiTester` クラスを使いましょう。
 
 ```bash
 $ php codecept.phar generate:suite api
 ```
 
 We will put all the api tests there.
+
+ここにAPIのテストを記述していきます。
 
 ## REST
 
