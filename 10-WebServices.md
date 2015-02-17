@@ -72,9 +72,9 @@ REST module is designed to be used with services that serve responses in JSON fo
 
 RESTモジュールはJSON形式をレスポンスするWebサービスを扱えるよう設計されています。たとえば、seeResponseContainsJson` メソッドは与えられた配列をJSON形式に変換し、それがレスポンスに含まれているかどうかをチェックします。
 
-You may want to perform more complex assertions on response. This can be done with writing your own methods in [Helper](http://codeception.com/docs/03-ModulesAndHelpers#Helpers) classes. To access the latest JSON response you will need to get `response` property of `REST` module. Let's demonstrate it with `seeResponseIsHtml` method:
+You may want to perform more complex assertions on response. This can be done with writing your own methods in [ヘルパー](http://codeception.com/docs/03-ModulesAndHelpers#Helpers) classes. To access the latest JSON response you will need to get `response` property of `REST` module. Let's demonstrate it with `seeResponseIsHtml` method:
 
-レスポンスに対して、より複雑な検証を行いたい場合があると思います。そのためには [Helper](http://codeception.com/docs/03-ModulesAndHelpers#Helpers) クラスに独自のメソッドを記述します。最後のJSONレスポンスにアクセスするためには、`REST` モジュールの `response` プロパティーを使用します。次に示す `seeResponseIsHtml` メソッドで説明しましょう。
+レスポンスに対して、より複雑な検証を行いたい場合があると思います。そのためには [ヘルパー](http://codeception.com/docs/03-ModulesAndHelpers#Helpers) クラスに独自のメソッドを記述します。最後のJSONレスポンスにアクセスするためには、`REST` モジュールの `response` プロパティーを使用します。次に示す `seeResponseIsHtml` メソッドで説明しましょう。
 
 ```php
 <?php
@@ -97,7 +97,11 @@ The same way you can receive request parameters and headers.
 
 SOAP web services are usually more complex. You will need PHP [configured with SOAP support](http://php.net/manual/en/soap.installation.php). Good knowledge of XML is required too. `SOAP` module uses specially formatted POST request to connect to WSDL web services. Codeception uses `PhpBrowser` or one of framework modules to perform interactions. If you choose using a framework module, SOAP will automatically connect to the underliying framework. That may improve the speed of a test execution and will provide you with more detailed stack traces.
 
+SOAP方式のWebサービスは通常、より複雑になります。[SOAPサポートを有効にする](http://php.net/manual/ja/soap.installation.php)必要があります。XML関する十分な知識も必要とされます。`SOAP` モジュールは、WSDLで表されたWebサービスに接続するために、特別な形式のPOSTリクエストを利用します。Codeceptionは `PhpBrowser`やいずれかのフレームワーク用モジュールを用いてやり取りを行います。もしフレームワーク用モジュールを選択した場合、SOAPモジュールは自動的に基盤となるフレームワークに接続します。これにより、テスト実行の速度を向上させることができ、詳細なスタックトレースを提供できるようになります。
+
 Let's configure `SOAP` module to be used with `PhpBrowser`:
+
+それでは `PhpBrowser` とともに使用する `SOAP` モジュールを設定しましょう。
 
 ``` yaml
 class_name: ApiTester
@@ -112,12 +116,17 @@ modules:
 
 SOAP request may contain application specific information, like authentication or payment. This information is provided with SOAP header inside the `<soap:Header>` element of XML request. In case you need to submit such header, you can use `haveSoapHeader` action. For example, next line of code
 
+SOAPリクエストには認証や支払いのようなアプリケーション固有の情報を含みます。この情報はXMLリクエストの `<soap:Header>` 要素に含まれるSOAPヘッダーによって提供されます。もしこのようなヘッダーを送信したい場合、`haveSoapHeader` メソッドを使用することができます。たとえば次のようになります。
+
 ```php
 <?php
 $I->haveSoapHeader('Auth', array('username' => 'Miles', 'password' => '123456'));
 ?>
 ```
 will produce this XML header
+
+このコードは次のXMLヘッダーを生成します。
+
 
 ```xml
 <soap:Header>
@@ -130,6 +139,8 @@ will produce this XML header
 
 Use `sendSoapRequest` method to define the body of your request.
 
+リクエストの本体を定義するためには `sendSoapRequest` を使用します。
+
 ```php
 <?php
 $I->sendSoapRequest('CreateUser', '<name>Miles Davis</name><email>miles@davis.com</email>');
@@ -137,6 +148,8 @@ $I->sendSoapRequest('CreateUser', '<name>Miles Davis</name><email>miles@davis.co
 ```
 
 This call will be translated to XML:
+
+この呼び出しは次のXMLに変換されます。
 
 ```xml
 <soap:Body>
@@ -149,6 +162,9 @@ This call will be translated to XML:
 
 And here is the list of sample assertions that can be used with SOAP.
 
+そして、SOAPモジュールで使用できるアサーションの一覧がこちらです。
+
+
 ```php
 <?php
 $I->seeSoapResponseEquals('<?xml version="1.0"?><error>500</error>');
@@ -160,6 +176,9 @@ $I->seeSoapResponseContainsXPath('//result/user/name[@id=1]');
 
 In case you don't want to write long XML strings, consider using [XmlBuilder](http://codeception.com/docs/reference/XmlBuilder) class. It will help you to build complex XMLs in jQuery-like style.
 In the next example we will use `XmlBuilder` (created from SoapUtils factory) instead of regular XMLs.
+
+もし長いXMLを記述したくない場合、[XmlBuilder](http://codeception.com/docs/reference/XmlBuilder) クラスの利用を考えてみてください。これはjQueryのようなスタイルで複雑なXMLを構築するのに役に立ちます。
+次の例では通常のXMLに替えて、（SoapUtilsファクトリによって作成された）`XmlBuilder` を使用しています。
 
 ```php
 <?php
@@ -178,8 +197,11 @@ $I->seeSoapResponseIncludes(Soap::response()
 ```
 
 It's up to you to decide whether to use `XmlBuilder` or plain XML. `XmlBuilder` will return XML string as well.
+`XmlBuilder` を使うか、プレーンなXMLを利用するかは、どちらでも構いません。`XmlBuilder` も同様にXML文字列を返します。
 
 You may extend current functionality by using `SOAP` module in your helper class. To access the SOAP response as `\DOMDocument` you can use `response` property of `SOAP` module.
+
+ヘルパークラスの中で`SOAP`モジュールを利用することにより、機能を拡張することができます。`\DOMDocument` としてSOAPレスポンスにアクセスするためには、`SOAP` モジュールの `response` プロパティーを使用します。
 
 ```php
 <?php
