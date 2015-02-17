@@ -20,7 +20,11 @@ We will put all the api tests there.
 
 The REST web service is accessed via HTTP with standard methods: `GET`, `POST`, `PUT`, `DELETE`. They allow to receive and manipulate entities from the service. Accessing WebService requires HTTP client, so for using it you need the module `PhpBrowser` or one of framework modules set up. For example, we can use the `Symfony2` module for Symfony2 applications in order to ignore web server and test web service internally.
 
+REST方式のWebサービスは、HTTPの標準的なメソッドである `GET`、`POST`、`PUT`、`DELETE` を介してアクセスされます。これにより、Webサービスからエンティティを受け取り、操作することができます。WebサービスへのアクセスにはHTTPクライアントが必要であるため、`PhpBrowser` やいずれかのフレームワーク用モジュールのセットアップを行う必要があります。Webサーバーを無視し、Webサービスを内部的にテストするために、たとえば、Symfony2 で実装されたアプリケーションであれば、`Symfony2` モジュールを使用します。
+
 Configure modules in `api.suite.yml`:
+
+`api.suite.yml` にモジュールの設定を行います。
 
 ``` yaml
 class_name: ApiTester
@@ -35,13 +39,21 @@ modules:
 
 The REST module will automatically connect to `PhpBrowser`. In case you provide it with Symfony2, Laravel4, Zend, or other framework module, it will connect to them as well. Don't forget to run the `build` command once you finished editing configuration.
 
+RESTモジュールは自動的に `PhpBrowser` に接続します。Symfony2、Laravel4、Zendやそのほかのフレームワークモジュールによって提供する場合においても同様に接続します。設定の編集が完了したら、`build` コマンドを実行するのを忘れないでください。
+
 Let's create the first sample test:
+
+それでは最初のテストを作成しましょう。
 
 ```bash
 $ php codecept.phar generate:cept api CreateUser
 ```
 
 It will be called `CreateUserCept.php`. We can use it to test creation of user via web service.
+
+これを `CreateUserCept.php` と呼ぶこととします。Webサービスを介してのユーザーの作成をテストするために使用します。
+
+`CreateUserCept.php`
 
 ```php
 <?php
@@ -58,7 +70,11 @@ $I->seeResponseContains('{"result":"ok"}');
 
 REST module is designed to be used with services that serve responses in JSON format. For example, method `seeResponseContainsJson` will convert provided array to JSON and check whether response contains it.
 
+RESTモジュールはJSON形式をレスポンスするWebサービスを扱えるよう設計されています。たとえば、seeResponseContainsJson` メソッドは与えられた配列をJSON形式に変換し、それがレスポンスに含まれているかどうかをチェックします。
+
 You may want to perform more complex assertions on response. This can be done with writing your own methods in [Helper](http://codeception.com/docs/03-ModulesAndHelpers#Helpers) classes. To access the latest JSON response you will need to get `response` property of `REST` module. Let's demonstrate it with `seeResponseIsHtml` method:
+
+レスポンスに対して、より複雑な検証を行いたい場合があると思います。そのためには [Helper](http://codeception.com/docs/03-ModulesAndHelpers#Helpers) クラスに独自のメソッドを記述します。最後のJSONレスポンスにアクセスするためには、`REST` モジュールの `response` プロパティーを使用します。次に示す `seeResponseIsHtml` メソッドで説明しましょう。
 
 ```php
 <?php
@@ -74,6 +90,8 @@ class ApiHelper extends \Codeception\Module
 ```
 
 The same way you can receive request parameters and headers.
+
+同じ方法で、リクエストパラメーターや、ヘッダー情報を取得することができます。
 
 ## SOAP
 
