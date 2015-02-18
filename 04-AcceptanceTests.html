@@ -1,0 +1,437 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Codeception.docs.ja : Codeception docs japanese translation">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="//piccagliani.github.io/Codeception.docs.ja_JP/stylesheets/stylesheet.css">
+
+    <title>Codeception.docs.ja</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="inner">
+        <a id="forkme_banner" href="https://github.com/piccagliani/Codeception.docs.ja_JP">View on GitHub</a>
+
+        <h1 id="project_title">Codeception.docs.ja</h1>
+        <h2 id="project_tagline">Codeception docs japanese translation</h2>
+
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h1>Acceptance Testing</h1>
+
+<p>Acceptance testing can be performed by a non-technical person. That person can be your tester, manager or even client.
+If you are developing a web-application (and probably you are) the tester needs nothing more than a web browser to check that your site works correctly. You can reproduce a AcceptanceTester&#39;s actions in scenarios and run them automatically after each site change. Codeception keeps tests clean and simple, as if they were recorded from the words of AcceptanceTester.</p>
+
+<p>It makes no difference what CMS or Framework is used on the site. You can even test sites created on different platforms, like Java, .NET, etc. It&#39;s always a good idea to add tests to your web site. At least you will be sure that site features work after the last changes were made.</p>
+
+<h2>Sample Scenario</h2>
+
+<p>Probably the first test you would want to run would be signing in. In order to write such a test, we still require basic knowledge of PHP and HTML.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;sign in&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;davert&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="s1">&#39;qwerty&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;LOGIN&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Welcome, Davert!&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>This scenario can probably be read by non-technical people. Codeception can even &#39;naturalize&#39; this scenario, converting it into plain English:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">I WANT TO SIGN IN
+I am on page <span class="s1">&#39;/login&#39;</span>
+I fill field <span class="s1">&#39;username&#39;</span>, <span class="s1">&#39;davert&#39;</span>
+I fill field <span class="s1">&#39;password&#39;</span>, <span class="s1">&#39;qwerty&#39;</span>
+I click <span class="s1">&#39;LOGIN&#39;</span>
+I see <span class="s1">&#39;Welcome, Davert!&#39;</span>
+</code></pre></div>
+<p>Such transformations can be done by command:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:scenarios
+</code></pre></div>
+<p>Generated scenarios will be stored in your <em>__data</em>_ directory in text files.</p>
+
+<p><strong>This scenario can be performed either by a simple PHP Browser or by a browser with Selenium WebDriver</strong>. We will start writing our first acceptance tests with a PhpBrowser.</p>
+
+<h2>PHP Browser</h2>
+
+<p>This is the fastest way to run acceptance tests, since it doesn&#39;t require running an actual browser. We use a PHP web scraper, which acts like a browser: it sends a request, then receives and parses the response. Codeception uses <a href="http://guzzlephp.org">Guzzle</a> and Symfony BrowserKit to interact with HTML web pages. Please note that you can&#39;t test actual visibility of elements, or javascript interactions. Good thing about PhpBrowser is that it can be run in any environment with just PHP and cURL required.</p>
+
+<p>Common PhpBrowser drawbacks:</p>
+
+<ul>
+<li>you can click only on links with valid urls or form submit buttons</li>
+<li>you can&#39;t fill fields that are not inside a form</li>
+<li>you can&#39;t work with JavaScript interactions: modal windows, datepickers, etc.</li>
+</ul>
+
+<p>Before we start we need a local copy of the site running on your host. We need to specify the <code>url</code> parameter in the acceptance suite config (tests/acceptance.suite.yml).</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">AcceptanceTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span>
+        <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">PhpBrowser</span>
+        <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">AcceptanceHelper</span>
+        <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Db</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">PhpBrowser</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">your site&#39;s url</span><span class="p-Indicator">]</span>
+</code></pre></div>
+<p>We should start by creating a &#39;Cept&#39; file in the <strong>tests/acceptance</strong> directory. Let&#39;s call it <strong>SigninCept.php</strong>. We will write the first lines into it.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;sign in with valid account&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>The <code>wantTo</code> section describes your scenario in brief. There are additional comment methods that are useful to make a Codeception scenario a BDD Story. If you have ever written a BDD scenario in Gherkin, you can write a classic feature story:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">As an Account Holder
+I want to withdraw cash from an ATM
+So that I can get money when the bank is closed
+</code></pre></div>
+<p>in Codeception style:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">am</span><span class="p">(</span><span class="s1">&#39;Account Holder&#39;</span><span class="p">);</span> 
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;withdraw cash from an ATM&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">lookForwardTo</span><span class="p">(</span><span class="s1">&#39;get money when the bank is closed&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>After we have described the story background, let&#39;s start writing a scenario.</p>
+
+<p>The <code>$I</code> object is used to write all interactions. The methods of the <code>$I</code> object are taken from the <code>PhpBrowser</code> and <code>Db</code> modules. We will briefly describe them here:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>We assume that all <code>am</code> commands should describe the starting environment. The <code>amOnPage</code> command sets the starting point of a test to the <strong>/login</strong> page.</p>
+
+<p>With the <code>PhpBrowser</code> you can click the links and fill the forms. That will probably be the majority of your actions.</p>
+
+<h4>Click</h4>
+
+<p>Emulates a click on valid anchors. The page from the &quot;href&quot; parameter will be opened. As a parameter you can specify the link name or a valid CSS or XPath selector. </p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Log in&#39;</span><span class="p">);</span> 
+<span class="c1">// CSS selector applied</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;#login a&#39;</span><span class="p">);</span>
+<span class="c1">// XPath</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;//a[@id=login]&#39;</span><span class="p">);</span>
+<span class="c1">// Using context as second argument</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">,</span> <span class="s1">&#39;.nav&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Codeception tries to locate element either by its text, name, CSS or XPath. You can specify locator type manually by passing array as a parameter. We call this a <strong>strict locator</strong>. Available strict locator types are: </p>
+
+<ul>
+<li>id</li>
+<li>name</li>
+<li>css</li>
+<li>xpath</li>
+<li>link</li>
+<li>class</li>
+</ul>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="c1">// By specifying locator type</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">([</span><span class="s1">&#39;link&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Login&#39;</span><span class="p">]);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">([</span><span class="s1">&#39;class&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;btn&#39;</span><span class="p">]);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Before clicking the link you can perform a check if the link really exists on 
+a page. This can be done by the <code>seeLink</code> action.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="c1">// checking that link actually exists</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeLink</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeLink</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">,</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeLink</span><span class="p">(</span><span class="s1">&#39;#login a&#39;</span><span class="p">,</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<h4>Forms</h4>
+
+<p>Clicking the links is not what takes the most time during testing a web site. If your site consists only of links you can skip test automation.
+The most routine waste of time goes into the testing of forms. Codeception provides several ways of doing that.</p>
+
+<p>Let&#39;s submit this sample form inside the Codeception test.</p>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;form</span> <span class="na">method=</span><span class="s">&quot;post&quot;</span> <span class="na">action=</span><span class="s">&quot;/update&quot;</span> <span class="na">id=</span><span class="s">&quot;update_form&quot;</span><span class="nt">&gt;</span>
+     <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">&quot;user_name&quot;</span><span class="nt">&gt;</span>Name<span class="nt">&lt;/label&gt;</span>
+     <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;user[name]&quot;</span> <span class="na">id=</span><span class="s">&quot;user_name&quot;</span> <span class="nt">/&gt;</span>
+     <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">&quot;user_email&quot;</span><span class="nt">&gt;</span>Email<span class="nt">&lt;/label&gt;</span>
+     <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;user[email]&quot;</span> <span class="na">id=</span><span class="s">&quot;user_email&quot;</span> <span class="nt">/&gt;</span>     
+     <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">&quot;user_gender&quot;</span><span class="nt">&gt;</span>Gender<span class="nt">&lt;/label&gt;</span>
+     <span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">&quot;user_gender&quot;</span> <span class="na">name=</span><span class="s">&quot;user[gender]&quot;</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">&quot;m&quot;</span><span class="nt">&gt;</span>Male<span class="nt">&lt;/option&gt;</span>
+          <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">&quot;f&quot;</span><span class="nt">&gt;</span>Female<span class="nt">&lt;/option&gt;</span>
+     <span class="nt">&lt;/select&gt;</span>     
+     <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">name=</span><span class="s">&quot;submitButton&quot;</span> <span class="na">value=</span><span class="s">&quot;Update&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</code></pre></div>
+<p>From a user&#39;s perspective, a form consists of fields which should be filled, and then an Update button clicked. </p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="c1">// we are using label to match user_name field</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Miles&#39;</span><span class="p">);</span>
+<span class="c1">// we can use input name or id</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;user[email]&#39;</span><span class="p">,</span><span class="s1">&#39;miles@davis.com&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">selectOption</span><span class="p">(</span><span class="s1">&#39;Gender&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Update&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>To match fields by their labels, you should write a <code>for</code> attribute in the label tag.</p>
+
+<p>From the developer&#39;s perspective, submitting a form is just sending a valid post request to the server. Sometimes it&#39;s easier to fill all of the fields at once and send the form without clicking a &#39;Submit&#39; button.
+A similar scenario can be rewritten with only one command.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">&#39;#update_form&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;user&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
+     <span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Miles&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;email&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Davis&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;gender&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;m&#39;</span>
+<span class="p">)));</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>The <code>submitForm</code> is not emulating a user&#39;s actions, but it&#39;s quite useful in situations when the form is not formatted properly, for example to discover that labels aren&#39;t set or that fields have unclean names or badly written ids, or the form is sent by a javascript call.</p>
+
+<p>By default, submitForm doesn&#39;t send values for buttons.  The last parameter allows specifying what button values should be sent, or button values can be implicitly specified in the second parameter.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">&#39;#update_form&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;user&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
+     <span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Miles&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;email&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Davis&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;gender&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;m&#39;</span>
+<span class="p">)),</span> <span class="s1">&#39;submitButton&#39;</span><span class="p">);</span>
+<span class="c1">// this would be the same effect, but the value has to be implicitly specified</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">&#39;#update_form&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;user&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
+     <span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Miles&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;email&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Davis&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;gender&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;submitButton&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Update&#39;</span>
+<span class="p">)));</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<h4>AJAX Emulation</h4>
+
+<p>As we know, PHP browser can&#39;t process JavaScript. Still, all the ajax calls can be easily emulated by sending the proper requests to the server.</p>
+
+<p>Consider using these methods for ajax interactions.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendAjaxGetRequest</span><span class="p">(</span><span class="s1">&#39;/refresh&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendAjaxPostRequest</span><span class="p">(</span><span class="s1">&#39;/update&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Miles&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Davis&#39;</span><span class="p">));</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<h4>Assertions</h4>
+
+<p>In the PHP browser you can test the page contents. In most cases you just need to check that the required text or element is on the page.</p>
+
+<p>The most useful command for this is <code>see</code>.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="c1">// We check that &#39;Thank you, Miles&#39; is on page.</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Thank you, Miles&#39;</span><span class="p">);</span>
+<span class="c1">// We check that &#39;Thank you Miles&#39; is inside </span>
+<span class="c1">// the element with &#39;notice&#39; class.</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Thank you, Miles&#39;</span><span class="p">,</span> <span class="s1">&#39;.notice&#39;</span><span class="p">);</span>
+<span class="c1">// Or using XPath locators</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Thank you, Miles&#39;</span><span class="p">,</span> <span class="s2">&quot;descendant-or-self::*[contains(concat(&#39; &#39;, normalize-space(@class), &#39; &#39;), &#39; notice &#39;)]&quot;</span><span class="p">);</span>
+<span class="c1">// We check this message is not on page.</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSee</span><span class="p">(</span><span class="s1">&#39;Form is filled incorrectly&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>You can check that specific element exists (or not) on a page</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeElement</span><span class="p">(</span><span class="s1">&#39;.notice&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSeeElement</span><span class="p">(</span><span class="s1">&#39;.error&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>We also have other useful commands to perform checks. Please note that they all start with the <code>see</code> prefix.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInCurrentUrl</span><span class="p">(</span><span class="s1">&#39;/user/miles&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeCheckboxIsChecked</span><span class="p">(</span><span class="s1">&#39;#agree&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInField</span><span class="p">(</span><span class="s1">&#39;user[name]&#39;</span><span class="p">,</span> <span class="s1">&#39;Miles&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeLink</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<h4>Conditional Assertions</h4>
+
+<p>Sometimes you don&#39;t want the test to be stopped when an assertion fails. Maybe you have a long-running test and you want it to run to the end. In this case you can use conditional assertions. Each <code>see</code> method has a corresponding <code>canSee</code> method, and <code>dontSee</code> has a <code>cantSee</code> method. </p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">canSeeInCurrentUrl</span><span class="p">(</span><span class="s1">&#39;/user/miles&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">canSeeCheckboxIsChecked</span><span class="p">(</span><span class="s1">&#39;#agree&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">cantSeeInField</span><span class="p">(</span><span class="s1">&#39;user[name]&#39;</span><span class="p">,</span> <span class="s1">&#39;Miles&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Each failed assertion will be shown in test results. Still, a failed assertion won&#39;t stop the test.</p>
+
+<h4>Grabbers</h4>
+
+<p>These commands retrieve data that can be used in test. Imagine, your site generates a password for every user and you want to check the user can log into the site using this password.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">,</span> <span class="s1">&#39;miles@davis.com&#39;</span><span class="p">)</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Generate Password&#39;</span><span class="p">);</span>
+<span class="nv">$password</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabTextFrom</span><span class="p">(</span><span class="s1">&#39;#password&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">,</span> <span class="s1">&#39;miles@davis.com&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="nv">$password</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Log in!&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Grabbers allow you to get a single value from the current page with commands.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$token</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabTextFrom</span><span class="p">(</span><span class="s1">&#39;.token&#39;</span><span class="p">);</span>
+<span class="nv">$password</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabTextFrom</span><span class="p">(</span><span class="s2">&quot;descendant::input/descendant::*[@id = &#39;password&#39;]&quot;</span><span class="p">);</span>
+<span class="nv">$api_key</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabValueFrom</span><span class="p">(</span><span class="s1">&#39;input[name=api]&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<h4>Comments</h4>
+
+<p>Within a long scenario you should describe what actions you are going to perform and what results to achieve.
+Commands like <code>amGoingTo</code>, <code>expect</code>, <code>expectTo</code> help you in making tests more descriptive.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amGoingTo</span><span class="p">(</span><span class="s1">&#39;submit user form with invalid values&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;user[email]&#39;</span><span class="p">,</span> <span class="s1">&#39;miles&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Update&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">expect</span><span class="p">(</span><span class="s1">&#39;the form is not submitted&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Form is filled incorrectly&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<h4>Cookies, Urls, Title, etc</h4>
+
+<p>Actions for cookies:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">setCookie</span><span class="p">(</span><span class="s1">&#39;auth&#39;</span><span class="p">,</span> <span class="s1">&#39;123345&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabCookie</span><span class="p">(</span><span class="s1">&#39;auth&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeCookie</span><span class="p">(</span><span class="s1">&#39;auth&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Actions for checking page title:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInTitle</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSeeInTitle</span><span class="p">(</span><span class="s1">&#39;Register&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Actions for url:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeCurrentUrlEquals</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeCurrentUrlMatches</span><span class="p">(</span><span class="s1">&#39;~$/users/(\d+)~&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInCurrentUrl</span><span class="p">(</span><span class="s1">&#39;user/1&#39;</span><span class="p">);</span>
+<span class="nv">$user_id</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabFromCurrentUrl</span><span class="p">(</span><span class="s1">&#39;~$/user/(\d+)/~&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<h2>Selenium WebDriver</h2>
+
+<p>A nice feature of Codeception is that most scenarios can be easily ported between the testing backends.
+Your PhpBrowser tests we wrote previously can be executed inside a real browser (or even PhantomJS) with Selenium WebDriver.</p>
+
+<p>The only thing we need to change is to reconfigure and rebuild the AcceptanceTester class, to use <strong>WebDriver</strong> instead of PhpBrowser.</p>
+
+<p>Modify your <code>acceptance.suite.yml</code> file:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">AcceptanceTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span>
+        <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">WebDriver</span>
+        <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">AcceptanceHelper</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">WebDriver</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="s">&#39;http://localhost/myapp/&#39;</span>
+            <span class="l-Scalar-Plain">browser</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">firefox</span>            
+</code></pre></div>
+<p>In order to run Selenium tests you need to <a href="http://seleniumhq.org/download/">download Selenium Server</a> and get it running (Alternatively you may use <a href="http://phantomjs.org/">PhantomJS</a> headless browser in <code>ghostdriver</code> mode).</p>
+
+<p>If you run acceptance tests with Selenium, Firefox will be started and all actions will be performed step by step using browser engine. </p>
+
+<p>In this case <code>seeElement</code> won&#39;t just check that the element exists on a page, but it will also check that element is actually visible to user.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span> 
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeElement</span><span class="p">(</span><span class="s1">&#39;#modal&#39;</span><span class="p">);</span> 
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<h4>Wait</h4>
+
+<p>While testing web application, you may need to wait for JavaScript events to occur. Due to its asynchronous nature, complex JavaScript interactions are hard to test. That&#39;s why you may need to use <code>wait</code> actions, which can be used to specify what event you expect to occur on a page, before proceeding the test.</p>
+
+<p>For example: </p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">waitForElement</span><span class="p">(</span><span class="s1">&#39;#agree_button&#39;</span><span class="p">,</span> <span class="mi">30</span><span class="p">);</span> <span class="c1">// secs</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;#agree_button&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>In this case we are waiting for agree button to appear and then clicking it. If it didn&#39;t appear for 30 seconds, test will fail. There are other <code>wait</code> methods you may use.</p>
+
+<p>See Codeception&#39;s <a href="http://codeception.com/docs/modules/WebDriver">WebDriver module documentation</a> for the full reference.</p>
+
+<h3>Multi Session Testing</h3>
+
+<p>Codeception allows you to execute actions in concurrent sessions. The most obvious case for it is testing realtime messaging between users on site. In order to do it you will need to launch two browser windows at the same time for the same test. Codeception has very smart concept for doing this. It is called <strong>Friends</strong>.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;try multi session&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/messages&#39;</span><span class="p">);</span>
+<span class="nv">$nick</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveFriend</span><span class="p">(</span><span class="s1">&#39;nick&#39;</span><span class="p">);</span>
+<span class="nv">$nick</span><span class="o">-&gt;</span><span class="na">does</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/messages/new&#39;</span><span class="p">);</span>
+    <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">,</span> <span class="s1">&#39;Hello all!&#39;</span><span class="p">)</span>
+    <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Send&#39;</span><span class="p">);</span>
+    <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Hello all!&#39;</span><span class="p">,</span> <span class="s1">&#39;.message&#39;</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wait</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Hello all!&#39;</span><span class="p">,</span> <span class="s1">&#39;.message&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>In this case we did some actions in second window with <code>does</code> command on a friend object.</p>
+
+<h3>Cleaning Things Up</h3>
+
+<p>While testing, your actions may change the data on the site. Tests will fail if trying to create or update the same data twice. To avoid this problem, your database should be repopulated for each test. Codeception provides a <code>Db</code> module for that purpose. It will load a database dump after each passed test. To make repopulation work, create an sql dump of your database and put it into the <strong>/tests/_data</strong> directory. Set the database connection and path to the dump in the global Codeception config.</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># in codeception.yml:</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">Db</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">dsn</span><span class="p-Indicator">:</span> <span class="s">&#39;[set</span><span class="nv"> </span><span class="s">pdo</span><span class="nv"> </span><span class="s">dsn</span><span class="nv"> </span><span class="s">here]&#39;</span>
+            <span class="l-Scalar-Plain">user</span><span class="p-Indicator">:</span> <span class="s">&#39;[set</span><span class="nv"> </span><span class="s">user]&#39;</span>
+            <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span> <span class="s">&#39;[set</span><span class="nv"> </span><span class="s">password]&#39;</span>
+            <span class="l-Scalar-Plain">dump</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">tests/_data/dump.sql</span>
+</code></pre></div>
+<h3>Debugging</h3>
+
+<p>Codeception modules can print valuable information while running. Just execute tests with the <code>--debug</code> option to see running details. For any custom output use <code>codecept_debug</code> function.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nx">codecept_debug</span><span class="p">(</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabTextFrom</span><span class="p">(</span><span class="s1">&#39;#name&#39;</span><span class="p">));</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>On each fail, the snapshot of the last shown page will be stored in the <strong>tests/_log</strong> directory. PhpBrowser will store HTML code and WebDriver will save the screenshot of a page.</p>
+
+<h2>Conclusion</h2>
+
+<p>Writing acceptance tests with Codeception and PhpBrowser is a good start. You can easily test your Joomla, Drupal, WordPress sites, as well as those made with frameworks. Writing acceptance tests is like describing a tester&#39;s actions in PHP. They are quite readable and very easy to write. Don&#39;t forget to repopulate the database on each test run.</p>
+
+    </section>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="inner">
+        <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
+        <p>Last updated: 2015-02-18 14:06:18 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+    </footer>
+</div>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-59804278-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+
+</body>
+</html>

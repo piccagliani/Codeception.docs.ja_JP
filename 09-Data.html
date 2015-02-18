@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Codeception.docs.ja : Codeception docs japanese translation">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="//piccagliani.github.io/Codeception.docs.ja_JP/stylesheets/stylesheet.css">
+
+    <title>Codeception.docs.ja</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="inner">
+        <a id="forkme_banner" href="https://github.com/piccagliani/Codeception.docs.ja_JP">View on GitHub</a>
+
+        <h1 id="project_title">Codeception.docs.ja</h1>
+        <h2 id="project_tagline">Codeception docs japanese translation</h2>
+
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h1>Working with Data</h1>
+
+<p>Tests should not affect each other. That&#39;s a rule of thumb. When tests interact with database, they may change data inside it, which would eventually lead to data inconsistency. A test may try to insert a record that has already been inserted, or retrieve a deleted record. To avoid test failures, the database should be brought to its initial state before each test. Codeception has different methods and approaches to get your data cleaned.</p>
+
+<p>This chapter summarizes all of the notices on cleaning ups from the previous chapters and suggests the best strategies of how to choose data storage backends.</p>
+
+<p>When we decide to clean up a database, we should make this cleaning as fast as possible. Tests should always run fast. Rebuilding the database from scratch is not the best way, but might be the only one. In any case, you should use a special test database for testing. <strong>Do not ever run tests on development or production database!</strong></p>
+
+<h2>Automatic Cleanup</h2>
+
+<p>Codeception has a <code>Db</code> module, which takes on most of the tasks of database interaction. By default it will try to repopulate the database from a dump and clean it up after each test. This module expects a database dump in SQL format. It&#39;s already prepared for configuration in <code>codeception.yml</code>:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">Db</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">dsn</span><span class="p-Indicator">:</span> <span class="s">&#39;PDO</span><span class="nv"> </span><span class="s">DSN</span><span class="nv"> </span><span class="s">HERE&#39;</span>
+            <span class="l-Scalar-Plain">user</span><span class="p-Indicator">:</span> <span class="s">&#39;root&#39;</span>
+            <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">dump</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">tests/_data/your-dump-name.sql</span>
+</code></pre></div>
+<p>After you enable this module in your test suite, it will automatically populate the database from a dump and repopulate it on each test run. These settings can be changed through the <code>populate</code> and <code>cleanup</code> options, which may be set to <code>false</code>.</p>
+
+<p>The <code>Db</code> module is a rough tool. It works for any type of database supported by PDO. It could be used for all of the tests if it wasn&#39;t so slow. Loading a dump can take a lot of time that can be saved by using other techniques. When your test and application share the same database connection, as may be the case in functional and unit tests, the best way to speed up everything is to put all of the code in transaction, rolled back when test ends. In acceptance tests, different database connections are used, you can speed up tests by using SQLite file database. Alternatively, you can avoid recreating database on every test, but cleaning up all updates after the test.</p>
+
+<h2>Separate connections</h2>
+
+<p>In acceptance tests, your test is interacting with the application through a web server. There is no way to receive a database connection from the web server. This means that the test and the application will work with the same database but on different connections. Provide in the Db module the same credentials that your application uses, and then you can access the database for assertions (<code>seeInDatabase</code> actions) and perform automatic cleanups.</p>
+
+<h2>Shared connections</h2>
+
+<p>When an application or its parts are run within the Codeception process, you can use your application connection in your tests.
+If you can access the connection, all database operations can be put into one global transaction and rolled back at the end. That will dramatically improve performance. Nothing will be written to the database at the end, thus no database repopulation is actually needed.</p>
+
+<h3>ORM modules</h3>
+
+<p>If your application is using an ORM like Doctrine or Doctrine2, connect the respective modules to the suite. By default they will cover everything in a transaction. If you use several database connections, or there are transactions not tracked by the ORM, that module will be useless for you.</p>
+
+<p>An ORM module can be connected with a <code>Db</code> module, but by default both will perform cleanup. Thus you should explicitly set which module is used:</p>
+
+<p>In <code>tests/functional.suite.yml</code>:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Db</span><span class="p-Indicator">,</span> <span class="nv">Doctrine2</span><span class="p-Indicator">,</span> <span class="nv">FunctionalHelper</span><span class="p-Indicator">]</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">Db</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">cleanup</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
+</code></pre></div>
+<p>Still, the <code>Db</code> module will perform database population from a dump before each test. Use <code>populate: false</code> to disable it.</p>
+
+<h3>Dbh module</h3>
+
+<p>If you use PostgreSQL, or any other database which supports nested transactions, you can use the <code>Dbh</code> module. It takes a PDO instance from your application, starts a transaction at the beginning of the tests, and rolls it back at the end.
+A PDO connection can be set in the bootstrap file. This module also overrides the <code>seeInDatabase</code> and <code>dontSeeInDatabase</code> actions of the <code>Db</code> module.</p>
+
+<p>To use the <code>Db</code> module for population and <code>Dbh</code> for cleanups, use this config:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Db</span><span class="p-Indicator">,</span> <span class="nv">Dbh</span><span class="p-Indicator">,</span> <span class="nv">FunctionalHelper</span><span class="p-Indicator">]</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">Db</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">cleanup</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
+</code></pre></div>
+<p>Please, note that <code>Dbh</code> module should go after the <code>Db</code>. That allows the <code>Dbh</code> module to override actions.</p>
+
+<h2>Fixtures</h2>
+
+<p>Fixtures are sample data that we can use in tests. This data can be either generated, or taken from a sample database. Fixtures can be defined in separate PHP file and loaded in tests.</p>
+
+<h4>Fixtures for Acceptance and Functional Tests</h4>
+
+<p>Let&#39;s create <code>fixtures.php</code> file in <code>tests/functional</code> and load data from database to be used in tests.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="c1">// let&#39;s take user from sample database,</span>
+<span class="c1">// we can populate it with Db module</span>
+<span class="nv">$john</span> <span class="o">=</span> <span class="nx">User</span><span class="o">::</span><span class="na">findOneBy</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;john&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Fixture usage in a sample acceptance or functional test:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">require</span> <span class="s1">&#39;fixtures.php&#39;</span><span class="p">;</span>
+
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amLoggedAs</span><span class="p">(</span><span class="nv">$john</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Welcome, John&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Also you can use the <a href="https://github.com/fzaninotto/Faker">Faker</a> library to create test data within a bootstrap file.</p>
+
+<h3>Per Test Fixtures</h3>
+
+<p>If you want to create special database record for one test, you can use <a href="http://codeception.com/docs/modules/Db#haveInDatabase"><code>haveInDatabase</code></a> method of <code>Db</code> module.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span> 
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveInDatabase</span><span class="p">(</span><span class="s1">&#39;posts&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Top 10 Testing Frameworks&#39;</span><span class="p">,</span> <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;1. Codeception&#39;</span><span class="p">));</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/posts&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Top 10 Testing Frameworks&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p><code>haveInDatabase</code> inserts a row with provided values into database. All added records will be deleted in the end of a test. In <code>MongoDB</code> module we have similar <a href="http://codeception.com/docs/modules/MongoDb#haveInCollection"><code>haveInCollection</code></a> method.</p>
+
+<h2>Conclusion</h2>
+
+<p>Codeception is not abandoning the developer when dealing with data. Tools for database population and cleanups are bundled within the <code>Db</code> module. To manipulate sample data in a test, use fixtures that can be defined within the bootstrap file.</p>
+
+    </section>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="inner">
+        <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
+        <p>Last updated: 2015-02-18 14:06:18 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+    </footer>
+</div>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-59804278-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Codeception.docs.ja : Codeception docs japanese translation">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="//piccagliani.github.io/Codeception.docs.ja_JP/stylesheets/stylesheet.css">
+
+    <title>Codeception.docs.ja</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="inner">
+        <a id="forkme_banner" href="https://github.com/piccagliani/Codeception.docs.ja_JP">View on GitHub</a>
+
+        <h1 id="project_title">Codeception.docs.ja</h1>
+        <h2 id="project_tagline">Codeception docs japanese translation</h2>
+
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h1>Testing WebServices</h1>
+
+<p>The same way we tested a web site, Codeception allows you to test web services. They are very hard to test manually, so it&#39;s really good idea to automate web service testing. As a standards we have SOAP and REST, which are represented in corresponding modules. We will cover them in this chapter.</p>
+
+<p>You should start with creating a new test suite, which was not provided by the <code>bootstrap</code> command. We recommend to call it <strong>api</strong> and use the <code>ApiTester</code> class for it.</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:suite api
+</code></pre></div>
+<p>We will put all the api tests there.</p>
+
+<h2>REST</h2>
+
+<p>The REST web service is accessed via HTTP with standard methods: <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>. They allow to receive and manipulate entities from the service. Accessing WebService requires HTTP client, so for using it you need the module <code>PhpBrowser</code> or one of framework modules set up. For example, we can use the <code>Symfony2</code> module for Symfony2 applications in order to ignore web server and test web service internally.</p>
+
+<p>Configure modules in <code>api.suite.yml</code>:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">ApiTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">PhpBrowser</span><span class="p-Indicator">,</span> <span class="nv">REST</span><span class="p-Indicator">,</span> <span class="nv">ApiHelper</span><span class="p-Indicator">]</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">PhpBrowser</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://serviceapp/</span>
+        <span class="l-Scalar-Plain">REST</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://serviceapp/api/v1/</span>
+</code></pre></div>
+<p>The REST module will automatically connect to <code>PhpBrowser</code>. In case you provide it with Symfony2, Laravel4, Zend, or other framework module, it will connect to them as well. Don&#39;t forget to run the <code>build</code> command once you finished editing configuration.</p>
+
+<p>Let&#39;s create the first sample test:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:cept api CreateUser
+</code></pre></div>
+<p>It will be called <code>CreateUserCept.php</code>. We can use it to test creation of user via web service.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ApiTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;create a user via API&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amHttpAuthenticated</span><span class="p">(</span><span class="s1">&#39;service_user&#39;</span><span class="p">,</span> <span class="s1">&#39;123456&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveHttpHeader</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/x-www-form-urlencoded&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendPOST</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;davert&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;davert@codeception.com&#39;</span><span class="p">]);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseCodeIs</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseIsJson</span><span class="p">();</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseContains</span><span class="p">(</span><span class="s1">&#39;{&quot;result&quot;:&quot;ok&quot;}&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>REST module is designed to be used with services that serve responses in JSON format. For example, method <code>seeResponseContainsJson</code> will convert provided array to JSON and check whether response contains it.</p>
+
+<p>You may want to perform more complex assertions on response. This can be done with writing your own methods in <a href="http://codeception.com/docs/03-ModulesAndHelpers#Helpers">Helper</a> classes. To access the latest JSON response you will need to get <code>response</code> property of <code>REST</code> module. Let&#39;s demonstrate it with <code>seeResponseIsHtml</code> method:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">ApiHelper</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">seeResponseIsHtml</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$response</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">&#39;REST&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">response</span><span class="p">;</span>
+        <span class="nx">\PHPUnit_Framework_Assert</span><span class="o">::</span><span class="na">assertRegex</span><span class="p">(</span><span class="s1">&#39;~^&lt;!DOCTYPE HTML(.*?)&lt;html&gt;.*?&lt;\/html&gt;~m&#39;</span><span class="p">,</span> <span class="nv">$response</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>The same way you can receive request parameters and headers.</p>
+
+<h2>SOAP</h2>
+
+<p>SOAP web services are usually more complex. You will need PHP <a href="http://php.net/manual/en/soap.installation.php">configured with SOAP support</a>. Good knowledge of XML is required too. <code>SOAP</code> module uses specially formatted POST request to connect to WSDL web services. Codeception uses <code>PhpBrowser</code> or one of framework modules to perform interactions. If you choose using a framework module, SOAP will automatically connect to the underliying framework. That may improve the speed of a test execution and will provide you with more detailed stack traces.</p>
+
+<p>Let&#39;s configure <code>SOAP</code> module to be used with <code>PhpBrowser</code>:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">ApiTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">PhpBrowser</span><span class="p-Indicator">,</span> <span class="nv">SOAP</span><span class="p-Indicator">,</span> <span class="nv">ApiHelper</span><span class="p-Indicator">]</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">PhpBrowser</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://serviceapp/</span>
+        <span class="l-Scalar-Plain">SOAP</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">endpoint</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://serviceapp/api/v1/</span>
+</code></pre></div>
+<p>SOAP request may contain application specific information, like authentication or payment. This information is provided with SOAP header inside the <code>&lt;soap:Header&gt;</code> element of XML request. In case you need to submit such header, you can use <code>haveSoapHeader</code> action. For example, next line of code</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveSoapHeader</span><span class="p">(</span><span class="s1">&#39;Auth&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;username&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Miles&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;123456&#39;</span><span class="p">));</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>will produce this XML header</p>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;soap:Header&gt;</span>
+<span class="nt">&lt;Auth&gt;</span>
+    <span class="nt">&lt;username&gt;</span>Miles<span class="nt">&lt;/username&gt;</span>
+    <span class="nt">&lt;password&gt;</span>123456<span class="nt">&lt;/password&gt;</span>
+<span class="nt">&lt;/Auth&gt;</span>
+<span class="nt">&lt;/soap:Header&gt;</span>
+</code></pre></div>
+<p>Use <code>sendSoapRequest</code> method to define the body of your request.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendSoapRequest</span><span class="p">(</span><span class="s1">&#39;CreateUser&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;name&gt;Miles Davis&lt;/name&gt;&lt;email&gt;miles@davis.com&lt;/email&gt;&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>This call will be translated to XML:</p>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;soap:Body&gt;</span>
+<span class="nt">&lt;ns:CreateUser&gt;</span>
+    <span class="nt">&lt;name&gt;</span>Miles Davis<span class="nt">&lt;/name&gt;</span>
+    <span class="nt">&lt;email&gt;</span>miles@davis.com<span class="nt">&lt;/email&gt;</span>
+<span class="nt">&lt;/ns:CreateUser&gt;</span>
+<span class="nt">&lt;/soap:Body&gt;</span>
+</code></pre></div>
+<p>And here is the list of sample assertions that can be used with SOAP.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseEquals</span><span class="p">(</span><span class="s1">&#39;&lt;?xml version=&quot;1.0&quot;?&gt;&lt;error&gt;500&lt;/error&gt;&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseIncludes</span><span class="p">(</span><span class="s1">&#39;&lt;result&gt;1&lt;/result&gt;&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseContainsStructure</span><span class="p">(</span><span class="s1">&#39;&lt;user&gt;&lt;name&gt;&lt;/name&gt;&lt;email&gt;&lt;/email&gt;&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseContainsXPath</span><span class="p">(</span><span class="s1">&#39;//result/user/name[@id=1]&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>In case you don&#39;t want to write long XML strings, consider using <a href="http://codeception.com/docs/reference/XmlBuilder">XmlBuilder</a> class. It will help you to build complex XMLs in jQuery-like style.
+In the next example we will use <code>XmlBuilder</code> (created from SoapUtils factory) instead of regular XMLs.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">use</span> <span class="nx">\Codeception\Util\Soap</span><span class="p">;</span>
+
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ApiTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;create user&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveSoapHeader</span><span class="p">(</span><span class="s1">&#39;Session&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;token&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;123456&#39;</span><span class="p">));</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendSoapRequest</span><span class="p">(</span><span class="s1">&#39;CreateUser&#39;</span><span class="p">,</span> <span class="nx">Soap</span><span class="o">::</span><span class="na">request</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="na">user</span><span class="o">-&gt;</span><span class="na">email</span><span class="o">-&gt;</span><span class="na">val</span><span class="p">(</span><span class="s1">&#39;miles@davis.com&#39;</span><span class="p">));</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseIncludes</span><span class="p">(</span><span class="nx">Soap</span><span class="o">::</span><span class="na">response</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="na">result</span><span class="o">-&gt;</span><span class="na">val</span><span class="p">(</span><span class="s1">&#39;Ok&#39;</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">user</span><span class="o">-&gt;</span><span class="na">attr</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>It&#39;s up to you to decide whether to use <code>XmlBuilder</code> or plain XML. <code>XmlBuilder</code> will return XML string as well.</p>
+
+<p>You may extend current functionality by using <code>SOAP</code> module in your helper class. To access the SOAP response as <code>\DOMDocument</code> you can use <code>response</code> property of <code>SOAP</code> module.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">ApiHelper</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span> <span class="p">{</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">seeResponseIsValidOnSchema</span><span class="p">(</span><span class="nv">$schema</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$response</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">&#39;SOAP&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">response</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nv">$response</span><span class="o">-&gt;</span><span class="na">schemaValidate</span><span class="p">(</span><span class="nv">$schema</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<h2>Conclusion</h2>
+
+<p>Codeception has two modules that will help you to test various web services. They need a new <code>api</code> suite to be created. Remember, you are not limited to test only response body. By including <code>Db</code> module you may check if a user has been created after the <code>CreateUser</code> call. You can improve testing scenarios by using REST or SOAP responses in your helper methods.</p>
+
+    </section>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="inner">
+        <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
+        <p>Last updated: 2015-02-18 14:06:18 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+    </footer>
+</div>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-59804278-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+
+</body>
+</html>

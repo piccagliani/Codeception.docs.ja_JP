@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Codeception.docs.ja : Codeception docs japanese translation">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="//piccagliani.github.io/Codeception.docs.ja_JP/stylesheets/stylesheet.css">
+
+    <title>Codeception.docs.ja</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="inner">
+        <a id="forkme_banner" href="https://github.com/piccagliani/Codeception.docs.ja_JP">View on GitHub</a>
+
+        <h1 id="project_title">Codeception.docs.ja</h1>
+        <h2 id="project_tagline">Codeception docs japanese translation</h2>
+
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h1>Customization</h1>
+
+<p>In this chapter we will explain how you can extend and customize file structure and test execution routines.</p>
+
+<h2>One Runner for Multiple Applications</h2>
+
+<p>In case your project consists of several applications (frontend, admin, api) or you use Symfony2 framework with its bundles, you may be interested in having all tests for all applications (bundles) to be executed in one runner.
+In this case you will get one report that covers the whole project.</p>
+
+<p>Place <code>codeception.yml</code> file into root folder of your project and specify paths to other <code>codeception.yml</code> configs you want to include.</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">frontend</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">admin</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">api/rest</span>
+<span class="l-Scalar-Plain">paths</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">log</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">log</span>
+<span class="l-Scalar-Plain">settings</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">colors</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
+</code></pre></div>
+<p>You should also specify path to <code>log</code> directory, where the reports and logs will be stored.</p>
+
+<h3>Namespaces</h3>
+
+<p>To avoid naming conflicts between Actor classes and Helper classes, they should be added into namespaces.
+To create test suites with namespaces you can add <code>--namespace</code> option to bootstrap command.</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar bootstrap --namespace frontend
+</code></pre></div>
+<p>This will bootstrap a new project with <code>namespace: frontend</code> parameter in <code>codeception.yml</code> file. 
+Helpers will be in <code>frontend\Codeception\Module</code> namespace and Actor classes will be in <code>frontend</code> namespace.
+Thus, newly generated tests will look like this:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span> <span class="k">use</span> <span class="nx">frontend\AcceptanceTester</span><span class="p">;</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="c1">//...</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Once each of your applications (bundles) has its own namespace and different Helper or Actor classes, you can execute all tests in one runner. Run codeception tests as usual, using meta-config we created earlier:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run
+</code></pre></div>
+<p>This will launch test suites for all 3 applications and merge the reports from all of them. Basically that would be very useful when you run your tests on Continuous Integration server and you want to get one report in JUnit and HTML format. Codecoverage report will be merged too.</p>
+
+<p>If your applications uses same helpers, follow the next section of this chapter.</p>
+
+<h2>Autoload Helper classes</h2>
+
+<p>There is global <code>_bootstrap.php</code> file. This file is included at the very beginning of execution. We recommend to use it to initialize autoloaders and constants. It is especially useful if you want to include Modules or Helper classes that are not stored in <code>tests/_helpers</code> directory.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">require_once</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../lib/tests/helpers/MyHelper.php&#39;</span><span class="p">;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Alternatively you can use Composer&#39;s autoloader. Codeception has its autoloader too.
+It&#39;s not PSR-0 compatible (yet), but it is still very useful when you need to declare alternative path for Helper classes:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">registerSuffix</span><span class="p">(</span><span class="s1">&#39;Helper&#39;</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../lib/tests/helpers&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Now all classes with suffix <code>Helper</code> will be additionally searched in `<strong>DIR</strong>.&#39;/../lib/tests/helpers&#39;. You can declare to load helpers of specific namespace. </p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">&#39;MyApp\\Test&#39;</span><span class="p">,</span> <span class="s1">&#39;Helper&#39;</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../lib/tests/helpers&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>That will point autoloader to look for classes like <code>MyApp\Test\MyHelper</code> in path <code>__DIR__.&#39;/../lib/tests/helpers&#39;</code>.</p>
+
+<p>Alternatively you can use autoloader to specify path for <strong>PageObject and Controller</strong> classes, if they have appropriate suffixes in their names.</p>
+
+<p>Example of <code>tests/_bootstrap.php</code> file:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">&#39;MyApp\\Test&#39;</span><span class="p">,</span> <span class="s1">&#39;Helper&#39;</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../lib/tests/helpers&#39;</span><span class="p">);</span>
+<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">&#39;MyApp\\Test&#39;</span><span class="p">,</span> <span class="s1">&#39;Page&#39;</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">&#39;/pageobjects&#39;</span><span class="p">);</span>
+<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">&#39;MyApp\\Test&#39;</span><span class="p">,</span> <span class="s1">&#39;Controller&#39;</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">&#39;/controller&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<h2>Extension classes</h2>
+
+<div class="alert">This section requires advanced PHP skills and some knowlegde of Codeception and PHPUnit internals.</div>
+
+<p>Codeception has limited capabilities to extend its core features.
+Extensions are not supposed to override current functionality, but are pretty useful if you are experienced developer and you want to hook into testing flow.</p>
+
+<p>Basically speaking, Extensions are nothing more then event listeners based on <a href="http://symfony.com/doc/current/components/event_dispatcher/introduction.html">Symfony Event Dispatcher</a> component.</p>
+
+<p>Here are the events and event classes. The events are listed in order they happen during execution. Each event has a corresponding class, which is passed to listener, and contains specific objects.</p>
+
+<h3>Events</h3>
+
+<p>|    Event             |     When?                               | What contains?
+|:--------------------:| --------------------------------------- | --------------------------:
+| <code>suite.before</code>       | Before suite is executed                | <a href="https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/SuiteEvent.php">Suite, Settings</a>
+| <code>test.start</code>         | Before test is executed                 | <a href="https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/TestEvent.php">Test</a>
+| <code>test.before</code>        | At the very beginning of test execution | <a href="https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/TestEvent.php">Codeception Test</a>
+| <code>step.before</code>        | Before step                             | <a href="https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/StepEvent.php">Step</a>
+| <code>step.after</code>         | After step                              | <a href="https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/StepEvent.php">Step</a>
+| <code>step.fail</code>          | After failed step                       | <a href="https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/StepEvent.php">Step</a>
+| <code>test.fail</code>          | After failed test                       | <a href="https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/FailEvent.php">Test, Fail</a>
+| <code>test.error</code>         | After test ended with error             | <a href="https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/FailEvent.php">Test, Fail</a>
+| <code>test.incomplete</code>    | After executing incomplete test         | <a href="https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/FailEvent.php">Test, Fail</a>
+| <code>test.skipped</code>       | After executing skipped test            | <a href="https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/FailEvent.php">Test, Fail</a>
+| <code>test.success</code>       | After executing successful test         | <a href="https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/TestEvent.php">Test</a>
+| <code>test.after</code>         | At the end of test execution            | <a href="https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/TestEvent.php">Codeception Test</a>
+| <code>test.end</code>           | After test execution                    | <a href="https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/TestEvent.php">Test</a>
+| <code>suite.after</code>        | After suite was executed                | <a href="https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/SuiteEvent.php">Suite, Result, Settings</a>
+| <code>test.fail.print</code>    | When test fails are printed             | <a href="https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/FailEvent.php">Test, Fail</a>
+| <code>result.print.after</code> | After result was printed                | <a href="https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/PrintResultEvent.php">Result, Printer</a></p>
+
+<p>There may be a confusion between <code>test.start</code>/<code>test.before</code> and <code>test.after</code>/<code>test.end</code>. Start/end events are triggered by PHPUnit itself. But before/after events are triggered by Codeception. Thus, when you have classical PHPUnit test (extended from <code>PHPUnit_Framework_TestCase</code>), before/after events won&#39;t be triggered for them. On <code>test.before</code> event you can mark test as skipped or incomplete, which is not possible in <code>test.start</code>. You can learn more from <a href="https://github.com/Codeception/Codeception/tree/master/src/Codeception/Subscriber">Codeception internal event listeners</a>.</p>
+
+<p>The extension class itself is inherited from <code>Codeception\Platform\Extension</code>.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">MyCustomExtension</span> <span class="k">extends</span> <span class="nx">\Codeception\Platform\Extension</span>
+<span class="p">{</span>
+    <span class="c1">// list events to listen to</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$events</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+        <span class="s1">&#39;suite.after&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;afterSuite&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;test.before&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;beforeTest&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;step.before&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;beforeStep&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;test.fail&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;testFailed&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;result.print.after&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;print&#39;</span><span class="p">,</span>
+    <span class="p">);</span>
+
+    <span class="c1">// methods that handle events</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">afterSuite</span><span class="p">(</span><span class="nx">\Codeception\Event\SuiteEvent</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">beforeTest</span><span class="p">(</span><span class="nx">\Codeception\Event\TestEvent</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">beforeStep</span><span class="p">(</span><span class="nx">\Codeception\Event\StepEvent</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testFailed</span><span class="p">(</span><span class="nx">\Codeception\Event\FailEvent</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">print</span><span class="p">(</span><span class="nx">\Codeception\Event\PrintResultEvent</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>By implementing event handling methods you can listen to event and even update passed objects.
+Extensions have some basic methods you can use:</p>
+
+<ul>
+<li><code>write</code> - prints to screen</li>
+<li><code>writeln</code> - prints to screen with line end char at the end</li>
+<li><code>getModule</code> - allows you to access a module</li>
+<li><code>_reconfigure</code> - can be implemented instead of overriding constructor. </li>
+</ul>
+
+<h3>Enabling Extension</h3>
+
+<p>Once you&#39;ve implemented a simple extension class, you should include it in <code>tests/_bootstrap.php</code> file:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">include_once</span> <span class="s1">&#39;/path/to/my/MyCustomExtension.php&#39;</span><span class="p">;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Then you can enable it in <code>codeception.yml</code>:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">extensions</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">MyCustomExtension</span><span class="p-Indicator">]</span>
+</code></pre></div>
+<h3>Configuring Extension</h3>
+
+<p>In extension you can access currently passed options via <code>options</code> property.
+You also can access global config via <code>\Codeception\Configuration::config()</code> method. 
+But if you want to have custom options for your extension, you can pass them in <code>codeception.yml</code> file:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">extensions</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">MyCustomExtension</span><span class="p-Indicator">]</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">MyCustomExtension</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">param</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">value</span>
+</code></pre></div>
+<p>Passed configuration is accessible via <code>config</code> property: <code>$this-&gt;config[&#39;param&#39;]</code>.</p>
+
+<p>Check out a very basic extension <a href="https://github.com/Codeception/Notifier">Notifier</a>.</p>
+
+<h2>Group Classes</h2>
+
+<p>Group Classes are extensions listening to events of a tests belonging to a specific group.
+When a test is added to a group:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span> 
+<span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">group</span><span class="p">(</span><span class="s1">&#39;admin&#39;</span><span class="p">);</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>This test will trigger events:</p>
+
+<ul>
+<li><code>test.before.admin</code></li>
+<li><code>step.before.admin</code></li>
+<li><code>step.after.admin</code></li>
+<li><code>test.success.admin</code></li>
+<li><code>test.fail.admin</code></li>
+<li><code>test.after.admin</code></li>
+</ul>
+
+<p>A group class is built to listen to these events. It is pretty useful when additional setup is required for some of your tests. Let&#39;s say you want to load fixtures for tests that belong to <code>admin</code> group:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">AdminGroup</span> <span class="k">extends</span> <span class="nx">\Codeception\Platform\Group</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$group</span> <span class="o">=</span> <span class="s1">&#39;admin&#39;</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_before</span><span class="p">(</span><span class="nx">\Codeception\Event\TestEvent</span> <span class="nv">$e</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;inserting additional admin users...&#39;</span><span class="p">);</span>
+
+        <span class="nv">$db</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">&#39;Db&#39;</span><span class="p">);</span>
+        <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">haveInDatabase</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;bill&#39;</span><span class="p">,</span> <span class="s1">&#39;role&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;admin&#39;</span><span class="p">));</span>
+        <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">haveInDatabase</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;john&#39;</span><span class="p">,</span> <span class="s1">&#39;role&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;admin&#39;</span><span class="p">));</span>
+        <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">haveInDatabase</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;mark&#39;</span><span class="p">,</span> <span class="s1">&#39;role&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;banned&#39;</span><span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_after</span><span class="p">(</span><span class="nx">\Codeception\Event\TestEvent</span> <span class="nv">$e</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;cleaning up admin users...&#39;</span><span class="p">);</span>
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>A group class can be created with <code>php codecept.phar generate:group groupname</code> command.
+Group class will be stored in <code>tests/_groups</code> directory.</p>
+
+<p>A group class can be enabled just like you enable extension class. In file <code>codeception.yml</code>:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">extensions</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">AdminGroup</span><span class="p-Indicator">]</span>    
+</code></pre></div>
+<p>Now Admin group class will listen to all events of tests that belong to the <code>admin</code> group.</p>
+
+<h2>Conclusion</h2>
+
+<p>Each feature mentioned above may dramatically help when using Codeception to automate testing of large projects, although some features may require advanced knowledge of PHP. There is no &quot;best practice&quot; or &quot;use cases&quot; when we talk about groups, extensions, or other powerful features of Codeception. If you see you have a problem that can be solved using these extensions, then give them a try. </p>
+
+    </section>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="inner">
+        <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
+        <p>Last updated: 2015-02-18 14:06:18 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+    </footer>
+</div>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-59804278-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+
+</body>
+</html>

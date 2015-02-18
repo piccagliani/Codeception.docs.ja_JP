@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Codeception.docs.ja : Codeception docs japanese translation">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="//piccagliani.github.io/Codeception.docs.ja_JP/stylesheets/stylesheet.css">
+
+    <title>Codeception.docs.ja</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="inner">
+        <a id="forkme_banner" href="https://github.com/piccagliani/Codeception.docs.ja_JP">View on GitHub</a>
+
+        <h1 id="project_title">Codeception.docs.ja</h1>
+        <h2 id="project_tagline">Codeception docs japanese translation</h2>
+
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h1>Introduction</h1>
+
+<p>The idea behind testing is not new. You can&#39;t sleep well if you are not confident that your last commit didn&#39;t take down the whole application.
+Having your application covered with tests gives you more trust in the stability of your application. That&#39;s all.</p>
+
+<p>In most cases tests don&#39;t guarantee that the application works 100% as it is supposed to. You can&#39;t predict all possible scenarios and exceptional situations for complex apps, but with tests you can cover the most important parts of your app and at least be sure they work as predicted.</p>
+
+<p>There are plenty of ways to test your application. The most popular paradigm is <a href="http://en.wikipedia.org/wiki/Unit_testing">Unit Testing</a>. As for web applications, testing the controller, or model in isolation doesn&#39;t prove your application is working. To test the behavior of your application as a whole, you should write functional or acceptance tests.</p>
+
+<p>The Codeception testing framework distinguishes these levels of testing. Out of the box you have tools for writing unit, functional, and acceptance tests in a single manner.</p>
+
+<p>Let&#39;s review the listed testing paradigms in reverse order.</p>
+
+<h3>Acceptance Tests</h3>
+
+<p>How does your client, manager, or tester, or any other non-technical person, know your website is working? By opening the browser, accessing a site, clicking on links, filling in the forms, and actually seeing the content on a web page. That person has no idea of the framework, database, web-server, or programming language you use or why the application did not behave as expected.</p>
+
+<p>Acceptance tests can cover standard but complex scenarios from a user&#39;s perspective. With acceptance tests you can be confident that users, following all defined scenarios, won&#39;t get errors.</p>
+
+<p>Please, note that <strong>any website</strong> can be covered with acceptance tests. Even if you use a very custom CMS or framework.</p>
+
+<h4>Sample acceptance test</h4>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Sign Up&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">&#39;#signup&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;username&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;MilesDavis&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;miles@davis.com&#39;</span><span class="p">));</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Thank you for Signing Up!&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<h4>Pros</h4>
+
+<ul>
+<li>can be run on any website</li>
+<li>can test javascript and ajax requests</li>
+<li>can be shown to your clients and managers</li>
+<li>most stable in support: less affected by changes in source code or technologies</li>
+</ul>
+
+<h4>Cons</h4>
+
+<ul>
+<li>the slowest: requires running browser and database repopulation</li>
+<li>fewer checks can lead to false-positive results</li>
+<li>yep, they are really slow</li>
+<li>not stable in execution: rendering and javascript issues can lead to unpredictable results</li>
+</ul>
+
+<h3>Functional Tests</h3>
+
+<p>What if we could check our application without running it on a server? This way we could see detailed exceptions on errors, have tests running faster, and check the database for values we expect. That&#39;s what functional tests are for.</p>
+
+<p>For functional tests you emulate a web request (<code>$_GET</code> and <code>$_POST</code> variables) and send it into your application which returns HTML response. Inside a test you can make assertions about the response, and you can check if the data was successfully stored into the database.</p>
+
+<p>For functional tests your application should be prepared to be run in a test environment. Codeception provides connectors to several popular PHP frameworks, or you could write your own.</p>
+
+<h4>Sample functional test</h4>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Sign Up&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">&#39;#signup&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;username&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;MilesDavis&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;miles@davis.com&#39;</span><span class="p">));</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Thank you for Signing Up!&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeEmailSent</span><span class="p">(</span><span class="s1">&#39;miles@davis.com&#39;</span><span class="p">,</span> <span class="s1">&#39;Thank you for registration&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;email&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;miles@davis.com&#39;</span><span class="p">));</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<h4>Pros</h4>
+
+<ul>
+<li>like acceptance tests, but much faster</li>
+<li>can provide more detailed reports</li>
+<li>you can still show this code to managers and clients</li>
+<li>stable enough: only major code changes, or moving to other framework, can break them</li>
+</ul>
+
+<h4>Cons</h4>
+
+<ul>
+<li>javascript and ajax can&#39;t be tested</li>
+<li>by emulating the browser you might get more false-positive results</li>
+<li>requires a framework</li>
+</ul>
+
+<h3>Unit Tests</h3>
+
+<p>Testing pieces of code before coupling them together is highly important as well. This way you can be sure that some deeply hidden feature still works, even if it was not covered by functional or acceptance tests. This also proves that you produced stable and testable code.</p>
+
+<p>Codeception is created on top of <a href="http://www.phpunit.de/">PHPUnit</a>. If you have experience writing unit tests with PHPUnit you can continue doing so. Codeception has no problem executing standard PHPUnit tests, but Codeception provides some well built tools to make your unit tests simpler and cleaner.</p>
+
+<p>Even inexperienced developers should understand what is tested and how. Requirements and code can change rapidly, and unit tests should be updated every time to fit the requirements. The better you understand the testing scenario, the faster you can update it for new behavior. </p>
+
+<h4>Sample integration test</h4>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">function</span> <span class="nf">testSavingUser</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nv">$user</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">User</span><span class="p">();</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="s1">&#39;Miles&#39;</span><span class="p">);</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">setSurname</span><span class="p">(</span><span class="s1">&#39;Davis&#39;</span><span class="p">);</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">();</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">&#39;Miles Davis&#39;</span><span class="p">,</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getFullName</span><span class="p">());</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">unitTester</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Miles&#39;</span><span class="p">,</span> <span class="s1">&#39;surname&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Davis&#39;</span><span class="p">));</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<h4>Pros</h4>
+
+<ul>
+<li>fastest (well, in the current example, you still need database repopulation)</li>
+<li>can cover rarely used features</li>
+<li>can test stability of application core</li>
+<li>you can only be considered a good developer if you write them :)</li>
+</ul>
+
+<h4>Cons</h4>
+
+<ul>
+<li>doesn&#39;t test connections between units</li>
+<li>unstable in support: very sensitive to code changes</li>
+</ul>
+
+<h2>Conclusion</h2>
+
+<p>Despite the wide popularity of TDD, not all PHP developers ever write automated tests for their applications. The Codeception framework was developed to make testing actually fun. It allows writing unit, functional, integration, and acceptance tests, in one style.</p>
+
+<p>It could be called a BDD framework. All Codeception tests are written in a descriptive manner. Just by looking at the test body you can get a clear understanding of what is being tested and how it is performed. Even complex tests with many assertions are written in a simple PHP DSL.</p>
+
+    </section>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="inner">
+        <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
+        <p>Last updated: 2015-02-18 14:06:18 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+    </footer>
+</div>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-59804278-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+
+</body>
+</html>

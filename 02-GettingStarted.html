@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Codeception.docs.ja : Codeception docs japanese translation">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="//piccagliani.github.io/Codeception.docs.ja_JP/stylesheets/stylesheet.css">
+
+    <title>Codeception.docs.ja</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="inner">
+        <a id="forkme_banner" href="https://github.com/piccagliani/Codeception.docs.ja_JP">View on GitHub</a>
+
+        <h1 id="project_title">Codeception.docs.ja</h1>
+        <h2 id="project_tagline">Codeception docs japanese translation</h2>
+
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h1>Getting Started</h1>
+
+<p>Let&#39;s take a look at Codeception&#39;s architecture. We assume that you already <a href="http://codeception.com/install">installed</a> it, and bootstrapped your first test suites. Codeception has generated three of them: unit, functional, and acceptance. They are well described in the previous chapter. Inside your <strong>/tests</strong> folder you will have three config files and three directories with names corresponding to these suites. Suites are independent groups of tests with a common purpose. </p>
+
+<h2>Actors</h2>
+
+<p>One of the main concepts of Codeception is representation of tests as actions of a person. We have a UnitTester, who executes functions and tests the code. We also have a FunctionalTester, a qualified tester, who tests the application as a whole, with knowledge of its internals. And an AcceptanceTester, a user that works with our application through an interface that we provide.</p>
+
+<p>Each of these Actors are PHP classes along with the actions that they are allowed to do. As you can see, each of these Actors have different abilities. They are not constant, you can extend them. One Actor belongs to one testing suite. </p>
+
+<p>Actor classes are not written but generated from suite configuration. When you change configuration, actor classes are <strong>rebuilt automatically</strong>.</p>
+
+<p>If Actor classes are not created or updated as you expect, try to generate them manually with <code>build</code> command:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar build
+</code></pre></div>
+<h2>Writing a Sample Scenario</h2>
+
+<p>By default tests are written as narrative scenarios. To make a PHP file a valid scenario, its name should have a <code>Cept</code> suffix. </p>
+
+<p>Let&#39;s say, we created a file <code>tests/acceptance/SigninCept.php</code></p>
+
+<p>We can do that by running the following command:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:cept acceptance Signin
+</code></pre></div>
+<p>A Scenario always starts with Actor class initialization. After that, writing a scenario is just like typing <code>$I-&gt;</code> and choosing a proper action from the auto-completion list.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Let&#39;s log in to our website. We assume that we have a &#39;login&#39; page where we are getting authenticated by providing a username and password. Then we are sent to a user page, where we see the text <code>Hello, %username%</code>. Let&#39;s look at how this scenario is written in Codeception.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;log in as regular user&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;Username&#39;</span><span class="p">,</span><span class="s1">&#39;davert&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;Password&#39;</span><span class="p">,</span><span class="s1">&#39;qwerty&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Hello, davert&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Before we execute this test, we should make sure that the website is running on a local web server. Let&#39;s open the <code>tests/acceptance.suite.yml</code> file and replace the URL with the URL of your web application:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">PhpBrowser</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="s">&#39;http://myappurl.local&#39;</span>
+</code></pre></div>
+<p>After we configured the URL we can run this test with the <code>run</code> command:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run
+</code></pre></div>
+<p>Here is the output we should see:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">Acceptance Tests <span class="o">(</span>1<span class="o">)</span> -------------------------------
+Trying log in as regular user <span class="o">(</span>SigninCept.php<span class="o">)</span>   Ok
+----------------------------------------------------
+
+Functional Tests <span class="o">(</span>0<span class="o">)</span> -------------------------------
+----------------------------------------------------
+
+Unit Tests <span class="o">(</span>0<span class="o">)</span> -------------------------------------
+----------------------------------------------------
+
+Time: <span class="m">1</span> second, Memory: 21.00Mb
+
+OK <span class="o">(</span><span class="m">1</span> <span class="nb">test</span>, <span class="m">1</span> assertions<span class="o">)</span>
+</code></pre></div>
+<p>Let&#39;s get a detailed output:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run acceptance --steps
+</code></pre></div>
+<p>We should see a step-by-step report on the performed actions.</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">Acceptance Tests <span class="o">(</span>1<span class="o">)</span> -------------------------------
+Trying to log in as regular user <span class="o">(</span>SigninCept.php<span class="o">)</span>
+Scenario:
+* I am on page <span class="s2">&quot;/login&quot;</span>
+* I fill field <span class="s2">&quot;Username&quot;</span> <span class="s2">&quot;davert&quot;</span>
+* I fill field <span class="s2">&quot;Password&quot;</span> <span class="s2">&quot;qwerty&quot;</span>
+* I click <span class="s2">&quot;Login&quot;</span>
+* I see <span class="s2">&quot;Hello, davert&quot;</span>
+  OK
+----------------------------------------------------  
+
+Time: <span class="m">0</span> seconds, Memory: 21.00Mb
+
+OK <span class="o">(</span><span class="m">1</span> <span class="nb">test</span>, <span class="m">1</span> assertions<span class="o">)</span>
+</code></pre></div>
+<p>That was a very simple test that you can reproduce for your own website.
+By emulating the user&#39;s actions you can test all of your websites the same way.</p>
+
+<p>Give it a try!</p>
+
+<h2>Modules and Helpers</h2>
+
+<p>The actions in Actor classes are taken from modules. Generated Actor classes emulate multiple inheritance. Modules are designed to have one action performed with one method. According to the <a href="http://en.wikipedia.org/wiki/Don%27t_repeat_yourself">DRY principle</a>, if you use the same scenario components in different modules, you can combine them and move them to a custom module. By default each suite has an empty module, which can be used to extend Actor classes. They are stored in the <strong>support</strong> directory.</p>
+
+<h2>Bootstrap</h2>
+
+<p>Each suite has its own bootstrap file. It&#39;s located in the suite directory and is named <code>_bootstrap.php</code>. It will be executed before test suite. There is also a global bootstrap file located in the <code>tests</code> directory. It can be used to include additional files.</p>
+
+<h2>Test Formats</h2>
+
+<p>Codeception supports three test formats. Beside the previously described scenario-based Cept format, Codeception can also execute <a href="http://codeception.com/docs/06-UnitTests">PHPUnit test files for unit testing</a>, and <a href="http://codeception.com/docs/07-AdvancedUsage#Cest-Classes">class-based Cest</a> format. They are covered in later chapters. There is no difference in the way the tests of either format will be run in the suite.</p>
+
+<h2>Configuration</h2>
+
+<p>Codeception has a global configuration in <code>codeception.yml</code> and a config for each suite. We also support <code>.dist</code> configuration files. If you have several developers in a project, put shared settings into <code>codeception.dist.yml</code> and personal settings into <code>codeception.yml</code>. The same goes for suite configs. For example, the <code>unit.suite.yml</code> will be merged with <code>unit.suite.dist.yml</code>. </p>
+
+<h2>Running Tests</h2>
+
+<p>Tests can be started with the <code>run</code> command.</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run
+</code></pre></div>
+<p>With the first argument you can run tests from one suite.</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run acceptance
+</code></pre></div>
+<p>To run exactly one test, add a second argument. Provide a local path to the test, from the suite directory.</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run acceptance SigninCept.php
+</code></pre></div>
+<p>Alternatively you can provide the full path to test file:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run tests/acceptance/SigninCept.php
+</code></pre></div>
+<p>You can execute one test from a test class (for Cest or Test formats)</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run tests/acceptance/SignInCest.php:anonymousLogin
+</code></pre></div>
+<p>You can provide a directory path as well:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run tests/acceptance/backend
+</code></pre></div>
+<p>This will execute all tests from the backend dir.</p>
+
+<p>To execute a group of tests that are not stored in the same directory, you can organize them in <a href="http://codeception.com/docs/07-AdvancedUsage#Groups">groups</a>.</p>
+
+<h3>Reports</h3>
+
+<p>To generate JUnit XML output, you can provide the <code>--xml</code> option, and <code>--html</code> for HTML report. </p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run --steps --xml --html
+</code></pre></div>
+<p>This command will run all tests for all suites, displaying the steps, and building HTML and XML reports. Reports will be stored in the <code>tests/_output/</code> directory.</p>
+
+<p>To learn all available options, run the following command:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar <span class="nb">help </span>run
+</code></pre></div>
+<h2>Debugging</h2>
+
+<p>To receive detailed output, tests can be executed with the <code>--debug</code> option.
+You may print any information inside a test using the <code>codecept_debug</code> function.</p>
+
+<h3>Generators</h3>
+
+<p>There are plenty of useful Codeception commands:</p>
+
+<ul>
+<li><code>generate:cept</code> <em>suite</em> <em>filename</em> - Generates a sample Cept scenario</li>
+<li><code>generate:cest</code> <em>suite</em> <em>filename</em> - Generates a sample Cest test</li>
+<li><code>generate:test</code> <em>suite</em> <em>filename</em> - Generates a sample PHPUnit Test with Codeception hooks</li>
+<li><code>generate:phpunit</code> <em>suite</em> <em>filename</em> - Generates a classic PHPUnit Test</li>
+<li><code>generate:suite</code> <em>suite</em> <em>actor</em> - Generates a new suite with the given Actor class name</li>
+<li><code>generate:scenarios</code> <em>suite</em> - Generates text files containing scenarios from tests</li>
+</ul>
+
+<h2>Conclusion</h2>
+
+<p>We took a look into the Codeception structure. Most of the things you need were already generated by the <code>bootstrap</code> command. After you have reviewed the basic concepts and configurations, you can start writing your first scenario. </p>
+
+    </section>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="inner">
+        <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
+        <p>Last updated: 2015-02-18 14:06:18 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+    </footer>
+</div>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-59804278-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Codeception.docs.ja : Codeception docs japanese translation">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="//piccagliani.github.io/Codeception.docs.ja_JP/stylesheets/stylesheet.css">
+
+    <title>Codeception.docs.ja</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="inner">
+        <a id="forkme_banner" href="https://github.com/piccagliani/Codeception.docs.ja_JP">View on GitHub</a>
+
+        <h1 id="project_title">Codeception.docs.ja</h1>
+        <h2 id="project_tagline">Codeception docs japanese translation</h2>
+
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h2>Code Coverage</h2>
+
+<p>At some point you want to review which parts of your application are tested well and which are not.
+Just for this case the <a href="http://en.wikipedia.org/wiki/Code_coverage">CodeCoverage</a> is used. When you execute your tests to collect coverage report,
+you will receive statistics of all classes, methods, and lines triggered by these tests.
+The ratio between all lines in script and all touched lines is a main coverage criterion. In the ideal world you should get 100% code coverage, but in reality 80% is really enough. Because even 100% code coverage rate doesn&#39;t save you from fatal errors and crashes.</p>
+
+<p><strong>Codeception has CodeCoverage tools since 1.5. To collect coverage information <code>xdebug</code> is required</strong>.</p>
+
+<p><img src="http://codeception.com/images/coverage.png" alt="Code Coverage Example"></p>
+
+<p>Coverage data can be collected manually for both local and remote tests. Remote tests may be executed on different nodes,
+or locally but running through web server. It may look hard to collect code coverage for Selenium tests or PhpBrowser tests. But Codeception supports remote codecoverage as well as local.</p>
+
+<h3>Configuration</h3>
+
+<p>To enable codecoverge put these lines in the global configuration file <code>codeception.yml</code>:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>That&#39;s ok for now. But what files should be present in final coverage report? You can filter files by providing blacklist and whitelist filters like this:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">whitelist</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span>
+            <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">app/*</span>
+        <span class="l-Scalar-Plain">exclude</span><span class="p-Indicator">:</span>
+            <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">app/cache/*</span>
+    <span class="l-Scalar-Plain">blacklist</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span>
+            <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">app/controllers/*</span>
+        <span class="l-Scalar-Plain">exclude</span><span class="p-Indicator">:</span>
+            <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">app/cache/CacheProvider.php</span>
+</code></pre></div>
+<p>What are whitelists and blacklists?</p>
+
+<ul>
+<li>A <strong>whitelist</strong> is a list of files that should be included in report even they were not touched.</li>
+<li>A <strong>blacklist</strong> is a list of files that should be excluded from report even they were touched.</li>
+</ul>
+
+<p>Pass an array of files or directory to include/exclude sections. The path ending with &#39;*&#39; matches the directory.
+Also you can use &#39;*&#39; mask in a file name, i.e. <code>app/models/*Model.php</code> to match all models.</p>
+
+<p>There is a shortcut if you don&#39;t need that complex filters:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">true</span>
+    <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span>
+        <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">app/*</span>
+    <span class="l-Scalar-Plain">exclude</span><span class="p-Indicator">:</span>
+        <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">app/cache/*</span>
+</code></pre></div>
+<p>These <code>include</code> and <code>exclude</code> options are to add or remove files from a whitelist.</p>
+
+<p>All these settings can be redefined for each suite in their config files.</p>
+
+<h2>Local CodeCoverage</h2>
+
+<p>The basic codecoverage can be collected for functional and unit tests.
+If you performed configuration steps from above, you are ready to go.
+All you need is to execute codeception with <code>--coverage</code> option.</p>
+
+<p>To generate a clover xml report or a tasty html report append also <code>--coverage-xml</code> and <code>--coverage-html</code> options.</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">codecept run --coverage --coverage-xml --coverage-html</span>
+</code></pre></div>
+<p>XML and HTML reports are stored to the <code>_output</code> directory. The best way to review report is to open <code>index.html</code> from <code>tests/_output/coverage</code> in your browser.
+XML clover reports are used by IDEs (like PHPStorm) or Continuous Integration servers (like Jenkins).</p>
+
+<h2>Remote CodeCoverage</h2>
+
+<h3>Local Server</h3>
+
+<p>If you run your application via Webserver (Apache, Nginx, PHP WebServer) you don&#39;t have a direct access to tested code,
+so collecting coverage becomes a non-trivial task. The same goes for scripts that are tested on different nodes.
+To get access to this code you need <code>xdebug</code> installed with <code>remote_enable</code> option turned on.
+Codeception also requires a little spy to interact with your application. As your application runs standalone,
+without even knowing it is being tested, a small file should be included in order to collect coverage info.</p>
+
+<p>This file is called <code>c3.php</code> and is <a href="https://github.com/Codeception/c3">available on GitHub</a>.
+<code>c3.php</code> should be downloaded and included in your application at the very first line from controller.
+By sending special headers Codeception will command your application when to start codecoverage collection and when to stop it.
+After the suite is finished, a report will be stored and Codeception will grab it from your application.</p>
+
+<p>Please, follow installation instructions described in a <a href="https://github.com/Codeception/c3">readme file</a>.</p>
+
+<p>To connect to <code>c3</code> Codeception uses url config from PhpBrowser or WebDriver module.
+But URL of index with <code>c3.php</code> included can be specified explicitly with <code>c3_url</code> parameter defined:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
+    <span class="c1"># url of file which includes c3 router.</span>
+    <span class="l-Scalar-Plain">c3_url</span><span class="p-Indicator">:</span> <span class="s">&#39;http://127.0.0.1:8000/index-test.php/&#39;</span>
+</code></pre></div>
+<p>After the <code>c3.php</code> file is included in application you can start gather coverage.
+In case you execute your application locally there is nothing to be changed in config.
+All codecoverage reports will be collected as usual and merged afterwards.
+Think of it: Codeception runs remote coverage in the same way as local.</p>
+
+<h3>Remote Server</h3>
+
+<p>But if you run tests on different server (or your webserver doesn&#39;t use code from current directory) a single option <code>remote</code> should be added to config.
+For example, let&#39;s turn on remote coverage for acceptance suite in <code>acceptance.suite.yml</code>:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">remote</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>In this case remote Code Coverage results won&#39;t be merged with local ones, if this option is enabled.
+Merging is possible only in case a remote and local files have the same path.
+But in case of running tests on a remote server we are not sure of it.</p>
+
+<p>CodeCoverage results from remote server will be saved to <code>tests/_output</code> directory. Please note that remote codecoverage results won&#39;t be displayed in console by the reason mentioned above: local and remote results can&#39;t be merged, and console displays results for local codecoverage. </p>
+
+<h3>Remote Context Options</h3>
+
+<p>HTML report generation can at times take a little more time than the default 30 second timeout. Or maybe you want to alter SSL settings (verify<em>peer, for example)
+To alter the way c3 sends it&#39;s service requests to your webserver (be it a local or a remote one), you can use the `remote</em>context_options<code>key in</code>coverage` settings.</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">remote_context_options</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">http</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">timeout</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">60</span>
+        <span class="l-Scalar-Plain">ssl</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">verify_peer</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
+</code></pre></div>
+<p>Context stream options are <a href="http://php.net/manual/en/context.php">well documented at php.net</a></p>
+
+<h2>Conclusion</h2>
+
+<p>It&#39;s never been easier to setup local and remote code coverage. Just one config and one additional file to include!
+<strong>With Codeception you can easily generate CodeCoverage reports for your Selenium tests</strong> (or other acceptance or api tests). Mixing reports for <code>acceptance</code>, <code>functional</code>, and <code>unit</code> suites provides you with the most complete information on which parts of your applications are tested and which are not.</p>
+
+    </section>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="inner">
+        <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
+        <p>Last updated: 2015-02-18 14:06:18 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+    </footer>
+</div>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-59804278-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+
+</body>
+</html>

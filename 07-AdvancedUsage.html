@@ -1,0 +1,526 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Codeception.docs.ja : Codeception docs japanese translation">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="//piccagliani.github.io/Codeception.docs.ja_JP/stylesheets/stylesheet.css">
+
+    <title>Codeception.docs.ja</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="inner">
+        <a id="forkme_banner" href="https://github.com/piccagliani/Codeception.docs.ja_JP">View on GitHub</a>
+
+        <h1 id="project_title">Codeception.docs.ja</h1>
+        <h2 id="project_tagline">Codeception docs japanese translation</h2>
+
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h1>Advanced Usage</h1>
+
+<p>In this chapter we will cover some techniques and options that you can use to improve your testing experience and stay with better organization of your project. </p>
+
+<h2>Cest Classes</h2>
+
+<p>In case you want to get a class-like structure for your Cepts, you can use the Cest format instead of plain PHP.
+It is very simple and is fully compatible with Cept scenarios. It means that if you feel that your test is long enough and you want to split it - you can easily move it into classes.</p>
+
+<p>You can create Cest file by running the command:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:cest suitename CestName
+</code></pre></div>
+<p>The generated file will look like this:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">BasicCest</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_before</span><span class="p">(</span><span class="nx">\AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_after</span><span class="p">(</span><span class="nx">\AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// tests</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">tryToTest</span><span class="p">(</span><span class="nx">\AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span> 
+    <span class="p">{</span>    
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p><strong>Each public method of Cest (except those starting with <code>_</code>) will be executed as a test</strong> and will receive Actor class as the first parameter and <code>$scenario</code> variable as the second one.</p>
+
+<p>In <code>_before</code> and <code>_after</code> methods you can use common setups and teardowns for the tests in the class. This actually makes Cest tests more flexible then Cepts, which rely only on similar methods in Helper classes.</p>
+
+<p>As you see, we are passing Actor object into <code>tryToTest</code> method. It allows us to write scenarios the way we did before.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">BasicCest</span>
+<span class="p">{</span>
+    <span class="c1">// test</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">checkLogin</span><span class="p">(</span><span class="nx">\AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span> 
+    <span class="p">{</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;log in to site&#39;</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;john&#39;</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="s1">&#39;coltrane&#39;</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Enter&#39;</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Hello, John&#39;</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInCurrentUrl</span><span class="p">(</span><span class="s1">&#39;/account&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>As you see, Cest class have no parents like <code>\Codeception\TestCase\Test</code> or <code>PHPUnit_Framework_TestCase</code>. This is done intentionally. It allows you to extend class with common behaviors and workarounds that may be used in child classes. But don&#39;t forget to make these methods <code>protected</code> so they won&#39;t be executed as tests.</p>
+
+<p>Also you can define <code>_failed</code> method in Cest class which will be called if test finishes with <code>error</code> or fails.</p>
+
+<h3>Before/After Annotations</h3>
+
+<p>You can control execution flow with <code>@before</code> and <code>@after</code> annotations. You may move common actions into protected (non-test) methods and invoke them before or after the test method by putting them into annotations. It is possible to invoke several methods by using more than one <code>@before</code> or <code>@after</code> annotation. Methods are invoked in order from top to bottom.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">ModeratorCest</span> <span class="p">{</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">login</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;Username&#39;</span><span class="p">,</span> <span class="s1">&#39;miles&#39;</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="s1">&#39;davis&#39;</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @before login</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">banUser</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/users/charlie-parker&#39;</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Ban&#39;</span><span class="p">,</span> <span class="s1">&#39;.button&#39;</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Ban&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @before login</span>
+<span class="sd">     * @before cleanup</span>
+<span class="sd">     * @after logout</span>
+<span class="sd">     * @after close</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">addUser</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/users/charlie-parker&#39;</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Ban&#39;</span><span class="p">,</span> <span class="s1">&#39;.button&#39;</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Ban&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>You can also use <code>@before</code> and <code>@after</code> for included functions. But you can&#39;t have multiple annotations of the same kind for single method - one method can have only one <code>@before</code> and only one <code>@after</code> annotation.</p>
+
+<h3>Depends Annotation</h3>
+
+<p>With <code>@depends</code> annotation you can specify a test that should be passed before the current one. If that test fails, the current test will be skipped.
+You should pass a method name of a test you are relying on.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">ModeratorCest</span> <span class="p">{</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">login</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// logs moderator in</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @depends login</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">banUser</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// bans user</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Hint: <code>@depends</code> can be combined with <code>@before</code>.</p>
+
+<h2>Interactive Console</h2>
+
+<p>Interactive console was added to try Codeception commands before executing them inside a test. </p>
+
+<p><img src="http://img267.imageshack.us/img267/204/003nk.png" alt="console"></p>
+
+<p>You can run the console with the following command:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar console suitename
+</code></pre></div>
+<p>Now you can execute all commands of appropriate Actor class and see results immediately. This is especially useful when used with <code>WebDriver</code> module. It always takes too long to launch Selenium and browser for tests. But with console you can try different selectors, and different commands, and then write a test that would pass for sure when executed.</p>
+
+<p>And a special hint: show your boss how you can nicely manipulate web pages with console and Selenium. It will be easy to convince to automate this steps and introduce acceptance testing to the project.</p>
+
+<h2>Running from different folders</h2>
+
+<p>If you have several projects with Codeception tests, you can use single <code>codecept.phar</code> file to run all of your tests.
+You can pass <code>-c</code> option to any Codeception command, excluding <code>bootstrap</code>, to execute Codeception in another directory.</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run -c ~/projects/ecommerce/
+<span class="nv">$ </span>php codecept.phar run -c ~/projects/drupal/
+<span class="nv">$ </span>php codecept.phar generate:cept acceptance CreateArticle -c ~/projects/drupal/
+</code></pre></div>
+<p>To create a project in directory different from the current one, just provide its path as a parameter.</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar bootstrap ~/projects/drupal/
+</code></pre></div>
+<p>Basically <code>-c</code> option allows you to specify not only the path, but a config file to be used. Thus, you can have several <code>codeception.yml</code> files for your test suite. You may use it to specify different environments and settings. Just pass a filename into <code>-c</code> parameter to execute tests with specific config settings.</p>
+
+<h2>Groups</h2>
+
+<p>There are several ways to execute bunch of tests. You can run tests from specific directory:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run tests/acceptance/admin
+</code></pre></div>
+<p>Or execute one (or several) specific groups of tests:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run -g admin -g editor
+</code></pre></div>
+<p>In this case all tests that belongs to groups <code>admin</code> and <code>editor</code> will be executed. Concept of groups was taken from PHPUnit and in classical PHPUnit tests they behave just in the same way. To add Cept to the group - use <code>$scenario</code> variable:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">group</span><span class="p">(</span><span class="s1">&#39;admin&#39;</span><span class="p">);</span>
+<span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">group</span><span class="p">(</span><span class="s1">&#39;editor&#39;</span><span class="p">);</span>
+<span class="c1">// or</span>
+<span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">group</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;admin&#39;</span><span class="p">,</span> <span class="s1">&#39;editor&#39;</span><span class="p">))</span>
+<span class="c1">// or</span>
+<span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">groups</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;admin&#39;</span><span class="p">,</span> <span class="s1">&#39;editor&#39;</span><span class="p">))</span>
+
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantToTest</span><span class="p">(</span><span class="s1">&#39;admin area&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>For Tests and Cests you can use <code>@group</code> annotation to add a test to the group.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="sd">/**</span>
+<span class="sd"> * @group admin</span>
+<span class="sd"> */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">testAdminUser</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">&#39;admin&#39;</span><span class="p">,</span> <span class="nx">User</span><span class="o">::</span><span class="na">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">role</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Same annotation can be used in Cest classes.</p>
+
+<h3>Group Files</h3>
+
+<p>Groups can be defined in global or suite configuration file.
+Tests for groups can be specified as array or as path to file containing list of groups.</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">groups</span><span class="p-Indicator">:</span>
+  <span class="c1"># add 2 tests to db group</span>
+  <span class="l-Scalar-Plain">db</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">tests/unit/PersistTest.php</span><span class="p-Indicator">,</span> <span class="nv">tests/unit/DataTest.php</span><span class="p-Indicator">]</span>
+
+  <span class="c1"># add list of tests to slow group</span>
+  <span class="l-Scalar-Plain">slow</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">tests/_data/slow</span>  
+</code></pre></div>
+<p>For instance, you can create a file with the list of the most slow tests, and run them inside their own group.
+Group file is a plain text file with test names on separate lines:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">tests/unit/DbTest.php
+tests/unit/UserTest.php:create
+tests/unit/UserTest.php:update
+</code></pre></div>
+<p>You can create group files manually or generate them from 3rd party applications. 
+For example, you may write a script that updates the slow group by taking the slowest tests from xml report.</p>
+
+<p>You can even specify patterns for loading multiple group files by single definition:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">groups</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">p*</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">tests/_data/p*</span>
+</code></pre></div>
+<p>This will load all found <code>p*</code> files in <code>tests/_data</code> as groups.</p>
+
+<h2>Refactoring</h2>
+
+<p>As the test base grows, tests will require refactoring to share common variables and behaviors. The classical example is a <code>login</code> action which may be called for every test of your test suite. It would be wise to write it once and use it in all tests.</p>
+
+<p>It&#39;s pretty obvious that for such cases you can use your own PHP classes to define such methods.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">TestCommons</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$username</span> <span class="o">=</span> <span class="s1">&#39;john&#39;</span><span class="p">;</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$password</span> <span class="o">=</span> <span class="s1">&#39;coltrane&#39;</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">logMeIn</span><span class="p">(</span><span class="nv">$I</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$username</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$password</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Enter&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Then this file can be required in <code>_bootstrap.php</code> file:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="c1">// bootstrap</span>
+<span class="k">require_once</span> <span class="s1">&#39;/path/to/test/commons/TestCommons.php&#39;</span><span class="p">;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>and used in your scenarios:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nx">TestCommons</span><span class="o">::</span><span class="na">logMeIn</span><span class="p">(</span><span class="nv">$I</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>If you caught the idea, let&#39;s learn some built-in features for structuring your test code. We will discover implementation of <code>PageObject</code> and <code>StepObject</code> patterns in Codeception.</p>
+
+<h2>PageObjects</h2>
+
+<p><a href="http://code.google.com/p/selenium/wiki/PageObjects">PageObject pattern</a> is widely used by test automation engineers. The PageObject pattern represents a web page as a class and the DOM elements on that page as its properties, and some basic interactions as its methods.
+PageObjects are very important when you are developing a flexible architecture of your tests. Please do not hardcode complex CSS or XPath locators in your tests but rather move them into PageObject classes.</p>
+
+<p>Codeception can generate a PageObject class for you with command:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:pageobject Login
+</code></pre></div>
+<p>This will create a <code>LoginPage</code> class in <code>tests/_pages</code>. The basic PageObject is nothing more then empty class with a few stubs.
+It is expected you will get it populated with UI locators of a page it represents and then those locators will be used on a page.
+Locators are represented with public static properties:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">LoginPage</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$URL</span> <span class="o">=</span> <span class="s1">&#39;/login&#39;</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$usernameField</span> <span class="o">=</span> <span class="s1">&#39;#mainForm #username&#39;</span><span class="p">;</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$passwordField</span> <span class="o">=</span> <span class="s1">&#39;#mainForm input[name=password]&#39;</span><span class="p">;</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$loginButton</span> <span class="o">=</span> <span class="s1">&#39;#mainForm input[type=submit]&#39;</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>And this is how this page object can be used in a test:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;login to site&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$URL</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$usernameField</span><span class="p">,</span> <span class="s1">&#39;bill evans&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$passwordField</span><span class="p">,</span> <span class="s1">&#39;debby&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$loginButton</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Welcome, bill&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>As you see, you can freely change markup of your login page, and all the tests interacting with this page will have their locators updated according to properties of LoginPage class.</p>
+
+<p>But let&#39;s move further. A PageObject concept also defines that methods for the page interaction should also be stored in a PageObject class.
+This can&#39;t be done in <code>LoginPage</code> class we just generated. Because this class is accessible across all test suites, we do not know which Actor class will be used for interaction. Thus, we will need to generate another page object. In this case we will explicitly define the suite to be used:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:pageobject acceptance UserLogin
+</code></pre></div>
+<p><em>We called this class UserLogin for not to get into conflict with Login class we created before.</em></p>
+
+<p>This generated <code>UserLoginPage</code> class looks almost the same way as LoginPage class we had before with one difference. It now stores passed instance of Actor class. An AcceptanceTester can be accessed via <code>AcceptanceTester</code> property of that class. Let&#39;s define a <code>login</code> method in this class.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">UserLoginPage</span>
+<span class="p">{</span>
+    <span class="c1">// include url of current page</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$URL</span> <span class="o">=</span> <span class="s1">&#39;/login&#39;</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @var AcceptanceTester</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="nv">$AcceptanceTester</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">AcceptanceTester</span> <span class="o">=</span> <span class="nv">$I</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">of</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="k">static</span><span class="p">(</span><span class="nv">$I</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">login</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$password</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$I</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">AcceptanceTester</span><span class="p">;</span>
+
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="nx">self</span><span class="o">::</span><span class="nv">$URL</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$usernameField</span><span class="p">,</span> <span class="nv">$name</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$passwordField</span><span class="p">,</span> <span class="nv">$password</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$loginButton</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>    
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>And here is an example of how this PageObject can be used in a test.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nx">UserLoginPage</span><span class="o">::</span><span class="na">of</span><span class="p">(</span><span class="nv">$I</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">login</span><span class="p">(</span><span class="s1">&#39;bill evans&#39;</span><span class="p">,</span> <span class="s1">&#39;debby&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Probably we should merge the <code>UserLoginPage</code> and <code>LoginPage</code> classes as they do play the same role. But <code>LoginPage</code> can be used both in functional and acceptance tests, when <code>UserLoginPage</code> only in tests with <code>AcceptanceTester</code>. So it&#39;s up to you to use global page objects or local per suite page objects. If you feel like your functional tests have much in common with acceptance tests, you should store locators in global PageObject class and use StepObjects as an alternative to behavioral PageObjects.</p>
+
+<h2>StepObjects</h2>
+
+<p>StepObjects pattern came from BDD frameworks. StepObject class contains a bunch of common actions that may be used widely in different tests.
+The <code>login</code> method we used above can be a good example of such method. Similarly actions for creating/updating/deleting resources should be moved to StepObject too. Let&#39;s create a StepObject class and see what it looks like.</p>
+
+<p>Lets create <code>Member</code> Steps class, generator will prompt you for methods to include, so let&#39;s add <code>login</code> to it.</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:stepobject acceptance Member
+</code></pre></div>
+<p>You will be asked to enter action names, but it&#39;s optional. Enter one at a time, and press Enter. After specifying all needed actions, leave empty line to go on to StepObject creation.</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:stepobject acceptance Member
+Add action to StepObject class <span class="o">(</span>ENTER to <span class="nb">exit</span><span class="o">)</span>: login
+Add action to StepObject class <span class="o">(</span>ENTER to <span class="nb">exit</span><span class="o">)</span>:
+StepObject was created in &lt;you path&gt;/tests/acceptance/_steps/MemberSteps.php
+</code></pre></div>
+<p>It will generate class in <code>tests/acceptance/_steps/MemberSteps.php</code> similar to this:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">namespace</span> <span class="nx">AcceptanceTester</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">MemberSteps</span> <span class="k">extends</span> <span class="nx">\AcceptanceTester</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">login</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$I</span> <span class="o">=</span> <span class="nv">$this</span><span class="p">;</span>
+
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>As you see, this class is very simple. It extends <code>AcceptanceTester</code> class, thus, all methods and properties of <code>AcceptanceTester</code> are available for usage in it.</p>
+
+<p><code>login</code> method can be implemented like this:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">namespace</span> <span class="nx">AcceptanceTester</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">MemberSteps</span> <span class="k">extends</span> <span class="nx">\AcceptanceTester</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">login</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$password</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$I</span> <span class="o">=</span> <span class="nv">$this</span><span class="p">;</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="nx">\LoginPage</span><span class="o">::</span><span class="nv">$URL</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="nx">\LoginPage</span><span class="o">::</span><span class="nv">$usernameField</span><span class="p">,</span> <span class="nv">$name</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="nx">\LoginPage</span><span class="o">::</span><span class="nv">$passwordField</span><span class="p">,</span> <span class="nv">$password</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="nx">\LoginPage</span><span class="o">::</span><span class="nv">$loginButton</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>In tests you can use a StepObject by instantiating <code>MemberSteps</code> class instead of <code>AcceptanceTester</code>.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester\MemberSteps</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">login</span><span class="p">(</span><span class="s1">&#39;bill evans&#39;</span><span class="p">,</span> <span class="s1">&#39;debby&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>As you see, StepObject class looks much simpler and readable then classical PageObject. 
+As an alternative to StepObject we could use methods of <code>AcceptanceHelper</code> class. In a helper we do not have access to <code>$I</code> object itself, thus it&#39;s better to use Helpers to implement new actions, and StepObjects to combine common scenarios.</p>
+
+<h2>Environments</h2>
+
+<p>For cases where you need to run tests with different configurations you can define different config environments.
+The most typical use cases are running acceptance tests in different browsers, or running database tests using different database engines.</p>
+
+<p>Let&#39;s demonstrate usage of environments for the browsers case.</p>
+
+<p>We need to add new lines to <code>acceptance.suite.yml</code>:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">AcceptanceTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span>
+        <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">WebDriver</span>
+        <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">AcceptanceHelper</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">WebDriver</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="s">&#39;http://127.0.0.1:8000/&#39;</span>
+            <span class="l-Scalar-Plain">browser</span><span class="p-Indicator">:</span> <span class="s">&#39;firefox&#39;</span>
+
+<span class="l-Scalar-Plain">env</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">phantom</span><span class="p-Indicator">:</span>
+         <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+                <span class="l-Scalar-Plain">WebDriver</span><span class="p-Indicator">:</span>
+                    <span class="l-Scalar-Plain">browser</span><span class="p-Indicator">:</span> <span class="s">&#39;phantomjs&#39;</span>
+
+    <span class="l-Scalar-Plain">chrome</span><span class="p-Indicator">:</span>
+         <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+                <span class="l-Scalar-Plain">WebDriver</span><span class="p-Indicator">:</span>
+                    <span class="l-Scalar-Plain">browser</span><span class="p-Indicator">:</span> <span class="s">&#39;chrome&#39;</span>
+
+    <span class="l-Scalar-Plain">firefox</span><span class="p-Indicator">:</span>
+        <span class="c1"># nothing changed</span>
+</code></pre></div>
+<p>At first these config trees may look ugly, but it is the cleanest way of doing this.
+Basically you can define different environments inside the <code>env</code> root, name them (<code>phantom</code>, <code>chrome</code> etc.),
+and then redefine any configuration parameters that were set before.</p>
+
+<p>You can easily switch between those configs by running tests with <code>--env</code> option. To run tests only for PhantomJS you need to pass <code>--env phantom</code> option:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run acceptance --env phantom
+</code></pre></div>
+<p>To run tests in all 3 browsers, just list all the environments:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run acceptance --env phantom --env chrome --env firefox
+</code></pre></div>
+<p>and tests will be executed 3 times, each time in a different browser.</p>
+
+<p>Depending on environment you may choose which tests are to be executed.
+For example, you might need some tests to be executed only in Firefox, and few tests only in Chrome.</p>
+
+<p>Desired environments can be specified with <code>@env</code> annotation for tests in Test and Cest formats:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">UserCest</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * This test will be executed only in &#39;firefox&#39; and &#39;phantom&#39; environments</span>
+<span class="sd">     *</span>
+<span class="sd">     * @env firefox</span>
+<span class="sd">     * @env phantom</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">webkitOnlyTest</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// I do something</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>For Cept you should use <code>$scenario-&gt;env()</code>:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">env</span><span class="p">(</span><span class="s1">&#39;firefox&#39;</span><span class="p">);</span>
+<span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">env</span><span class="p">(</span><span class="s1">&#39;phantom&#39;</span><span class="p">);</span>
+<span class="c1">// or</span>
+<span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">env</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;phantom&#39;</span><span class="p">,</span> <span class="s1">&#39;firefox&#39;</span><span class="p">));</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>This way you can easily control what tests will be executed for which browsers.</p>
+
+<h2>Conclusion</h2>
+
+<p>Codeception is a framework which may look simple at first glance. But it allows you to build powerful tests with single API, refactor them, and write them faster using interactive console. Codeception tests can be easily organized in groups or Cest classes, locators can be stored in PageObjects and common steps can be combined in StepObjects.</p>
+
+<p>Probably it has too much features for one framework. But nevertheless Codeception follows the KISS principle: it&#39;s easy to start, easy to learn, and easy to extend.</p>
+
+    </section>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="inner">
+        <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
+        <p>Last updated: 2015-02-18 14:06:18 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+    </footer>
+</div>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-59804278-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+
+</body>
+</html>

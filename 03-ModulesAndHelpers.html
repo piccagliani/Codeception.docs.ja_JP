@@ -1,0 +1,362 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Codeception.docs.ja : Codeception docs japanese translation">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="//piccagliani.github.io/Codeception.docs.ja_JP/stylesheets/stylesheet.css">
+
+    <title>Codeception.docs.ja</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="inner">
+        <a id="forkme_banner" href="https://github.com/piccagliani/Codeception.docs.ja_JP">View on GitHub</a>
+
+        <h1 id="project_title">Codeception.docs.ja</h1>
+        <h2 id="project_tagline">Codeception docs japanese translation</h2>
+
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h1>Modules and Helpers</h1>
+
+<p>Codeception uses modularity to create a comfortable testing environment for every test suite you write. 
+Modules allow you to choose the actions and assertions that can be performed in tests.</p>
+
+<p>All actions and assertions that can be performed by the Tester object in a class are defined in modules. It might look like Codeception limits you in testing, but that&#39;s not true. You can extend the testing suite with your own actions and assertions, by writing them into a custom module.</p>
+
+<p>Let&#39;s look at the following test:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Hello&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">));</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeFileFound</span><span class="p">(</span><span class="s1">&#39;running.lock&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>It can operate with different entities: the web page can be loaded with the PhpBrowser module, the database assertion uses the Db module, and file state can be checked with the Filesystem module. </p>
+
+<p>Modules are attached to Actor classes in the suite config.
+For example, in <code>tests/functional.suite.yml</code> we should see:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">PhpBrowser</span><span class="p-Indicator">,</span> <span class="nv">Db</span><span class="p-Indicator">,</span> <span class="nv">Filesystem</span><span class="p-Indicator">]</span>
+</code></pre></div>
+<p>The FunctionalTester class has its methods defined in modules. Actually it doesn&#39;t contain any of them, but rather acts as a proxy. It knows which module executes this action and passes parameters into it. To make your IDE see all of the FunctionalTester methods, you use the <code>build</code> command. It generates the definition of the FunctionalTester class by copying the signatures from the corresponding modules.</p>
+
+<h2>Standard Modules</h2>
+
+<p>Codeception has many bundled modules which will help you run tests for different purposes and different environments. The number of modules is not constant -- it&#39;s supposed to grow as more frameworks and ORMs are supported. See all of them listed in the main menu under the Modules section.</p>
+
+<p>All of these modules are documented. You can review their detailed references on <a href="https://github.com/Codeception/Codeception/tree/master/docs/modules">GitHub</a>.</p>
+
+<h2>Helpers</h2>
+
+<p>Codeception doesn&#39;t restrict you to only the modules from the main repository. No doubt your project might need your own actions added to the test suite. By running the <code>bootstrap</code> command, Codeception generates three dummy modules for you, one for each of the newly created suites. These custom modules are called &#39;Helpers&#39;, and they can be found in the <code>tests/_support</code> directory.</p>
+
+<p>It&#39;s a good idea to define missing actions or assertion commands in helpers.</p>
+
+<p>Note: Helpers class names must end with &quot;*Helper.php&quot;</p>
+
+<p>Let&#39;s say we are going to extend the FunctionalHelper class. By default it&#39;s linked with a FunctionalTester class and functional test suite.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">namespace</span> <span class="nx">Codeception\Module</span><span class="p">;</span>
+<span class="c1">// here you can define custom functions for FunctionalTester</span>
+
+<span class="k">class</span> <span class="nc">FunctionalHelper</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span>
+<span class="p">{</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>As for actions, everything is quite simple. Every action you define is a public function. Write any public method, run the <code>build</code> command, and you will see the new function added into the FunctionalTester class.</p>
+
+<p>Note: Public methods prefixed by <code>_</code> are treated as hidden and won&#39;t be added to your Actor class. </p>
+
+<p>Assertions can be a bit tricky. First of all, it&#39;s recommended to prefix all your assert actions with <code>see</code> or <code>dontSee</code>.</p>
+
+<p>Name your assertions like this:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seePageReloaded</span><span class="p">();</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeClassIsLoaded</span><span class="p">(</span><span class="nv">$classname</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSeeUserExist</span><span class="p">(</span><span class="nv">$user</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>And then use them in your tests:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seePageReloaded</span><span class="p">();</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeClassIsLoaded</span><span class="p">(</span><span class="s1">&#39;FunctionalTester&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSeeUserExist</span><span class="p">(</span><span class="nv">$user</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>You can define asserts by using assertXXX methods in modules. Not all PHPUnit assert methods are included in modules, but you can use PHPUnit static methods from the <code>PHPUnit_Framework_Assert</code> class to leverage all of them.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+
+<span class="k">function</span> <span class="nf">seeClassExist</span><span class="p">(</span><span class="nv">$class</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nb">class_exists</span><span class="p">(</span><span class="nv">$class</span><span class="p">));</span>
+    <span class="c1">// or</span>
+    <span class="nx">\PHPUnit_Framework_Assert</span><span class="o">::</span><span class="na">assertTrue</span><span class="p">(</span><span class="nb">class_exists</span><span class="p">(</span><span class="nv">$class</span><span class="p">));</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>In your helpers you can use these assertions:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+
+<span class="k">function</span> <span class="nf">seeCanCheckEverything</span><span class="p">(</span><span class="nv">$thing</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$thing</span><span class="p">),</span> <span class="s2">&quot;this thing is set&quot;</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="k">empty</span><span class="p">(</span><span class="nv">$any</span><span class="p">),</span> <span class="s2">&quot;this thing is not empty&quot;</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertNotNull</span><span class="p">(</span><span class="nv">$thing</span><span class="p">,</span> <span class="s2">&quot;this thing is not null&quot;</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertContains</span><span class="p">(</span><span class="s2">&quot;world&quot;</span><span class="p">,</span> <span class="nv">$thing</span><span class="p">,</span> <span class="s2">&quot;this thing contains &#39;world&#39;&quot;</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertNotContains</span><span class="p">(</span><span class="s2">&quot;bye&quot;</span><span class="p">,</span> <span class="nv">$thing</span><span class="p">,</span> <span class="s2">&quot;this thing doesn`t contain &#39;bye&#39;&quot;</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s2">&quot;hello world&quot;</span><span class="p">,</span> <span class="nv">$thing</span><span class="p">,</span> <span class="s2">&quot;this thing is &#39;Hello world&#39;!&quot;</span><span class="p">);</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Just type <code>$this-&gt;assert</code> to see all of them.</p>
+
+<h3>Resolving Collisions</h3>
+
+<p>What happens if you have two modules that contain the same named actions?
+Codeception allows you to override actions by changing the module order.
+The action from the second module will be loaded and the action from the first one will be ignored.
+The order of the modules can be defined in the suite config.</p>
+
+<h3>Connecting Modules</h3>
+
+<p>It&#39;s possible that you will need to access internal data or functions from other modules. For example, for your module you might need a connection from Doctrine, or a web browser from Symfony.</p>
+
+<p>Modules can interact with each other through the <code>getModule</code> method. Please note that this method will throw an exception if the required module was not loaded.</p>
+
+<p>Let&#39;s imagine that we are writing a module that reconnects to a database. It&#39;s supposed to use the dbh connection value from the Db module.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+
+<span class="k">function</span> <span class="nf">reconnectToDatabase</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nv">$dbh</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">&#39;Db&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">dbh</span><span class="p">;</span>
+    <span class="nv">$dbh</span><span class="o">-&gt;</span><span class="na">close</span><span class="p">();</span>
+    <span class="nv">$dbh</span><span class="o">-&gt;</span><span class="na">open</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>By using the <code>getModule</code> function, you get access to all of the public methods and properties of the requested module. The dbh property was defined as public specifically to be available to other modules.</p>
+
+<p>This technique may be also useful if you need to perform a sequence of actions taken from other modules.</p>
+
+<p>For example:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">function</span> <span class="nf">seeConfigFilesCreated</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nv">$filesystem</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">&#39;Filesystem&#39;</span><span class="p">);</span>
+    <span class="nv">$filesystem</span><span class="o">-&gt;</span><span class="na">seeFileFound</span><span class="p">(</span><span class="s1">&#39;codeception.yml&#39;</span><span class="p">);</span>
+    <span class="nv">$filesystem</span><span class="o">-&gt;</span><span class="na">openFile</span><span class="p">(</span><span class="s1">&#39;codeception.yml&#39;</span><span class="p">);</span>
+    <span class="nv">$filesystem</span><span class="o">-&gt;</span><span class="na">seeInFile</span><span class="p">(</span><span class="s1">&#39;paths&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<h3>Hooks</h3>
+
+<p>Each module can handle events from the running test. A module can be executed before the test starts, or after the test is finished. This can be useful for bootstrap/cleanup actions.
+You can also define special behavior for when the test fails. This may help you in debugging the issue.
+For example, the PhpBrowser module saves the current webpage to the <code>tests/_output</code> directory when a test fails.</p>
+
+<p>All hooks are defined in <code>\Codeception\Module</code> and are listed here. You are free to redefine them in your module.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+
+    <span class="c1">// HOOK: used after configuration is loaded</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_initialize</span><span class="p">()</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// HOOK: on every Actor class initialization</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_cleanup</span><span class="p">()</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// HOOK: before each suite</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_beforeSuite</span><span class="p">(</span><span class="nv">$settings</span> <span class="o">=</span> <span class="k">array</span><span class="p">())</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// HOOK: after suite</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_afterSuite</span><span class="p">()</span> <span class="p">{</span>
+    <span class="p">}</span>    
+
+    <span class="c1">// HOOK: before each step</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_beforeStep</span><span class="p">(</span><span class="nx">\Codeception\Step</span> <span class="nv">$step</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// HOOK: after each step</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_afterStep</span><span class="p">(</span><span class="nx">\Codeception\Step</span> <span class="nv">$step</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// HOOK: before test</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_before</span><span class="p">(</span><span class="nx">\Codeception\TestCase</span> <span class="nv">$test</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// HOOK: after test</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_after</span><span class="p">(</span><span class="nx">\Codeception\TestCase</span> <span class="nv">$test</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// HOOK: on fail</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_failed</span><span class="p">(</span><span class="nx">\Codeception\TestCase</span> <span class="nv">$test</span><span class="p">,</span> <span class="nv">$fail</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Please note that methods with a <code>_</code> prefix are not added to the Actor class. This allows them to be defined as public but used only for internal purposes.</p>
+
+<h3>Debug</h3>
+
+<p>As we mentioned, the <code>_failed</code> hook can help in debugging a failed test. You have the opportunity to save the current test&#39;s state and show it to the user, but you are not limited to this.</p>
+
+<p>Each module can output internal values that may be useful during debug.
+For example, the PhpBrowser module prints the response code and current URL every time it moves to a new page.
+Thus, modules are not black boxes. They are trying to show you what is happening during the test. This makes debugging your tests less painful.</p>
+
+<p>To display additional information, use the <code>debug</code> and <code>debugSection</code> methods of the module.
+Here is an example of how it works for PhpBrowser:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">debugSection</span><span class="p">(</span><span class="s1">&#39;Request&#39;</span><span class="p">,</span> <span class="nv">$params</span><span class="p">));</span>
+    <span class="nv">$client</span><span class="o">-&gt;</span><span class="na">request</span><span class="p">(</span><span class="nv">$method</span><span class="p">,</span> <span class="nv">$uri</span><span class="p">,</span> <span class="nv">$params</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">debug</span><span class="p">(</span><span class="s1">&#39;Response Code: &#39;</span> <span class="o">.</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">client</span><span class="o">-&gt;</span><span class="na">getStatusCode</span><span class="p">());</span>
+<span class="cp">?&gt;</span><span class="x">    </span>
+</code></pre></div>
+<p>This test, running with the PhpBrowser module in debug mode, will print something like this:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">I click <span class="s2">&quot;All pages&quot;</span>
+* Request <span class="o">(</span>GET<span class="o">)</span> http://localhost/pages <span class="o">{}</span>
+* Response code: 200
+</code></pre></div>
+<h3>Configuration
+<p>Modules can be configured from the suite config file, or globally from <code>codeception.yml</code>.</p>
+
+<p>Mandatory parameters should be defined in the <code>$requiredFields</code> property of the module class. Here is how it is done in the Db module:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">Db</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span> <span class="p">{</span>
+    <span class="k">protected</span> <span class="nv">$requiredFields</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;dsn&#39;</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>The next time you start the suite without setting one of these values, an exception will be thrown. </p>
+
+<p>For optional parameters, you should set default values. The <code>$config</code> property is used to define optional parameters as well as their values. In the WebDriver module we use default Selenium Server address and port. </p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">WebDriver</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="nv">$requiredFields</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;browser&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">);</span>    
+    <span class="k">protected</span> <span class="nv">$config</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;host&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="s1">&#39;port&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;4444&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x">    </span>
+</code></pre></div>
+<p>The host and port parameter can be redefined in the suite config. Values are set in the <code>modules:config</code> section of the configuration file.</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span>
+        <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">WebDriver</span>
+        <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Db</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">WebDriver</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="s">&#39;http://mysite.com/&#39;</span>
+            <span class="l-Scalar-Plain">browser</span><span class="p-Indicator">:</span> <span class="s">&#39;firefox&#39;</span>
+        <span class="l-Scalar-Plain">Db</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">cleanup</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
+            <span class="l-Scalar-Plain">repopulate</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
+</code></pre></div>
+<p>Optional and mandatory parameters can be accessed through the <code>$config</code> property. Use <code>$this-&gt;config[&#39;parameter&#39;]</code> to get its value. </p>
+
+<h3>Dynamic Configuration</h3>
+
+<p>If you want to reconfigure a module at runtime, you can use the <code>_reconfigure</code> method of the module.
+You may call it from a helper class and pass in all the fields you want to change.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">&#39;WebDriver&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">_reconfigure</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;browser&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;chrome&#39;</span><span class="p">));</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>At the end of a test, all your changes will be rolled back to the original config values.</p>
+
+<h3>Additional options
+<p>Like each class, a Helper can be inherited from a module.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">namespace</span> <span class="nx">Codeception\Module</span><span class="p">;</span>
+<span class="k">class</span> <span class="nc">MySeleniumHelper</span> <span class="k">extends</span> <span class="nx">\Codeception\Module\WebDriver</span>  <span class="p">{</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>In an inherited helper, you replace implemented methods with your own realization.
+You can also replace <code>_before</code> and <code>_after</code> hooks, which might be an option when you need to customize starting and stopping of a testing session.</p>
+
+<p>If some of the methods of the parent class should not be used in a child module, you can disable them. Codeception has several options for this:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">namespace</span> <span class="nx">Codeception\Module</span><span class="p">;</span>
+<span class="k">class</span> <span class="nc">MySeleniumHelper</span> <span class="k">extends</span> <span class="nx">\Codeception\Module\WebDriver</span> 
+<span class="p">{</span>
+    <span class="c1">// disable all inherited actions</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$includeInheritedActions</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
+
+    <span class="c1">// include only &quot;see&quot; and &quot;click&quot; actions</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$onlyActions</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;see&#39;</span><span class="p">,</span><span class="s1">&#39;click&#39;</span><span class="p">);</span>
+
+    <span class="c1">// exclude &quot;seeElement&quot; action</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$excludeActions</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;seeElement&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Setting <code>$includeInheritedActions</code> to false adds the ability to create aliases for parent methods.
+ It allows you to resolve conflicts between modules. Let&#39;s say we want to use the <code>Db</code> module with our <code>SecondDbHelper</code>
+ that actually inherits from <code>Db</code>. How can we use <code>seeInDatabase</code> methods from both modules? Let&#39;s find out.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">namespace</span> <span class="nx">Codeception\Module</span><span class="p">;</span>
+<span class="k">class</span> <span class="nc">SecondDbHelper</span> <span class="k">extends</span> <span class="nx">Db</span> <span class="p">{</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$includeInheritedActions</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">seeInSecondDb</span><span class="p">(</span><span class="nv">$table</span><span class="p">,</span> <span class="nv">$data</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="nv">$table</span><span class="p">,</span> <span class="nv">$data</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<p>Setting <code>$includeInheritedActions</code> to false won&#39;t include the methods from parent classes into the generated Actor.
+Still, you can use inherited methods in your helper class.</p>
+
+<h2>Conclusion</h2>
+
+<p>Modules are the true power of Codeception. They are used to emulate multiple inheritances for Actor classes (UnitTester, FunctionalTester, AcceptanceTester, etc).
+Codeception provides modules to emulate web requests, access data, interact with popular PHP libraries, etc.
+For your application you might need custom actions. These can be defined in helper classes.
+If you have written a module that may be useful to others, share it.
+Fork the Codeception repository, put the module into the <strong>src/Codeception/Module</strong> directory, and send a pull request.</p>
+
+    </section>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="inner">
+        <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
+        <p>Last updated: 2015-02-18 14:06:18 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+    </footer>
+</div>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-59804278-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+
+</body>
+</html>
