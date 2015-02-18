@@ -1,9 +1,3 @@
----
----
----
----
----
----
 ### Welcome to Codeception.docs.ja.
 
 1. [Introduction](01-Introduction.html)
