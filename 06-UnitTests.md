@@ -1,34 +1,33 @@
+# 単体テスト
 
-# Unit Tests
+Codeceptionはテストの実行環境としてPHPUnitを使用しています。したがって、PHPUnitのどのテストでもCodeceptionのテストスイートに追加出来ますし、実行出来ます。
+今までにPHPUnitテストを書いていたならば、これまで書いてきたようにするだけです。
+Codeceptionは簡単な共通処理に対して、すばらしいヘルパー機能を追加しています。
 
-Codeception uses PHPUnit as a backend for running tests. Thus, any PHPUnit test can be added to Codeception test suite and then executed.
-If you ever wrote a PHPUnit test then do it just as you did before. 
-Codeception adds some nice helpers to simplify common tasks.
+単体テストの基礎はここでは割愛する代わりに、単体テストにCodeceptionが追加する特徴の基礎知識をお伝えしましょう。
 
-The basics of unit tests are skipped here, instead you will get a basic knowledge of what features Codeception adds to unit tests.
+__もう一度言います: テストを実行するためにPHPUnitをインストールする必要はありません。Codeceptionも実行出来ます__
 
-__To say it again: you don't need to install PHPUnit to run its tests. Codeception can run them too.__
+## テストを作成する
 
-## Creating Test
-
-Codeception have nice generators to simplify test creation.
-You can start with generating a classical PHPUnit test extending `\PHPUnit_Framework_TestCase` class.
-This can be done by this command:
+Codeceptionは簡単にテストを作成する、すばらしいジェネレーターを持っています。
+`\PHPUnit_Framework_TestCase`クラスを継承している従来のPHPUnitテストを生成するところから始める事が出来ます。
+以下のようなコマンドで生成されます。
 
 ```bash
 $ php codecept.phar generate:phpunit unit Example
 ```
 
-Codeception has its addons to standard unit tests, so let's try them.
-We need another command to create Codeception-powered unit tests.
+Codeceptionは一般的な単体テストのアドオンを備えています、それでは試してみましょう。
+Codeceptionの単体テストを作成するには別のコマンドが必要です。
 
 ```bash
 $ php codecept.phar generate:test unit Example
 ```
 
-Both tests will create a new `ExampleTest` file located in `tests/unit` directory.
+どちらのテストも`tests/unit`ディレクトリに新しく`ExampleTest`ファイルを作成します。
 
-A test created by `generate:test` command will look like this:
+`generate:test`によって作成されたテストは、このようになります。
 
 ```php
 <?php
@@ -41,12 +40,12 @@ class ExampleTest extends \Codeception\TestCase\Test
     */
     protected $tester;
 
-    // executed before each test
+    // 各テスト前に実行される
     protected function _before()
     {
     }
 
-    // executed after each test
+    // 各テスト後に実行される
     protected function _after()
     {
     }
@@ -54,11 +53,11 @@ class ExampleTest extends \Codeception\TestCase\Test
 ?>
 ```
 
-This class has predefined `_before` and `_after` methods to start with. You can use them to create a tested object before each test, and destroy it afterwards.
+このクラスは、はじめから`_before`と`_after`のメソッドが定義されています。それらは各テスト前にテスト用のオブジェクトを作成し、終了後に削除するのに使用出来ます。
 
-As you see, unlike in PHPUnit, `setUp` and `tearDown` methods are replaced with their aliases: `_before`, `_after`.
+ご覧の通り、PHPUnitとは違い、`setUp`と`tearDown`メソッドがエイリアス: `_before`, `_after`されています。
 
-The actual `setUp` and `tearDown` were implemented by parent class `\Codeception\TestCase\Test` and set up the UnitTester class to have all the cool actions from Cept-files to be run as a part of unit tests. Just like in acceptance and functional tests you can choose the proper modules for `UnitTester` class in `unit.suite.yml` configuration file.
+実際には`setUp`と`tearDown`メソッドは、親クラスの`\Codeception\TestCase\Test`クラスに実装されており、さらにユニットテストの一部として実行できるように、Ceptファイルからすべてのすてきなアクションを持ったUnitTesterクラスがセットアップされています。受け入れテストや機能テストのように、`unit.suite.yml`の設定ファイルの中で`UnitTester`クラスが使う適切なモジュールを選べます。
 
 
 ```yaml
@@ -70,9 +69,9 @@ modules:
     enabled: [UnitHelper, Asserts]
 ```
 
-### Classical Unit Testing
+### 従来の単体テスト
 
-Unit tests in Codeception are written in absolutely the same way as it is done in PHPUnit:
+Codeceptionの単体テストは、PHPUnitで書かれているのと全く同じように書かれています。：
 
 ```php
 <?php
@@ -95,13 +94,13 @@ class UserTest extends \Codeception\TestCase\Test
 ?>
 ```
 
-### BDD Specification Testing
+### BDD Spec テスト
 
-When writing tests you should prepare them for constant changes in your application. Tests should be easy to read and maintain. If a specification to your application is changed, your tests should be updated as well. If you don't have a convention inside your team on documenting tests, you will have issues figuring out what tests were affected by introduction of a new feature.
+テストを書くときは、アプリケーションにおける一定の変化のためにテストを準備する必要があります。テストは読みやすく維持されやすくするべきです。あなたのアプリケーションの使用が変わったら、同じようにテストもアップデートされるべきです。ドキュメントのテストににおいてチーム内部で話し合いが持たれなかったのならば、新しい機能の導入によってテストが影響を受けるということを理解していくのに壁があるでしょう。
 
-That's why it's pretty important not just to cover your application with unit tests, but make unit tests self-explanatory. We do this for scenario-driven acceptance and functional tests, and we should do this for unit and integration tests as well.
+なぜなら、アプリケーションを単体テストで網羅するだけでなく、テスト自体を説明的に保っておくことはとても重要な事だからです。私たちは、シナリオ駆動の受け入れテストと機能テストでこれを実践しています。そして、単体テストや結合テストにおいても同様にこれを実践するべきです。
 
-For this case we have a stand-alone project [Specify](https://github.com/Codeception/Specify) (which is included in phar package) for writing specifications inside unit tests.
+この場合において、単体テスト内部の仕様を書いている[Specify](https://github.com/Codeception/Specify) (pharパッケージしている)というスタンドアロンのプロジェクトを用意しています。
 
 ```php
 <?php
@@ -132,11 +131,11 @@ class UserTest extends \Codeception\TestCase\Test
 ?>        
 ```
 
-Using `specify` codeblocks you can describe any piece of test. This makes tests much cleaner and understandable for everyone in your team.
+`specify`のコードブロックを使用する事で、テストを細かい単位で説明することが出来ます。このことはチームの全員にとってテストがとても見やすく、理解しやすい状態にしてくれます。
 
-Code inside `specify` blocks is isolated. In the example above any change to `$this->user` (as any other object property), will not be reflected in other code blocks.
+`specify`ブロックの内部にあるコードは独立しています。上記の例だと、`$this->user`（他のどんなオブジェクトやプロパティでも）への変更は他のコードブロックに反映されないでしょう。
 
-Also you may add [Codeception\Verify](https://github.com/Codeception/Verify) for BDD-style assertions. This tiny library adds more readable assertions, which is quite nice, if you are always confused of which argument in `assert` calls is expected and which one is actual.
+あなたはBDD-styleのアサーションをするために、[Codeception\Verify](https://github.com/Codeception/Verify)も追加するかもしれません。もし、あなたが`assert`の呼び出しの中で、引数のどちらが期待している値で、どちらが実際の値なのかをよく混同してしまうなら、この小さなライブラリはとてもすばらしく可読性に長けたアサーションを追加します。
 
 ```php
 <?php
@@ -144,9 +143,9 @@ verify($user->getName())->equals('john');
 ?>
 ```
 
-## Using Modules
+## モジュールを使う
 
-As in scenario-driven functional or acceptance tests you can access Actor class methods. If you write integration tests, it may be useful to include `Db` module for database testing. 
+シナリオ駆動の機能テストや受け入れテストの中で、あなたはActorクラスのメソッドにアクセスできました。もし結合テストを書く場合は、データベースをテストする`Db`モジュールが役に立つかもしれません。
 
 ```yaml
 # Codeception Test Suite Configuration
@@ -157,11 +156,11 @@ modules:
     enabled: [Db, UnitHelper]
 ```
 
-To access UnitTester methods you can use `UnitTester` property in a test.
+UnitTesterのメソッドにアクセスする事で、テストの中で`UnitTester`のプロパティを使用出来ます。
 
-### Testing Database
+### データベーステスト
 
-Let's see how you can do some database testing:
+それでは、どのようにデータベースのテストが出来るのか、見て行きましょう：
 
 ```php
 <?php
@@ -177,14 +176,14 @@ function testSavingUser()
 ?>
 ```
 
-Database will be cleaned and populated after each test, as it happens for acceptance and functional tests.
-If it's not your required behavior, please change the settings of `Db` module for the current suite.
+受け入れテストや機能テストのように、データベースはテストが終了するごとに、掃除して構築されるでしょう。
+それが必要のない振る舞いであれば、現在のスイートの`Db`モジュールの設定を変更してください。
 
-### Accessing Module
+### モジュールにアクセスする
 
-Codeception allows you to access properties and methods of all modules defined for this suite. Unlike using the UnitTester class for this purpose, using module directly grants you access to all public properties of that module.
+Codeceptionはこのスイートにおいて、すべてのモジュールに定義されたプロパティとメソッドにアクセスする事を許可しています。このときはUnitTesterクラスを使うときとは違い、直接モジュールを使用する事で、モジュールのすべてのパブリックなプロパティへのアクセスを得られます。
 
-For example, if you use `Symfony2` module, here is the way you can access Symfony container:
+例えば、もし`Symfony2`を使うなら、このようにSymfonyのコンテナにアクセスします：
 
 ```php
 <?php
@@ -195,13 +194,13 @@ $container = $this->getModule('Symfony2')->container;
 ?>
 ```
 
-All public variables are listed in references for corresponding modules.
+すべてのパブリックな変数は、そのモジュールに対応するリファレンスにリストされています。
 
 ### Cest
 
-Alternatively to testcases extended from `PHPUnit_Framework_TestCase` you may use Codeception-specific Cest format. It does not require to be extended from any other class. All public methods of this class are tests.
+`PHPUnit_Framework_TestCase`を継承したテストケースの代わりに、Codeception仕様のCest形式を使用できるでしょう。他のどのクラスも継承する必要はありません。このクラスのすべてのパブリックなメソッドがテストです。
 
-The example above can be rewritten in scenario-driven manner like this:
+上記の例をシナリオ駆動の形式でこのように書きなおすことができます：
 
 ```php
 <?php
@@ -225,7 +224,7 @@ class UserCest
 ?>
 ```
 
-For unit testing you may include `Asserts` module, that adds regular assertions to UnitTester which you may access from `$t` variable.
+`$t`変数でアクセスしているであろう、UnitTesterクラスのいつものアサーションを追加する`Asserts`モジュールを単体テストのために追加するかもしれません。
 
 ```yaml
 # Codeception Test Suite Configuration
@@ -236,13 +235,13 @@ modules:
     enabled: [Asserts, Db, UnitHelper]
 ```
 
-[Learn more about Cest format](http://codeception.com/docs/07-AdvancedUsage#Cest-Classes).
+[Cest形式について もっと知る](http://codeception.com/docs/07-AdvancedUsage#Cest-Classes).
 
-### Stubs
+### スタブ
 
-Codeception provides a tiny wrapper over PHPUnit mocking framework to create stubs easily. Include `\Codeception\Util\Stub` to start creating dummy objects.
+Codeceptionは、スタブを簡単に作成するPHPUnitモックフレームワークの小さいラッパーを提供しています。`\Codeception\Util\Stub`を追加して、ダミーオブジェクトの作成を始めてください。
 
-In this example we instantiate object without calling a constructor and replace `getName` method to return value *john*.
+この例では、コンストラクタを呼び出さずにオブジェクトを初期化し、`getName`メソッドが*john*という値を返すように置き換えています。
 
 ```php
 <?php
@@ -251,10 +250,10 @@ $name = $user->getName(); // 'john'
 ?>
 ```
 
-Stubs are created with PHPUnit's mocking framework. Alternatively you can use [Mockery](https://github.com/padraic/mockery) (with [Mockery module](https://github.com/Codeception/MockeryModule)), [AspectMock](https://github.com/Codeception/AspectMock) or others.
+スタブはPHPUnitのモックフレームワークから生成されます。[Mockery](https://github.com/padraic/mockery)（[Mockery module](https://github.com/Codeception/MockeryModule)とセット）、[AspectMock](https://github.com/Codeception/AspectMock)、など他のものを代わりに使用することも出来ます。
 
-Full reference on Stub util class can be found [here](/docs/reference/Stub).
+スタブのユーティリティクラスの全リファレンスは[ここ](/docs/reference/Stub)を見てください。
 
-## Conclusion
+## 結論
 
-PHPUnit tests are first-class citizens in test suites. Whenever you need to write and execute unit tests, you don't need to install PHPUnit, but use Codeception to execute them. Some nice features can be added to common unit tests by integrating Codeception modules. For the most of unit and integration testing PHPUnit tests are just enough. They are fast and easy to maintain.
+テストスイートの中で、PHPUnitのテストはfirst-class citizensです。単体テストを書いて実行したいときはいつでも、PHPUnitをインストールする必要はなく、それを実行するのにCodeceptionを使用する必要もありません。幾分のすばらしい特徴は、Codeceptionモジュールを統合する事で共通の単体テストを追加できることです。単体テストや結合テストのほとんどにおいて、PHPUnitのテストだけで十分です。PHPUnitのテストは速く、維持しやすいからです。
