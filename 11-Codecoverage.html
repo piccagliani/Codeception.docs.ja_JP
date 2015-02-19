@@ -32,27 +32,28 @@
 <!-- MAIN CONTENT -->
 <div id="main_content_wrap" class="outer">
     <section id="main_content" class="inner">
-        <h2>Code Coverage</h2>
+        <h2>コードカバレッジ</h2>
 
-<p>At some point you want to review which parts of your application are tested well and which are not.
-Just for this case the <a href="http://en.wikipedia.org/wiki/Code_coverage">CodeCoverage</a> is used. When you execute your tests to collect coverage report,
-you will receive statistics of all classes, methods, and lines triggered by these tests.
-The ratio between all lines in script and all touched lines is a main coverage criterion. In the ideal world you should get 100% code coverage, but in reality 80% is really enough. Because even 100% code coverage rate doesn&#39;t save you from fatal errors and crashes.</p>
+<p>あるタイミングでアプリケーションのどの箇所がテストされていて、どの箇所がテストされていないのか確認したくなると思います。
+そのような状況に<a href="http://ja.wikipedia.org/w/index.php?title=%E3%82%B3%E3%83%BC%E3%83%89%E3%82%AB%E3%83%90%E3%83%AC%E3%83%83%E3%82%B8">コードカバレッジ</a>が使われます。
+カバレッジレポートを収集するためにテストを実行すると、そのテストによって実行された全てのクラス、メソッド、そして行の統計情報を取得します。
+スクリプトの全行数と通過した行数との比率が、主要なカバレッジ基準となります。理想論では100%のカバレッジを取得する必要がありますが、実際には80%で十分でしょう。なぜなら、100%のカバレッジであったとしても致命的なエラーやクラッシュを防ぐことができないからです。</p>
 
-<p><strong>Codeception has CodeCoverage tools since 1.5. To collect coverage information <code>xdebug</code> is required</strong>.</p>
+<p><strong>Codeceptionはバージョン1.5からコードカバレッジ用のツールを備えています。カバレッジを収集するためには <code>xdebug</code> が必要となります。</strong>.</p>
 
-<p><img src="http://codeception.com/images/coverage.png" alt="Code Coverage Example"></p>
+<p><img src="http://codeception.com/images/coverage.png" alt="コードカバレッジの例"></p>
 
-<p>Coverage data can be collected manually for both local and remote tests. Remote tests may be executed on different nodes,
-or locally but running through web server. It may look hard to collect code coverage for Selenium tests or PhpBrowser tests. But Codeception supports remote codecoverage as well as local.</p>
+<p>カバレッジデータはローカルとリモートの両方のテストのために手動で収集することができます。
+リモートのテストは、異なるノード上またはローカルのWebサーバーを利用して実行可能です。
+SeleniumやPhpBrowserによるテストはコードカバレッジを収集するのは難しいように見えるかもしれませんが、Codeceptionはローカルと同じようにリモートのコードカバレッジをサポートしています。</p>
 
-<h3>Configuration</h3>
+<h3>設定</h3>
 
-<p>To enable codecoverge put these lines in the global configuration file <code>codeception.yml</code>:</p>
+<p>コードカバレッジを有効にするためには次の内容をグローバル設定ファイル <code>codeception.yml</code> に設定します。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">true</span>
 </code></pre></div>
-<p>That&#39;s ok for now. But what files should be present in final coverage report? You can filter files by providing blacklist and whitelist filters like this:</p>
+<p>今はこれで大丈夫ですが、最終的なカバレッジレポートにはどのファイルが表示されるべきなのでしょうか？次のように、ブラックリストとホワイトリストのフィルタを提供することで、ファイルをフィルタリングすることができます。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">whitelist</span><span class="p-Indicator">:</span>
         <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span>
@@ -65,17 +66,18 @@ or locally but running through web server. It may look hard to collect code cove
         <span class="l-Scalar-Plain">exclude</span><span class="p-Indicator">:</span>
             <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">app/cache/CacheProvider.php</span>
 </code></pre></div>
-<p>What are whitelists and blacklists?</p>
+<p>ホワイトリストとブラックリストはなんでしょうか？</p>
 
 <ul>
-<li>A <strong>whitelist</strong> is a list of files that should be included in report even they were not touched.</li>
-<li>A <strong>blacklist</strong> is a list of files that should be excluded from report even they were touched.</li>
+<li><strong>whitelist</strong> 通過しなかったとしてもレポートに含まれるべきファイルの一覧です</li>
+<li><strong>blacklist</strong> 通過したとしてもレポートから除外すべきファイルの一覧です</li>
 </ul>
 
-<p>Pass an array of files or directory to include/exclude sections. The path ending with &#39;*&#39; matches the directory.
-Also you can use &#39;*&#39; mask in a file name, i.e. <code>app/models/*Model.php</code> to match all models.</p>
+<p>include/excludeセクションにファイルまたはディレクトリの配列を渡します。&#39;*&#39; で終わるパスはディレクトリにマッチします。
+また、&#39;*&#39; マスクをファイル名に使用することができます。たとえば、<code>app/models/*Model.php</code> はすべてのモデルにマッチします。</p>
 
-<p>There is a shortcut if you don&#39;t need that complex filters:</p>
+<p>There is a shortcut if you don&#39;t need that complex filters:
+複雑なフィルタが必要ない場合のショートカットがあります。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">true</span>
     <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span>
@@ -83,67 +85,67 @@ Also you can use &#39;*&#39; mask in a file name, i.e. <code>app/models/*Model.p
     <span class="l-Scalar-Plain">exclude</span><span class="p-Indicator">:</span>
         <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">app/cache/*</span>
 </code></pre></div>
-<p>These <code>include</code> and <code>exclude</code> options are to add or remove files from a whitelist.</p>
+<p>この <code>include</code> と <code>exclude</code> オプションはホワイトリストにファイルを追加または削除するためのものです。</p>
 
-<p>All these settings can be redefined for each suite in their config files.</p>
+<p>以上のすべての設定は各テストスイートの設定ファイルにて再定義することができます。</p>
 
-<h2>Local CodeCoverage</h2>
+<h2>ローカルコードカバレッジ</h2>
 
-<p>The basic codecoverage can be collected for functional and unit tests.
-If you performed configuration steps from above, you are ready to go.
-All you need is to execute codeception with <code>--coverage</code> option.</p>
+<p>基本的なコードカバレッジは機能テストと単体テストで収集することができます。
+もし上に書いた設定を行っているのであれば準備完了です。
+必要なことはCodeceptionを <code>--coverage</code> オプションとともに実行することです。</p>
 
-<p>To generate a clover xml report or a tasty html report append also <code>--coverage-xml</code> and <code>--coverage-html</code> options.</p>
+<p>CloverのXMLレポートや良い感じのHTMLレポートを生成するためには、<code>--coverage-xml</code> と <code>--coverage-html</code> のオプションについても追加します。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">codecept run --coverage --coverage-xml --coverage-html</span>
 </code></pre></div>
-<p>XML and HTML reports are stored to the <code>_output</code> directory. The best way to review report is to open <code>index.html</code> from <code>tests/_output/coverage</code> in your browser.
-XML clover reports are used by IDEs (like PHPStorm) or Continuous Integration servers (like Jenkins).</p>
+<p>XMLとHTMLレポートは <code>_output</code> ディレクトリに格納されます。レポートを確認するための一番の方法は、<code>tests/_output/coverage</code> ディレクトリから <code>index.html</code> をブラウザで開くことです。
+CloverのXMLレポートはPHPStormのようなIDEやJenkinsのような継続的インテグレーションサーバーで利用されます。</p>
 
-<h2>Remote CodeCoverage</h2>
+<h2>リモートコードカバレッジ</h2>
 
-<h3>Local Server</h3>
+<h3>ローカルサーバー</h3>
 
-<p>If you run your application via Webserver (Apache, Nginx, PHP WebServer) you don&#39;t have a direct access to tested code,
-so collecting coverage becomes a non-trivial task. The same goes for scripts that are tested on different nodes.
-To get access to this code you need <code>xdebug</code> installed with <code>remote_enable</code> option turned on.
-Codeception also requires a little spy to interact with your application. As your application runs standalone,
-without even knowing it is being tested, a small file should be included in order to collect coverage info.</p>
+<p>もしアプリケーションをウェブサーバー（Apache, Nginx, PHP WebServer）を介して実行している場合、テストされたコードに直接アクセスすることができないため、
+カバレッジを収集することは簡単なことではありません。同様のことが、異なるノード上でテストされたスクリプトに対しても言えます。
+これらのコードにアクセスするためには <code>xdebug</code> を <code>remote_enable</code> オプションを有効にしてインストールする必要があります。
+Codeceptionもまた、アプリケーションとやり取りするためのちょっとしたスパイを必要とします。
+スタンドアローンでアプリケーションを実行する際に、テストされているかどうかに関わらず、コードカバレッジ情報を収集するために小さなファイルをインクルードしてください。</p>
 
-<p>This file is called <code>c3.php</code> and is <a href="https://github.com/Codeception/c3">available on GitHub</a>.
-<code>c3.php</code> should be downloaded and included in your application at the very first line from controller.
-By sending special headers Codeception will command your application when to start codecoverage collection and when to stop it.
-After the suite is finished, a report will be stored and Codeception will grab it from your application.</p>
+<p>このファイルは <code>c3.php</code> と呼ばれ、<a href="https://github.com/Codeception/c3">GitHubから利用可能</a> です。
+<code>c3.php</code> をダウンロードし、アプリケーションのコントローラの最初でインクルードしてください。
+特別なヘッダー情報を送信することにより、Codeceptionはアプリケーションに対して、いつコードカバレッジの収集を開始し、いつ終了するか命令します。
+テストスイートが終了した後、レポートが出力され、Codeceptionはアプリケーションからそれを取得します。</p>
 
-<p>Please, follow installation instructions described in a <a href="https://github.com/Codeception/c3">readme file</a>.</p>
+<p>インストール方法は <a href="https://github.com/Codeception/c3">readme file</a> の説明に従ってください。</p>
 
-<p>To connect to <code>c3</code> Codeception uses url config from PhpBrowser or WebDriver module.
-But URL of index with <code>c3.php</code> included can be specified explicitly with <code>c3_url</code> parameter defined:</p>
+<p><code>c3</code> への接続のために、CodeceptionはPhpBrowserやWebDriverモジュールのURL設定を利用しますが、
+<code>c3.php</code> がインクルードされるインデックスファイルのURLを <code>c3_url</code> パラメータにより明示的に指定することができます。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
     <span class="c1"># url of file which includes c3 router.</span>
     <span class="l-Scalar-Plain">c3_url</span><span class="p-Indicator">:</span> <span class="s">&#39;http://127.0.0.1:8000/index-test.php/&#39;</span>
 </code></pre></div>
-<p>After the <code>c3.php</code> file is included in application you can start gather coverage.
-In case you execute your application locally there is nothing to be changed in config.
-All codecoverage reports will be collected as usual and merged afterwards.
-Think of it: Codeception runs remote coverage in the same way as local.</p>
+<p><code>c3.php</code> がアプリケーションにインクルードされたのち、カバレッジの収集を開始することができます。
+ローカルでアプリケーションを実行する場合に変更となる設定はありません。
+すべてのコードカバレッジレポートは普段どおり収集され、その後マージされます。
+考えてみてください、Codeceptionはローカルと同じようにリモートカバレッジを実行できるのです。</p>
 
-<h3>Remote Server</h3>
+<h3>リモートサーバー</h3>
 
-<p>But if you run tests on different server (or your webserver doesn&#39;t use code from current directory) a single option <code>remote</code> should be added to config.
-For example, let&#39;s turn on remote coverage for acceptance suite in <code>acceptance.suite.yml</code>:</p>
+<p>もしテストを異なるサーバー上で実行している場合（もしくはウェブサーバーがカレントディレクトリのコードを使用していない場合）、設定ファイルに <code>remote</code> オプションを追加してください。
+たとえば、受け入れテストでのリモートカバレッジを <code>acceptance.suite.yml</code> にて有効にしてみます。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">remote</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">true</span>
 </code></pre></div>
-<p>In this case remote Code Coverage results won&#39;t be merged with local ones, if this option is enabled.
-Merging is possible only in case a remote and local files have the same path.
-But in case of running tests on a remote server we are not sure of it.</p>
+<p>このオプションが有効となった場合、リモートコードカバレッジの結果はローカルのものとマージされません。
+リモートとローカルのファイル群が同じパス上に存在する場合のみマージは行われます。
+けれども、リモートサーバー上でテストを行う場合、同じパス上に存在するかどうかはわかりません。</p>
 
-<p>CodeCoverage results from remote server will be saved to <code>tests/_output</code> directory. Please note that remote codecoverage results won&#39;t be displayed in console by the reason mentioned above: local and remote results can&#39;t be merged, and console displays results for local codecoverage. </p>
+<p>リモートサーバーからのコードカバレッジの結果は <code>tests/_output</code> に保存されます。すでに述べた理由により、コンソールにはコードカバレッジの結果が表示されないことに注意してください。ローカルとリモートの結果はマージされませんし、コンソールにはローカルのコードカバレッジの結果が表示されます。</p>
 
-<h3>Remote Context Options</h3>
+<h3>リモートコンテキストオプション</h3>
 
-<p>HTML report generation can at times take a little more time than the default 30 second timeout. Or maybe you want to alter SSL settings (verify<em>peer, for example)
-To alter the way c3 sends it&#39;s service requests to your webserver (be it a local or a remote one), you can use the `remote</em>context_options<code>key in</code>coverage` settings.</p>
+<p>HTMLレポートの生成にはデフォルトのタイムアウト30秒よりも少し時間がかかることがあります。また、SSLの設定を変更したい場合があるかもしれません（たとえばveryfy<em>peerオプション）
+c3がウェブサーバー（ローカル、リモートのどちらであろうとも）に対してサービス要求をする方法を変更するには、<code>coverage</code> 設定の remote</em>context_options` キーを使用します。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">remote_context_options</span><span class="p-Indicator">:</span>
         <span class="l-Scalar-Plain">http</span><span class="p-Indicator">:</span>
@@ -151,12 +153,12 @@ To alter the way c3 sends it&#39;s service requests to your webserver (be it a l
         <span class="l-Scalar-Plain">ssl</span><span class="p-Indicator">:</span>
             <span class="l-Scalar-Plain">verify_peer</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
 </code></pre></div>
-<p>Context stream options are <a href="http://php.net/manual/en/context.php">well documented at php.net</a></p>
+<p>コンテキストオプションについては<a href="http://php.net/manual/ja/context.php">php.netのドキュメント</a>に良くまとまっています。</p>
 
-<h2>Conclusion</h2>
+<h2>まとめ</h2>
 
-<p>It&#39;s never been easier to setup local and remote code coverage. Just one config and one additional file to include!
-<strong>With Codeception you can easily generate CodeCoverage reports for your Selenium tests</strong> (or other acceptance or api tests). Mixing reports for <code>acceptance</code>, <code>functional</code>, and <code>unit</code> suites provides you with the most complete information on which parts of your applications are tested and which are not.</p>
+<p>ローカルとリモートのコードカバレッジ設定はこれまでになく簡単です。たった1つの設定を行い、1ファイルをインクルードするだけです！
+<strong>Codeceptionを使えばSeleniumテストのコードカバレッジレポートを簡単に生成することができます</strong> （他の受け入れテストやAPIテストについても）。<code>acceptance</code>、<code>functional</code>、そして <code>unit</code> の各スイートが統合されたレポートは、アプリケーションのどの箇所がテストされていて、どの箇所がテストされていないのか、最も完全な情報を提供します。</p>
 
     </section>
 </div>
@@ -165,7 +167,7 @@ To alter the way c3 sends it&#39;s service requests to your webserver (be it a l
 <div id="footer_wrap" class="outer">
     <footer class="inner">
         <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-02-18 14:45:09 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+        <p>Last updated: 2015-02-19 10:52:49 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
         <div id="contributors"></div>
     </footer>
 </div>
