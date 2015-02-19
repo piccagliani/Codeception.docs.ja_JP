@@ -3,7 +3,7 @@ Slate Theme for GitHub Pages
 by Jason Costello, @jsncostello
 *******************************************************************************/
 
-@import url(pygment_trac.css);
+@import url(syntax.css);
 @import url(custom.css);
 
 /*******************************************************************************
@@ -160,8 +160,8 @@ p img {
 
 pre, code {
   width: 100%;
-  color: #222;
-  background-color: #fff;
+  color: #fff;
+  background-color: #222;
 
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   font-size: 14px;
