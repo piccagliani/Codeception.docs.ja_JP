@@ -1,39 +1,39 @@
-# Parallel Execution
+# 並列実行
 
-When execution time of your tests is longer than a coffee break, it is a good reason to think about making your tests faster. If you have already tried to run them on SSD drive, or to use PhantomJS instead of Selenium, and the execution time still upsets you, it might be a good idea to run your tests in parallel.
+テストの実行時間がコーヒーブレイクよりも長くなったとしたら、それはテストの実行速度向上を考える良い機会です。もしすでにテストをSSD上で実行している、またはSeleniumの替わりにPhantomJSの使用を試しているのに、まだ実行速度にイライラしているようでしたら、テストを並列実行してみるのが良いかもしれません。
 
-## Where to start
+## どこからはじめよう？
 
-Codeception does not provide a command like `run-parallel`. There is no common solution that can play well for everyone. Here are the questions you will need to answer:
+Codeceptionは `run-parallel` のようなコマンドを提供していません。全員にとって満足に動作する共通の解決策はありません。あなたは次の疑問を解決する必要があります。
 
-* How parallel processes will be executed?
-* How parallel processes won't affect each other?
-* Will they use different databases?
-* Will they use different hosts?
-* How should I split my tests across parallel processes?
+* どのようにして並列プロセスは実行されるのか？
+* どのようにして並列プロセスがお互いに影響を与えないようにするか？
+* プロセス毎に異なるデータベースを使用するか？
+* プロセス毎に異なるホストを使用するか？
+* どのように並列プロセス間でテストを分割すべきか？
 
-And we don't have a single answer for you to any of those questions. Instead, we provide you with a customizable solution which can be easily configured to match your needs. Also, we will share some ideas that you might find helpful.
+これらのどの疑問に対しても、適切な1つの答えというのはありません。その代わりに、我々はあなたのニーズに沿うように構成することができ、簡単にカスタマイズ可能なソリューションを提供します。また、参考となるいくつかのアイディアについても共有します。
 
-## What to do
+## なにをすればいい？
 
-Parallel Test Execution consists of 3 steps:
+並列テスト実行は以下の3ステップから構成されます。
 
-* splitting tests
-* running tests in parallel
-* merging results
+* テストを分割する
+* テストを並列に実行する
+* テスト結果をマージする
 
-We propose to perform those steps using a task runner. In this guide we will use [**Robo**](http://robo.li) task runner. It is a modern PHP task runner that is very easy to use. It uses [Symfony Process](http://symfony.com/doc/current/components/process.html) to spawn background and parallel processes. Just what we need for the step 2! What about steps 1 and 3? We have created robo [tasks](https://github.com/Codeception/robo-paracept) for splitting tests into groups and merging resulting JUnit XML reports.
+これらのステップの実施にタスクランナーを利用することを提案します。このガイドでは [**Robo**](http://robo.li) というタスクランナーを使用します。これは非常に簡単に利用できるモダンなPHPのタスクランナーです。バックグラウンドおよび並列プロセスの起動に [Symfony Process](http://symfony.com/doc/current/components/process.html) を使っています。ステップ2に必要なのはこれだけです！ではステップ1とステップ2はどうでしょう？我々はテストをグループに分割するのと、テスト結果をJUnit XMLレポートにマージするために robo [tasks](https://github.com/Codeception/robo-paracept) を作成しました。
 
-To conclude, we need:
+まとめると、我々に必要なものは以下となります。
 
-* [Robo](http://robo.li), a task runner.
-* [robo-paracept](https://github.com/Codeception/robo-paracept) - Codeception tasks for parallel execution.
+* [Robo](http://robo.li) - タスクランナー
+* [robo-paracept](https://github.com/Codeception/robo-paracept) - 並列実行のためのCodeceptionタスク
 
-## Preparing Robo
+## Roboを準備する
 
-`Robo` is recommended to be installed globally. You can either do [a global install with Composer](https://getcomposer.org/doc/03-cli.md#global) or download `robo.phar` and put it somewhere in PATH.
+`Robo` はグローバルインストールすることを推奨します。[Composerを使用してグローバルインストールする](https://getcomposer.org/doc/03-cli.md#global)か、`robo.phar` をダウンロードしてPATHを通すか、どちらでも構いません。
 
-Execute `robo` in the root of your project
+プロジェクトのルートで `robo` を実行します。
 
 ```bash
 $ robo
@@ -41,7 +41,7 @@ $ robo
   Should I create RoboFile here? (y/n)
 ```
 
-Confirm to create `RoboFile.php`.
+`RoboFile.php` が作成されることを確認します。
 
 ```php
 <?php
@@ -52,9 +52,9 @@ class RoboFile extends \Robo\Tasks
 ?>
 ```
 
-Install `codeception/robo-paracept` via Composer and include it into your RoboFile.
+Composer経由で `codeception/robo-paracept` をインストールし、RoboFile にインクルードします。
 
-Each public method in robofile can be executed as a command from console. Let's define commands for 3 steps.
+robofileの各publicメソッドはコンソールコマンドとして実行することができます。先ほどの3つのステップのコマンドを定義しましょう。
 
 ```php
 <?php
@@ -83,7 +83,7 @@ class Robofile extends \Robo\Tasks
 ?>
 ```
 
-If you run `robo`, you can see the respective commands:
+`robo` を実行すると、それぞれのコマンドが表示されます。
 
 ```bash
 $ robo
@@ -99,19 +99,19 @@ parallel
 
 ```
 
-## Sample Project
+## サンプルプロジェクト
 
-Let's say we have long running acceptance tests and we want to split them into 5 processes. To make tests not be conflicting with each other they should use different hosts and databases. Thus, before proceeding we need to configure 5 different hosts in Apache/Nginx (or just run application on different ports in PHP Built-in web server). Based on host our application should use corresponding databases.
+とても時間のかかる受け入れテストを5プロセスに分割して実行することを考えてみましょう。それぞれのテストが衝突しないように異なるホストとデータベースを使用すべきです。そのため、先に進む前に5つの異なるホストにApache/Nginxを設定する必要があります（もしくは、単に異なるポートを使用してPHPのビルトインサーサーバでアプリケーションを実行します）。ホスト情報に基づいて対応するデータベースを使用するようにしてください。
 
-Alternatively you can prepare **isolated environments** using [Docker](https://www.docker.io/) or [LXC](https://linuxcontainers.org/) and make each testing process to be executed in its own container. Spawn new containers and run more processes are much easier then manually creating additional databases and hosts. Also you are creating a more stable testing environments (no database, files, process conflicts). But you will have to provision your containers as you regularly do when creating virtual machines.
+代替として　[Docker](https://www.docker.io/) や [LXC](https://linuxcontainers.org/) を使用して **分離された環境** を準備し、それぞれのテストプロセスをコンテナー上で実行することもできます。新しいコンテナを起動してより多くのプロセスを実行することは、手動で追加のデータベースとホストを作成するよりもはるかに簡単です。これはより安定したテスト環境を作成しているということです（データベース、ファイル、プロセスの衝突はありません）。ただ、新しく仮想マシンを作成する度にコンテナをプロビジョニングする必要があるでしょう。
 
-You can also think about running your tests on remote hosts using SSH. `Robo` has built-in tasks for running SSH commands as well.
+SSHを使用してリモートホスト上でテストを実行するということも考えられます。`Robo` はSSHコマンドを実行するためのビルトインタスクも備えています。
 
-In current example we assume that we have prepared 5 databases and 5 independent hosts for our application.
+このサンプルプロジェクトでは、アプリケーションのために5つのデータべースと5つの独立したホストを準備していることを想定しています。
 
-### Step 1: Split Tests
+### ステップ 1: テストを分割する
 
-Codeception can organize tests into [groups](http://codeception.com/docs/07-AdvancedUsage#Groups). Starting from 2.0 it can load information about a group from a files. Sample text file with a list of file names can be treated as a dynamically configured group. Take a look into sample group file:
+Codeceptionはテストを [グループ](http://codeception.com/docs/07-AdvancedUsage#Groups) に整理することができます。バージョン2.0からはグループの情報をファイルから読み込むことができます。テキストファイルにファイルの一覧を記述すると、動的にグループとして設定されます。サンプルのグループファイルを見てみましょう。
 
 ```bash
 tests/functional/LoginCept.php
@@ -119,7 +119,7 @@ tests/functional/AdminCest.php:createUser
 tests/functional/AdminCest.php:deleteUser
 ```
 
-Tasks from `\Codeception\Task\SplitTestsByGroups` will generate non-intersecting group files.  You can either split your tests by files or by single tests:
+`\Codeception\Task\SplitTestsByGroups` タスクは交差しない（non-intersecting）グループファイルを生成します。テストはファイル単位、テスト単位のどちらでも分割することができます。
 
 ```php
 <?php
@@ -141,9 +141,9 @@ Tasks from `\Codeception\Task\SplitTestsByGroups` will generate non-intersecting
 ?>
 ```
 
-In second case `Codeception\TestLoader` class will be used and test classes will be loaded into memory.
+後者の場合、`Codeception\TestLoader` が使用され、テストクラスはメモリ上に読み込まれます。
 
-Let's prepare group files:
+グループファイルを準備しましょう。
 
 ```bash
 $ robo parallel:split-tests
@@ -156,22 +156,22 @@ $ robo parallel:split-tests
  [Codeception\Task\SplitTestFilesByGroupsTask] Writing tests/_log/p5
 ```
 
-Now we have group files. We should update `codeception.yml` to load generated group files. In our case we have groups: *p1*, *p2*, *p3*, *p4*, *p5*.
+これでグループファイルができました。生成されたグループファイルを読み込むよう、`codeception.yml` を更新してください。今回の場合、*p1*、 *p2*、 *p3*、 *p4*、 *p5* のグループがあります。
 
 ```yaml
 groups:
     p*: tests/_log/p*
 ```
 
-Let's try to execute tests from the second group:
+2つ目のグループからテストを実行してみましょう。
 
 ```bash
 $ php codecept.phar run functional -g p2
 ```
 
-### Step 2: Running Tests
+### ステップ 2: テストを実行する
 
-As it was mentioned, Robo has `ParallelExec` task to spawn background processes. But you should not think of it as the only option. For instance, you can execute tests remotely via SSH, or spawn processes with Gearman, RabbitMQ, etc. But in our example we will use 5 background processes:
+すでに述べたように、Roboにはバックグラウンドプロセスを起動するための `ParallelExec` を備えています。しかし、これが唯一のオプションとは考えないでください。たとえば、SSHを介してリモートでテストを実行することもできますし、GearmanやRabbitMQなどを利用してプロセスを起動することもできます。ただ、この例では5つのバックグラウンドプロセスを利用します。
 
 ```php
 <?php
@@ -191,7 +191,7 @@ As it was mentioned, Robo has `ParallelExec` task to spawn background processes.
 ?>    
 ```
 
-We missed something really important. We forgot to define different databases for different processes. This can be done using [Environments](http://codeception.com/docs/07-AdvancedUsage#Environments). Let's define 5 new environments in `acceptance.suite.yml`:
+我々は何か重要なことを見落としています。異なるプロセスに異なるデータベースを定義することを忘れていますね。これは [環境](http://codeception.com/docs/07-AdvancedUsage#Environments) を利用して行うことができます。`acceptance.suite.yml` に新しく5つの環境を定義しましょう。
 
 ```yaml
 class_name: AcceptanceTester
@@ -244,7 +244,7 @@ env:
                     url: 'http://test5.localhost/'
 ```
 
-Now, we should update our `parallelRun` method to use corresponding environment:
+そうしたら、対応する環境を利用するように `parallelRun` メソッドを更新してください。
 
 ```php
 <?php
@@ -265,15 +265,15 @@ Now, we should update our `parallelRun` method to use corresponding environment:
 ?>    
 ```
 
-Now, we can execute tests with
+これで次のようにテストを実行することができます。
 
 ```bash
 $ robo parallel:run
 ```
 
-### Step 3: Merge Results
+### ステップ 3: テスト結果をマージする
 
-We should not rely on console output when running our tests. In case of `parallelExec` task, some text can be missed. We recommmend to save results as JUnit XML, which can be merged and plugged into Continous Integration server.
+テスト実行中はコンソールに出力される内容を信用すべきではありません。`parallelExec` タスクの場合、いくつかの文字列は失われるでしょう。テスト結果は、マージできて継続的インテグレーションに挿入できるJUnit XML形式で保存することをおすすめします。
 
 ```php
 <?php
@@ -288,12 +288,11 @@ We should not rely on console output when running our tests. In case of `paralle
     }
 ?>
 ```
+`result.xml` ファイルが生成されます。これを処理して、分析することができます。
 
-`result.xml` file will be generated. It can be processed and analyzed.
+### すべてを統合する
 
-### All Together
-
-To create one command to rule them all we can define new public method `parallelAll` and execute all commands. We will save the result of `parallelRun` and use it for our final exit code:
+これまでのステップを統括して1つのコマンドとするために、新しくpublicな `parallelAll` メソッドを定義し、全てのコマンドを実行するようにします。`parallelRun` の結果を保存して、最終的な終了コードとして使います。
 
 ```php
 <?php
@@ -307,6 +306,6 @@ To create one command to rule them all we can define new public method `parallel
 ?>
 ```
 
-## Conclusion
+## まとめ
 
-Codeception does not provide tools for parallel test execution. This is a complex task and solutions may vary depending on a project. We use [Robo](http://robo.li) task runner as an external tool to perform all required steps. To prepare our tests to be executed in parallel we use Codeception features of dynamic groups and environments. To do even more we can create Extensions and Group classes to perform dynamic configuration depending on a test process.
+Codeceptionはテストを並列実行するためのツールを提供していません。これは複雑なタスクであり、解決策はプロジェクトに依存しています。我々はすべての必要なステップを行うために外部ツールとしての [Robo](http://robo.li) タスクランナーを使いました。テストを並列実行するための準備としてCodeceptionの動的グループと環境の仕組みを利用しました。さらに、テストプロセスに応じて動的な設定を行うための拡張機能とグループクラスを作成することができます。
