@@ -1,11 +1,13 @@
-# Modules and Helpers
+# モジュールとヘルパー
 
-Codeception uses modularity to create a comfortable testing environment for every test suite you write. 
-Modules allow you to choose the actions and assertions that can be performed in tests.
+Codeceptionはすべてのテストスイートに快適なテスト環境を作成するために、モジュールを用いています。
+モジュールは、あなたがテストで実行できるアクションとアサーションを選択することができます。
 
-All actions and assertions that can be performed by the Tester object in a class are defined in modules. It might look like Codeception limits you in testing, but that's not true. You can extend the testing suite with your own actions and assertions, by writing them into a custom module.
+クラスのテスターオブジェクトで行われるすべてのアクションとアサーションはモジュールで定義されています。
+これは一見、Codeceptionがあなたのテストに制限を掛けているように見えますがそうではありません。
+カスタムモジュールに自分自身のアクションやアサーションを書き込むことによって、テストスイートを拡張することができるのです。
 
-Let's look at the following test:
+以下のテストを見てみて下さい。
 
 ```php
 <?php
@@ -17,10 +19,9 @@ $I->seeFileFound('running.lock');
 ?>
 ```
 
-It can operate with different entities: the web page can be loaded with the PhpBrowser module, the database assertion uses the Db module, and file state can be checked with the Filesystem module. 
+これは異なるエンティティで動作します。ウェブページはPhpBrowserモジュールをロードすることができ、データベースのアサーションはDbモジュールを使用し、ファイルの状態はFilesystemモジュールで確認することができます。
 
-Modules are attached to Actor classes in the suite config.
-For example, in `tests/functional.suite.yml` we should see:
+モジュールはスイートの設定でアクタークラスに取り付けられています。例えば`tests/functional.suite.yml`では次のようになっています。
 
 ```yaml
 class_name: FunctionalTester
@@ -28,23 +29,25 @@ modules:
     enabled: [PhpBrowser, Db, Filesystem]
 ```
 
-The FunctionalTester class has its methods defined in modules. Actually it doesn't contain any of them, but rather acts as a proxy. It knows which module executes this action and passes parameters into it. To make your IDE see all of the FunctionalTester methods, you use the `build` command. It generates the definition of the FunctionalTester class by copying the signatures from the corresponding modules.
+FunctionalTesterクラスはモジュールに定義されているメソッドを持っています。実際にはそれらは含まれておらず、プロキシのように動作しています。どのモジュールがそのアクションを実行するのか知っており、その中にパラメータを渡すのです。お使いのIDEがFunctionalTesterの持っているすべてのメソッドを見るには`build`コマンドを使います。対応するモジュールからの署名をコピーしてFunctionalTesterクラスの定義を生成します。
 
-## Standard Modules
+## スタンダードモジュール
 
-Codeception has many bundled modules which will help you run tests for different purposes and different environments. The number of modules is not constant -- it's supposed to grow as more frameworks and ORMs are supported. See all of them listed in the main menu under the Modules section.
+Codeceptionには異なる目的や環境のためのテストを実行するのに役立つバンドルされたモジュールが多くあります。
+多くのモジュールは一定ではありません - 多くのフレームワークやORMがサポートされているように成長していくべきです。
+Modulesセクションのメインメニュー下にリストがあるので確認してみてください。
 
-All of these modules are documented. You can review their detailed references on [GitHub](https://github.com/Codeception/Codeception/tree/master/docs/modules).
+これらのモジュールはすべてドキュメント化されています。詳細なリファレンスは[GitHub](https://github.com/Codeception/Codeception/tree/master/docs/modules)で確認できます。
 
-## Helpers
+## ヘルパー
 
-Codeception doesn't restrict you to only the modules from the main repository. No doubt your project might need your own actions added to the test suite. By running the `bootstrap` command, Codeception generates three dummy modules for you, one for each of the newly created suites. These custom modules are called 'Helpers', and they can be found in the `tests/_support` directory.
+Codeceptionはメインリポジトリからのみのモジュールに制限されているわけではありません。あなたのプロジェクトは独自のアクションをテストスイートに間違いなく追加する必要があるでしょう。`bootstrap`を実行すると、Codeceptionは新しく作られた3つのスイートそれぞれにダミーモジュールを生成します。これらのカスタムモジュールは'ヘルパー'と呼ばれ、`tests/_support`ディレクトリ内に置かれています。
 
-It's a good idea to define missing actions or assertion commands in helpers.
+欠けているアクションやアサーションのコマンドをヘルパーに定義することは良いアイディアです。
 
-Note: Helpers class names must end with "*Helper.php"
+ノート: ヘルパークラスの名前は"*Helper.php"で終わらなければなりません。
 
-Let's say we are going to extend the FunctionalHelper class. By default it's linked with a FunctionalTester class and functional test suite.
+例えば、FunctionalHelperクラスを拡張するとします。これはデフォルトでは、FunctionalTesterクラスと機能テストスイートにリンクされています。
 
 ```php
 <?php
@@ -56,14 +59,13 @@ class FunctionalHelper extends \Codeception\Module
 }
 ?>
 ```
+アクションに関して言えば、すべてが非常にシンプルです。あなたが定義するすべてのアクションはpublic functionです。publicメソッドを書き、`build`コマンドを実行すれば、FunctionalTesterクラスに新しい関数が追加されたことを確認できます。
 
-As for actions, everything is quite simple. Every action you define is a public function. Write any public method, run the `build` command, and you will see the new function added into the FunctionalTester class.
+ノート: publicメソッドが`_`から始まる場合は隠され、アクタークラスには追加されません。
 
-Note: Public methods prefixed by `_` are treated as hidden and won't be added to your Actor class. 
+アサーションは少し注意が必要です。まず始めに、すべてのアサーションの接頭語が `see` もしくは `dontSee` になっていることを推奨します。
 
-Assertions can be a bit tricky. First of all, it's recommended to prefix all your assert actions with `see` or `dontSee`.
-
-Name your assertions like this:
+例えばこのようになります。
 
 ```php
 <?php
@@ -72,7 +74,8 @@ $I->seeClassIsLoaded($classname);
 $I->dontSeeUserExist($user);
 ?>
 ```
-And then use them in your tests:
+
+これをテストで使用します。
 
 ```php
 <?php
@@ -83,7 +86,7 @@ $I->dontSeeUserExist($user);
 ?>
 ```
 
-You can define asserts by using assertXXX methods in modules. Not all PHPUnit assert methods are included in modules, but you can use PHPUnit static methods from the `PHPUnit_Framework_Assert` class to leverage all of them.
+モジュール内のassertXXXメソッドを使ってアサーションを定義することができます。すべてのPHPUnitのアサートメソッドがモジュールに含まれているのではありませんが、`PHPUnit_Framework_Assert`クラスにあるPHPUnitの静的メソッドを活用することもできます。
 
 ```php
 <?php
@@ -97,7 +100,7 @@ function seeClassExist($class)
 ?>
 ```
 
-In your helpers you can use these assertions:
+ヘルパー内でこれらのアサーションを使うことができます。
 
 ```php
 <?php
@@ -115,23 +118,21 @@ function seeCanCheckEverything($thing)
 ?>
 ```
 
-Just type `$this->assert` to see all of them.
+`$this->assert`とタイプすればすべて見ることができます。
 
+### 衝突の解決
 
-### Resolving Collisions
+もし同じ名前のアクションを含む2つのモジュールがあった場合どうなるでしょう？Codeceptionではモジュールの順序を変更することで
+アクションがオーバーライドされます。2つ目のモジュールのアクションがロードされ、1つ目のモジュールのアクションは無視されます。
+モジュールの順序はスイートの設定で定義できます。
 
-What happens if you have two modules that contain the same named actions?
-Codeception allows you to override actions by changing the module order.
-The action from the second module will be loaded and the action from the first one will be ignored.
-The order of the modules can be defined in the suite config.
+### モジュールの接続
 
-### Connecting Modules
+他のモジュールから内部データや関数にアクセスすることも可能です。例えば、あなたのモジュールはDoctrineからの接続、もしくはSymfonyからウェブブラウザが必要になることがあります。
 
-It's possible that you will need to access internal data or functions from other modules. For example, for your module you might need a connection from Doctrine, or a web browser from Symfony.
+モジュールは`getModule`メソッドを通じて相互に作用できます。このメソッドは必要なモジュールがロードされていない場合、例外を投げることを覚えておいてください。
 
-Modules can interact with each other through the `getModule` method. Please note that this method will throw an exception if the required module was not loaded.
-
-Let's imagine that we are writing a module that reconnects to a database. It's supposed to use the dbh connection value from the Db module.
+データベースに再接続するモジュールを書いていると想定してみましょう。Dbモジュールからdbh接続値を使用するようになっています。
 
 ```php
 <?php
@@ -144,11 +145,11 @@ function reconnectToDatabase() {
 ?>
 ```
 
-By using the `getModule` function, you get access to all of the public methods and properties of the requested module. The dbh property was defined as public specifically to be available to other modules.
+`getModule`関数を使うと、リクエストしたモジュール内のすべてのpublicメソッドやプロパティにアクセスできます。dbhプロパティは他のモジュールで利用できるよう、publicとして定義されています。
 
-This technique may be also useful if you need to perform a sequence of actions taken from other modules.
+これは他のモジュールからアクションのシーケンスを実行する必要がある場合に役立ちます。
 
-For example:
+例:
 
 ```php
 <?php
@@ -162,13 +163,13 @@ function seeConfigFilesCreated()
 ?>
 ```
 
-### Hooks
+### フック(Hooks)
 
-Each module can handle events from the running test. A module can be executed before the test starts, or after the test is finished. This can be useful for bootstrap/cleanup actions.
-You can also define special behavior for when the test fails. This may help you in debugging the issue.
-For example, the PhpBrowser module saves the current webpage to the `tests/_output` directory when a test fails.
+各モジュールは、実行中のテストからのイベントを処理することができます。モジュールはテスト前に実行させることもできますし、テストが終了してからでも実行できます。これはブートストラップやクリーンアップをする際に役立ちます。また、テストが失敗した時のために特殊な動作を定義することも可能です。これは問題をデバッグする際に便利です。
 
-All hooks are defined in `\Codeception\Module` and are listed here. You are free to redefine them in your module.
+例えば、PhpBrowserモジュールはテストが失敗した時、`tests/_output`ディレクトリに現在のウェブページを保存します。
+
+すべてのフックは`\Codeception\Module`で定義されており、ここにリストされています。あなたは自由にそれをあなたのモジュールで再定義することができます。
 
 ```php
 <?php
@@ -187,7 +188,7 @@ All hooks are defined in `\Codeception\Module` and are listed here. You are free
 
     // HOOK: after suite
     public function _afterSuite() {
-    }    
+    }
 
     // HOOK: before each step
     public function _beforeStep(\Codeception\Step $step) {
@@ -211,28 +212,29 @@ All hooks are defined in `\Codeception\Module` and are listed here. You are free
 ?>
 ```
 
-Please note that methods with a `_` prefix are not added to the Actor class. This allows them to be defined as public but used only for internal purposes.
+`_`から始まるメソッドはアクタークラスに追加されないことに注意して下さい。
+これらはpublicとして定義されますが、内部的な目的でのみ使用されます。
 
-### Debug
+### デバッグ
 
-As we mentioned, the `_failed` hook can help in debugging a failed test. You have the opportunity to save the current test's state and show it to the user, but you are not limited to this.
+先述したように、`_failed`フックはテストが失敗した際のデバッグに役立ちます。現在のテストの状態を保存し、それをユーザに見せることができますが、これだけではありません。
 
-Each module can output internal values that may be useful during debug.
-For example, the PhpBrowser module prints the response code and current URL every time it moves to a new page.
-Thus, modules are not black boxes. They are trying to show you what is happening during the test. This makes debugging your tests less painful.
+各モジュールは、デバッグ中に有用的であると思われる内部の値を出力することができます。
+例えばPhpBrowserモジュールは、新しいページに移動するたびにレスポンスコードと現在のURLを出力します。
+このように、モジュールはブラックボックスではありません。彼らはテスト中に何が起きているのかを見せようとしているのです。あなたがテストをデバッグする際の苦痛を減らしてくれるのです。
 
-To display additional information, use the `debug` and `debugSection` methods of the module.
-Here is an example of how it works for PhpBrowser:
+追加の情報を表示するには、モジュールの`debug` と `debugSection`メソッドを使用します。
+PhpBrowserでどのように動作するか、例を見てみましょう。
 
 ```php
 <?php
     $this->debugSection('Request', $params));
     $client->request($method, $uri, $params);
     $this->debug('Response Code: ' . $this->client->getStatusCode());
-?>    
+?>
 ```
 
-This test, running with the PhpBrowser module in debug mode, will print something like this:
+PhpBrowserをデバッグモードで実行しているこのテストは、以下のような出力を行います。
 
 ```bash
 I click "All pages"
@@ -240,13 +242,10 @@ I click "All pages"
 * Response code: 200
 ```
 
+### 設定
 
-
-### Configuration
-
-Modules can be configured from the suite config file, or globally from `codeception.yml`.
-
-Mandatory parameters should be defined in the `$requiredFields` property of the module class. Here is how it is done in the Db module:
+モジュールはスイートの設定ファイル、もしくはグローバルな`codeception.yml`で設定することができます。
+必須のパラメータはモジュールクラスの`$requiredFields`プロパティで定義する必要があります。Dbモジュールでの例を見てみましょう。
 
 ```php
 <?php
@@ -255,20 +254,23 @@ class Db extends \Codeception\Module {
 ?>
 ```
 
-The next time you start the suite without setting one of these values, an exception will be thrown. 
+次回、あなたがこれらの値を設定せずにスイートを開始した場合、例外が投げられます。
 
-For optional parameters, you should set default values. The `$config` property is used to define optional parameters as well as their values. In the WebDriver module we use default Selenium Server address and port. 
+オプションのパラメータでは、デフォルト値を設定する必要があります。`$config`プロパティはオプションのパラメータと同様に、それらの値を定義するために使用されます。
+
+WebDriverモジュールでは、Seleniumのデフォルトのサーバーアドレスとポートを使用しています。
 
 ```php
 <?php
 class WebDriver extends \Codeception\Module
 {
-    protected $requiredFields = array('browser', 'url');    
+    protected $requiredFields = array('browser', 'url');
     protected $config = array('host' => '127.0.0.1', 'port' => '4444');
-?>    
+?>
 ```
 
-The host and port parameter can be redefined in the suite config. Values are set in the `modules:config` section of the configuration file.
+ホストとポートのパラメータはスイートの設定で再定義できます。
+それらの値は設定ファイルの`modules:config`セクションにあります。
 
 ```yaml
 modules:
@@ -284,12 +286,12 @@ modules:
             repopulate: false
 ```
 
-Optional and mandatory parameters can be accessed through the `$config` property. Use `$this->config['parameter']` to get its value. 
+オプションと必須のパラメータは`$config`プロパティからアクセスすることができます。その値を取得するには、`$this->config['parameter']`を使ってください。
 
-### Dynamic Configuration
+### ダイナミックな設定(Dynamic Configuration)
 
-If you want to reconfigure a module at runtime, you can use the `_reconfigure` method of the module.
-You may call it from a helper class and pass in all the fields you want to change.
+もしあなたが実行時にモジュールを再設定したければ、モジュールの`_reconfigure`メソッドを使用してください。
+それをヘルパークラスから呼び出し、変更したいすべてのフィールドに渡すことができます。
 
 ```php
 <?php
@@ -297,11 +299,11 @@ $this->getModule('WebDriver')->_reconfigure(array('browser' => 'chrome'));
 ?>
 ```
 
-At the end of a test, all your changes will be rolled back to the original config values.
+テスト終了後、設定はオリジナルの値に戻されます。
 
-### Additional options
+### 追加オプション(Additional options)
 
-Like each class, a Helper can be inherited from a module.
+各クラスのように、ヘルパーはモジュールから継承することが可能です。
 
 ```php
 <?php
@@ -311,15 +313,15 @@ class MySeleniumHelper extends \Codeception\Module\WebDriver  {
 ?>
 ```
 
-In an inherited helper, you replace implemented methods with your own realization.
-You can also replace `_before` and `_after` hooks, which might be an option when you need to customize starting and stopping of a testing session.
+継承されたヘルパーでは、あなた自身によって実装されているメソッドを書き換えて下さい。
+あなたがテストセッションの開始と終了をカスタマイズする際のオプションである`_before` と `_after`フックも置き換えることができます。
 
-If some of the methods of the parent class should not be used in a child module, you can disable them. Codeception has several options for this:
+親クラスのメソッドが子クラスで使用すべきでない場合、それらを無効にすることができます。Codeceptionにはいくつかのオプションがあります。
 
 ```php
 <?php
 namespace Codeception\Module;
-class MySeleniumHelper extends \Codeception\Module\WebDriver 
+class MySeleniumHelper extends \Codeception\Module\WebDriver
 {
     // disable all inherited actions
     public static $includeInheritedActions = false;
@@ -333,9 +335,9 @@ class MySeleniumHelper extends \Codeception\Module\WebDriver
 ?>
 ```
 
-Setting `$includeInheritedActions` to false adds the ability to create aliases for parent methods.
- It allows you to resolve conflicts between modules. Let's say we want to use the `Db` module with our `SecondDbHelper`
- that actually inherits from `Db`. How can we use `seeInDatabase` methods from both modules? Let's find out.
+`$includeInheritedActions`をfalseに設定することで、親メソッドのエイリアスを作成する機能を追加します。
+これはモジュール間の衝突を解決します。`Db`モジュールと、それを継承した私たちの`SecondDbHelper`モジュールを使うとします。
+その際、両方のモジュールにある`seeInDatabase`メソッドをどのように使用するのでしょうか？以下を見てみてください。
 
 ```php
 <?php
@@ -351,13 +353,9 @@ class SecondDbHelper extends Db {
 ?>
 ```
 
-Setting `$includeInheritedActions` to false won't include the methods from parent classes into the generated Actor.
-Still, you can use inherited methods in your helper class.
+`$includeInheritedActions`をfalseに設定することで、生成されたアクターに親クラスのメソッドを含まないのです。
+ヘルパークラスでは継承したメソッドを、引き続き使用することが可能です。
 
-## Conclusion
+## 結論
 
-Modules are the true power of Codeception. They are used to emulate multiple inheritances for Actor classes (UnitTester, FunctionalTester, AcceptanceTester, etc).
-Codeception provides modules to emulate web requests, access data, interact with popular PHP libraries, etc.
-For your application you might need custom actions. These can be defined in helper classes.
-If you have written a module that may be useful to others, share it.
-Fork the Codeception repository, put the module into the __src/Codeception/Module__ directory, and send a pull request.
+モジュールはCodeceptionの真の力です。これらはアクタークラス（UnitTester、FunctionalTester、AcceptanceTesterなど）への複数の継承をエミュレートするために使用されます。Codeceptionはウェブリクエスト、アクセスデータ、人気PHPライブラリとのインタラクション等をエミュレートするモジュールを提供しています。あなたのアプリケーションは、カスタムされたアクションが必要になるでしょう。これらはヘルパークラスで定義することができます。もしあなたが他の人にも役立ちそうなモジュールを書いたのでしたら、ぜひシェアしてください。Codeceptionリポジトリをフォークし、モジュールを__src/Codeception/Module__ディレクトリ内に設置し、プルリクエストを送信して下さい。
