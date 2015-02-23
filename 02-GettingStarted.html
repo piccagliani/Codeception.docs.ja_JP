@@ -40,7 +40,7 @@ Codeceptionは単体テスト、機能テスト、受け入れテストの3つ�
 
 <h2>アクター(Actors)</h2>
 
-<p>Codeceptionの主な概念の1つは、人間の行動のように動作することです。UnitTesterは関数を実行し、コードのテストを行います。FunctionalTesterは内部の知識を持ち、アプリケーション全体をテストする有能なテスターです。そしてAcceptanceTesterは、私たちが提供するインタフェースを介してアプリケーションと連携したユーザです。</p>
+<p>Codeceptionの主な概念の1つは、人間の行動のように動作することです。UnitTesterは関数を実行し、コードのテストを行います。FunctionalTesterは内部の知識を持ち、アプリケーション全体をテストする有能なテスターです。そしてAcceptanceTesterは、私たちが提供するインタフェースを使ってアプリケーションを操作するユーザです。</p>
 
 <p>これらのアクターはそれぞれ、許可されたアクションを行うPHPのクラスなのです。彼らが異なる能力を持っていることにもうお気づきでしょう。これらのアクターは一定ではなく、あなたの手によって拡張することができます。各アクターはそれぞれのテストに対応しているのです。</p>
 
@@ -51,7 +51,7 @@ Codeceptionは単体テスト、機能テスト、受け入れテストの3つ�
 </code></pre></div>
 <h2>シナリオのサンプルを書いてみましょう</h2>
 
-<p>デフォルトのテストは、まるで語り口のシナリオのようになっています。PHPファイルを有効なシナリオとして機能するには、その末尾に<code>Cept</code>と付けてください。</p>
+<p>デフォルトのテストは、まるで語り口のシナリオのようになっています。PHPファイルを有効なシナリオとして機能させるには、その末尾に<code>Cept</code>と付けてください。</p>
 
 <p>では例えば、<code>tests/acceptance/SigninCept.php</code>というファイルを作ってみたとしましょう。
 以下のコマンドを実行することでそれが出来上がります。</p>
@@ -122,7 +122,7 @@ OK <span class="o">(</span><span class="m">1</span> <span class="nb">test</span>
 
 <h2>モジュールとヘルパー</h2>
 
-<p>アクタークラスのアクションはモジュールから取得されます。生成されたアクタークラスは多重継承をエミュレートします。モジュールは1つの方法で1つのアクションをするよう設計されています。<a href="http://ja.wikipedia.org/wiki/Don&#x27;t_repeat_yourself">DRY原則</a>によると、あなたが異なるモジュールで同じシナリオコンポーネントを使用する場合は、それらを組み合わせて、カスタムモジュールにそれらを移動することができます。デフォルトでは、各スイートはアクタークラスを拡張するために使用できるの空のモジュールを持っています。それらは <strong>support</strong> ディレクトリに保存されています。</p>
+<p>アクタークラスのアクションはモジュールから取得されます。生成されたアクタークラスは多重継承をエミュレートします。モジュールは1つのメソッドで1つのアクションを実行するよう設計されています。<a href="http://ja.wikipedia.org/wiki/Don&#x27;t_repeat_yourself">DRY原則</a>によると、あなたが異なるモジュールで同じシナリオコンポーネントを使用する場合は、それらを組み合わせて、カスタムモジュールにそれらを移動させることができます。デフォルトでは、各スイートはアクタークラスを拡張するために使用できるの空のモジュールを持っています。それらは <strong>support</strong> ディレクトリに保存されています。</p>
 
 <h2>ブートストラップ</h2>
 
@@ -158,16 +158,16 @@ OK <span class="o">(</span><span class="m">1</span> <span class="nb">test</span>
 </code></pre></div>
 <p>これはバックエンドのディレクトリからすべてのテストを実行します。</p>
 
-<p>同ディレクトリにないテストのグループを実行したい場合は、<a href="http://codeception.com/docs/07-AdvancedUsage#Groups">groups</a>を編成できます。</p>
+<p>同じディレクトリにないテストのグループを実行したい場合は、<a href="http://codeception.com/docs/07-AdvancedUsage#Groups">groups</a>を編成できます。</p>
 
 <h3>レポート</h3>
 
-<p>JUnit XML アウトプットを生成するには<code>--xml</code>オプション、もしくはHTMLレポートのために<code>--html</code>オプションを付与することも可能です。</p>
+<p><code>--xml</code>オプションを付与すればJUnit XMLのアウトプットが生成され、<code>--html</code>オプションを付与すればHTMLのレポートが生成されます。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run --steps --xml --html
 </code></pre></div>
 <p>このコマンドはすべてのスイートのすべてのテストをステップごとに表示しながら実行し、HTMLとXMLのレポートを作成します。レポートは<code>tests/_output/</code>ディレクトリ内に保存されます。</p>
 
-<p>使用できるすべてのオプションを学ぶためには、以下のコマンドを実行してください。</p>
+<p>以下のコマンドを実行することで、使用できるすべてのオプションを確認することができます。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar <span class="nb">help </span>run
 </code></pre></div>
 <h2>デバッグ</h2>
@@ -199,7 +199,7 @@ OK <span class="o">(</span><span class="m">1</span> <span class="nb">test</span>
 <div id="footer_wrap" class="outer">
     <footer class="inner">
         <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-02-23 15:02:04 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+        <p>Last updated: 2015-02-23 16:47:13 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
         <div id="contributors"></div>
     </footer>
 </div>
