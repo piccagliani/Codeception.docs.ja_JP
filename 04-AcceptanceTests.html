@@ -32,16 +32,20 @@
 <!-- MAIN CONTENT -->
 <div id="main_content_wrap" class="outer">
     <section id="main_content" class="inner">
-        <h1>Acceptance Testing</h1>
+        <h1>受け入れテスト</h1>
 
-<p>Acceptance testing can be performed by a non-technical person. That person can be your tester, manager or even client.
-If you are developing a web-application (and probably you are) the tester needs nothing more than a web browser to check that your site works correctly. You can reproduce a AcceptanceTester&#39;s actions in scenarios and run them automatically after each site change. Codeception keeps tests clean and simple, as if they were recorded from the words of AcceptanceTester.</p>
+<p>受け入れテストは、技術者ではない人でも実行することが出来ます。技術者ではないテスターやマネージャー、あるいはクライアントでも実行出来ます。
+あなたがウェブアプリケーションを開発している場合、（おそらくあなた自身である）テスターは、あなたのサイトが正しく動いているかをチェックするのにウェブブラウザ以外に必要なものはありません。
+シナリオでAcceptanceTesterクラスの行動を再現することによって、サイトを変更する毎にそれらを自動的に実行することができます。
+AcceptanceTesterの言葉から記録されたかのようCodeceptionは、テストを簡潔に保ってくれます。</p>
 
-<p>It makes no difference what CMS or Framework is used on the site. You can even test sites created on different platforms, like Java, .NET, etc. It&#39;s always a good idea to add tests to your web site. At least you will be sure that site features work after the last changes were made.</p>
+<p>CMSやフレームワークをアプリケーションに取り入れていても違いはありません。Java、.NETなど異なるプラットフォームでさえ同じようにテスト出来ます。
+どんな時でも、あなたのウェブサイトにテストを加えるということは良い考えだと言えるでしょう。
+少なくとも、最後の変更からアプリケーションがしっかりと機能していることに確信が持てるでしょう。</p>
 
-<h2>Sample Scenario</h2>
+<h2>シナリオサンプル</h2>
 
-<p>Probably the first test you would want to run would be signing in. In order to write such a test, we still require basic knowledge of PHP and HTML.</p>
+<p>おそらく、最初に実行したいテストはサインインする機能でしょう。そのようなテストを書くためには、基本的なPHPとHTMLの知識が必要です。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;sign in&#39;</span><span class="p">);</span>
@@ -52,7 +56,7 @@ If you are developing a web-application (and probably you are) the tester needs 
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Welcome, Davert!&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>This scenario can probably be read by non-technical people. Codeception can even &#39;naturalize&#39; this scenario, converting it into plain English:</p>
+<p>このシナリオは、おそらく非技術者の人でも読めます。Codeceptionはシナリオを平易な英語に変換し、&#39;自然言語化&#39;することさえ出来ます:</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">I WANT TO SIGN IN
 I am on page <span class="s1">&#39;/login&#39;</span>
 I fill field <span class="s1">&#39;username&#39;</span>, <span class="s1">&#39;davert&#39;</span>
@@ -60,26 +64,31 @@ I fill field <span class="s1">&#39;password&#39;</span>, <span class="s1">&#39;q
 I click <span class="s1">&#39;LOGIN&#39;</span>
 I see <span class="s1">&#39;Welcome, Davert!&#39;</span>
 </code></pre></div>
-<p>Such transformations can be done by command:</p>
+<p>そのような自然言語への翻訳は、コマンドによって行われます:</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:scenarios
 </code></pre></div>
-<p>Generated scenarios will be stored in your <em>__data</em>_ directory in text files.</p>
+<p>作成されたシナリオは <strong>tests/_data</strong>ディレクトリにテキストファイルとして格納されます。</p>
 
-<p><strong>This scenario can be performed either by a simple PHP Browser or by a browser with Selenium WebDriver</strong>. We will start writing our first acceptance tests with a PhpBrowser.</p>
+<p><strong>このシナリオテストはシンプルなPHP BrowserでもSelenium WebDriverを使ったブラウザでも実行することが出来ます。</strong>まずはPHP Browserで受け入れテストを書いて行きましょう。</p>
 
 <h2>PHP Browser</h2>
 
-<p>This is the fastest way to run acceptance tests, since it doesn&#39;t require running an actual browser. We use a PHP web scraper, which acts like a browser: it sends a request, then receives and parses the response. Codeception uses <a href="http://guzzlephp.org">Guzzle</a> and Symfony BrowserKit to interact with HTML web pages. Please note that you can&#39;t test actual visibility of elements, or javascript interactions. Good thing about PhpBrowser is that it can be run in any environment with just PHP and cURL required.</p>
+<p>実際に動くブラウザが必要となるまでは、これはもっとも速く受け入れテストを実行する方法です。
+リクエストを送り、それからレスポンスを受け取って解析する、というようなブラウザのような動きをするPHP web scraperを使用しています。
+Codeceptionは<a href="http://guzzlephp.org">Guzzle</a>とSymfony BrowserKitをHTMLページを操作するのに使用しています。
+HTMLのある要素の実際の可視性や、javascriptの動作をテストできないことに注意してください。
+PHP Browserの利点は、PHPとcURLだけでどんな環境でも実行できることです。</p>
 
-<p>Common PhpBrowser drawbacks:</p>
+<p>一般的なPHP Browserの欠点：</p>
 
 <ul>
-<li>you can click only on links with valid urls or form submit buttons</li>
-<li>you can&#39;t fill fields that are not inside a form</li>
-<li>you can&#39;t work with JavaScript interactions: modal windows, datepickers, etc.</li>
+<li>有効なURLのリンクとフォームの送信ボタンしかクリックできないこと</li>
+<li>フォームの中にないフィールドには書き込めないこと</li>
+<li>JavaScriptによる動作は機能しないこと：モーダルを表示させたり、datepickersの使用など</li>
 </ul>
 
-<p>Before we start we need a local copy of the site running on your host. We need to specify the <code>url</code> parameter in the acceptance suite config (tests/acceptance.suite.yml).</p>
+<p>テストを書き始める前に、アプリケーションが動作しているホストをローカルコピーしてください。
+受け入れテストスイートの設定ファイル (tests/acceptance.suite.yml) に、<code>url</code>パラメータを指定する必要があるからです。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">AcceptanceTester</span>
 <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span>
@@ -90,50 +99,56 @@ I see <span class="s1">&#39;Welcome, Davert!&#39;</span>
         <span class="l-Scalar-Plain">PhpBrowser</span><span class="p-Indicator">:</span>
             <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">your site&#39;s url</span><span class="p-Indicator">]</span>
 </code></pre></div>
-<p>We should start by creating a &#39;Cept&#39; file in the <strong>tests/acceptance</strong> directory. Let&#39;s call it <strong>SigninCept.php</strong>. We will write the first lines into it.</p>
+<p>それでは、<strong>tests/acceptance</strong>ディレクトリに&#39;Cept&#39;ファイルを作成してください。ファイル名は <strong>SigninCept.php</strong>とします。
+最初の行に以下のように書きます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;sign in with valid account&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>The <code>wantTo</code> section describes your scenario in brief. There are additional comment methods that are useful to make a Codeception scenario a BDD Story. If you have ever written a BDD scenario in Gherkin, you can write a classic feature story:</p>
+<p><code>wantTo</code>という部分はシナリオを簡潔に説明しています。
+他にもBDDのようなCodeceptionのシナリオを書くための有用なコメント追加メソッドがあります。GherkinでBDDのシナリオを書いたことがある人なら、以下のようにフィーチャーを書くことができます。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">As an Account Holder
 I want to withdraw cash from an ATM
 So that I can get money when the bank is closed
 </code></pre></div>
-<p>in Codeception style:</p>
+<p>Codeceptionでは以下のように書きます:</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">am</span><span class="p">(</span><span class="s1">&#39;Account Holder&#39;</span><span class="p">);</span> 
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">am</span><span class="p">(</span><span class="s1">&#39;Account Holder&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;withdraw cash from an ATM&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">lookForwardTo</span><span class="p">(</span><span class="s1">&#39;get money when the bank is closed&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>After we have described the story background, let&#39;s start writing a scenario.</p>
+<p>ストーリーの前提を説明した上で、シナリオを書き始めましょう。</p>
 
-<p>The <code>$I</code> object is used to write all interactions. The methods of the <code>$I</code> object are taken from the <code>PhpBrowser</code> and <code>Db</code> modules. We will briefly describe them here:</p>
+<p>この <code>$I</code>オブジェクトは、すべての動作を記述するために使われます。<code>$I</code>オブジェクトのメソッドは<code>PhpBrowser</code>モジュールや<code>Db</code>モジュールから取得されています。
+簡単にそれを説明します：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>We assume that all <code>am</code> commands should describe the starting environment. The <code>amOnPage</code> command sets the starting point of a test to the <strong>/login</strong> page.</p>
+<p>常に<code>am</code>は、最初の状態を記述するように想定しています。<code>amOnPage</code>メソッドは<strong>/login</strong>ページが最初の状態だと設定しています。</p>
 
-<p>With the <code>PhpBrowser</code> you can click the links and fill the forms. That will probably be the majority of your actions.</p>
+<p><code>PhpBrowser</code>では、リンクのクリックとフォームを埋めることが出来ます。これらは、おそらくもっとも多い動作だと思います。</p>
 
-<h4>Click</h4>
+<h4>クリック</h4>
 
-<p>Emulates a click on valid anchors. The page from the &quot;href&quot; parameter will be opened. As a parameter you can specify the link name or a valid CSS or XPath selector. </p>
+<p>有効なリンクのクリックをエミュレートします。
+&quot;href&quot;属性の値のページが開きます。リンク名やCSSセレクター、XPathでクリックするリンクを指定できます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Log in&#39;</span><span class="p">);</span> 
-<span class="c1">// CSS selector applied</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Log in&#39;</span><span class="p">);</span>
+<span class="c1">// CSSセレクターを使用する場合</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;#login a&#39;</span><span class="p">);</span>
-<span class="c1">// XPath</span>
+<span class="c1">// XPathを使用する場合</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;//a[@id=login]&#39;</span><span class="p">);</span>
-<span class="c1">// Using context as second argument</span>
+<span class="c1">// 第二引数としてコンテキストを使用する場合</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">,</span> <span class="s1">&#39;.nav&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>Codeception tries to locate element either by its text, name, CSS or XPath. You can specify locator type manually by passing array as a parameter. We call this a <strong>strict locator</strong>. Available strict locator types are: </p>
+<p>Codeceptionは、テキストやname属性、CSSセレクタ、XPathのどれかで要素を検索しようとします。
+locatorの種類を配列として渡すことで、指定することもできます。我々は <strong>strict locator</strong>呼んでいます。
+利用できるstrict locatorの種類は以下です：</p>
 
 <ul>
 <li>id</li>
@@ -144,53 +159,53 @@ So that I can get money when the bank is closed
 <li>class</li>
 </ul>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="c1">// By specifying locator type</span>
+<span class="c1">// locatorの種類で指定する場合</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">([</span><span class="s1">&#39;link&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Login&#39;</span><span class="p">]);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">([</span><span class="s1">&#39;class&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;btn&#39;</span><span class="p">]);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>Before clicking the link you can perform a check if the link really exists on 
-a page. This can be done by the <code>seeLink</code> action.</p>
+<p>リンクをクリックする前に、本当にリンクが存在するかどうかチェックすることもできます。
+その場合<code>seeLink</code>メソッドを使用します。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="c1">// checking that link actually exists</span>
+<span class="c1">// 実際にリンクが存在するかチェックする</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeLink</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeLink</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">,</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeLink</span><span class="p">(</span><span class="s1">&#39;#login a&#39;</span><span class="p">,</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<h4>Forms</h4>
+<h4>フォーム</h4>
 
-<p>Clicking the links is not what takes the most time during testing a web site. If your site consists only of links you can skip test automation.
-The most routine waste of time goes into the testing of forms. Codeception provides several ways of doing that.</p>
+<p>ウェブサイトのテストにおいてもっとも時間が取られることは、リンクをクリックすることではないです。もし、リンクだけで構成されているサイトならテストを自動化する必要は無いでしょう。
+もっとも時間を消費する機能はフォームです。Codeceptionはフォームを処理する方法をいくつか提供します。</p>
 
-<p>Let&#39;s submit this sample form inside the Codeception test.</p>
+<p>それでは、Codeceptionのテストでフォームを送信してみましょう。</p>
 <div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;form</span> <span class="na">method=</span><span class="s">&quot;post&quot;</span> <span class="na">action=</span><span class="s">&quot;/update&quot;</span> <span class="na">id=</span><span class="s">&quot;update_form&quot;</span><span class="nt">&gt;</span>
      <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">&quot;user_name&quot;</span><span class="nt">&gt;</span>Name<span class="nt">&lt;/label&gt;</span>
      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;user[name]&quot;</span> <span class="na">id=</span><span class="s">&quot;user_name&quot;</span> <span class="nt">/&gt;</span>
      <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">&quot;user_email&quot;</span><span class="nt">&gt;</span>Email<span class="nt">&lt;/label&gt;</span>
-     <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;user[email]&quot;</span> <span class="na">id=</span><span class="s">&quot;user_email&quot;</span> <span class="nt">/&gt;</span>     
+     <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;user[email]&quot;</span> <span class="na">id=</span><span class="s">&quot;user_email&quot;</span> <span class="nt">/&gt;</span>
      <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">&quot;user_gender&quot;</span><span class="nt">&gt;</span>Gender<span class="nt">&lt;/label&gt;</span>
      <span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">&quot;user_gender&quot;</span> <span class="na">name=</span><span class="s">&quot;user[gender]&quot;</span><span class="nt">&gt;</span>
           <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">&quot;m&quot;</span><span class="nt">&gt;</span>Male<span class="nt">&lt;/option&gt;</span>
           <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">&quot;f&quot;</span><span class="nt">&gt;</span>Female<span class="nt">&lt;/option&gt;</span>
-     <span class="nt">&lt;/select&gt;</span>     
+     <span class="nt">&lt;/select&gt;</span>
      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">name=</span><span class="s">&quot;submitButton&quot;</span> <span class="na">value=</span><span class="s">&quot;Update&quot;</span> <span class="nt">/&gt;</span>
 <span class="nt">&lt;/form&gt;</span>
 </code></pre></div>
-<p>From a user&#39;s perspective, a form consists of fields which should be filled, and then an Update button clicked. </p>
+<p>ユーザーからの視点で見ると、このフォームは埋める必要のある複数の項目から構成されており、最後にはUpdateボタンがクリックされます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="c1">// we are using label to match user_name field</span>
+<span class="c1">// user_name項目に対応するラベルを使います</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Miles&#39;</span><span class="p">);</span>
-<span class="c1">// we can use input name or id</span>
+<span class="c1">// inputタグのname属性やid属性を使用しています</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;user[email]&#39;</span><span class="p">,</span><span class="s1">&#39;miles@davis.com&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">selectOption</span><span class="p">(</span><span class="s1">&#39;Gender&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Update&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>To match fields by their labels, you should write a <code>for</code> attribute in the label tag.</p>
+<p>それぞれのフィールドをラベルで検索するためには、labelタグに<code>for</code>属性を書く必要があります。</p>
 
-<p>From the developer&#39;s perspective, submitting a form is just sending a valid post request to the server. Sometimes it&#39;s easier to fill all of the fields at once and send the form without clicking a &#39;Submit&#39; button.
-A similar scenario can be rewritten with only one command.</p>
+<p>開発者から見ると、フォームを送信することは、サーバーに有効なPOSTリクエストを送信しているだけです。
+時には、一度にすべての項目に書き込み、&#39;Submit&#39;ボタンをクリックすることなく送信してしまう方が楽です。そのようなシナリオをたった一つのメソッドで書き換えることが出来ます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">&#39;#update_form&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;user&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
      <span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Miles&#39;</span><span class="p">,</span>
@@ -199,16 +214,17 @@ A similar scenario can be rewritten with only one command.</p>
 <span class="p">)));</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>The <code>submitForm</code> is not emulating a user&#39;s actions, but it&#39;s quite useful in situations when the form is not formatted properly, for example to discover that labels aren&#39;t set or that fields have unclean names or badly written ids, or the form is sent by a javascript call.</p>
+<p><code>submitForm</code>メソッドはユーザーの行動をエミュレートしてはいませんが、フォームが適切にフォーマットされていない時に、非常に有効です。
+例えば、ラベルがついていなかったり、不適切なname属性やid属性がつけられているフォームやjavascriptによって送信されているフォームです。</p>
 
-<p>By default, submitForm doesn&#39;t send values for buttons.  The last parameter allows specifying what button values should be sent, or button values can be implicitly specified in the second parameter.</p>
+<p>デフォルトでは、<code>submitForm</code>メソッドはボタンの値を送信することはありません。どのボタンのvalueを送信するかは最後の引数に指定出来ますし、あるいは第二引数に含めて指定することも出来ます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">&#39;#update_form&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;user&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
      <span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Miles&#39;</span><span class="p">,</span>
      <span class="s1">&#39;email&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Davis&#39;</span><span class="p">,</span>
      <span class="s1">&#39;gender&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;m&#39;</span>
 <span class="p">)),</span> <span class="s1">&#39;submitButton&#39;</span><span class="p">);</span>
-<span class="c1">// this would be the same effect, but the value has to be implicitly specified</span>
+<span class="c1">// これは同じ機能を果たしますが、送信ボタンのvalueは指定する必要があります</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">&#39;#update_form&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;user&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
      <span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Miles&#39;</span><span class="p">,</span>
      <span class="s1">&#39;email&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Davis&#39;</span><span class="p">,</span>
@@ -217,40 +233,41 @@ A similar scenario can be rewritten with only one command.</p>
 <span class="p">)));</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<h4>AJAX Emulation</h4>
+<h4>Ajaxエミュレーター</h4>
 
-<p>As we know, PHP browser can&#39;t process JavaScript. Still, all the ajax calls can be easily emulated by sending the proper requests to the server.</p>
+<p>ご存知のように、PHP browserではjavascriptは機能しません。
+しかし、すべてのajax呼び出しは、適切なリクエストをサーバーに送信することで簡単にエミュレート出来ます。</p>
 
-<p>Consider using these methods for ajax interactions.</p>
+<p>ajax通信には以下のメソッドが使えることを覚えておいてください。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendAjaxGetRequest</span><span class="p">(</span><span class="s1">&#39;/refresh&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendAjaxPostRequest</span><span class="p">(</span><span class="s1">&#39;/update&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Miles&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Davis&#39;</span><span class="p">));</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<h4>Assertions</h4>
+<h4>アサーション</h4>
 
-<p>In the PHP browser you can test the page contents. In most cases you just need to check that the required text or element is on the page.</p>
+<p>PHP browserでは、ページの内容をテスト出来ます。ほとんどの場合は、ページに必要なテキストや要素が存在しているかチェックする必要があるのみでしょう。</p>
 
-<p>The most useful command for this is <code>see</code>.</p>
+<p>そのためにもっとも使い勝手の良いメソッドは<code>see</code>です。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="c1">// We check that &#39;Thank you, Miles&#39; is on page.</span>
+<span class="c1">// &#39;Thank you, Miles&#39;というテキストがページにあることをチェックします</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Thank you, Miles&#39;</span><span class="p">);</span>
-<span class="c1">// We check that &#39;Thank you Miles&#39; is inside </span>
-<span class="c1">// the element with &#39;notice&#39; class.</span>
+<span class="c1">// &#39;Thank you Miles&#39;の内部をチェックします</span>
+<span class="c1">// この要素は&#39;notice&#39;というクラス属性を持っています</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Thank you, Miles&#39;</span><span class="p">,</span> <span class="s1">&#39;.notice&#39;</span><span class="p">);</span>
-<span class="c1">// Or using XPath locators</span>
+<span class="c1">// XPathを使用することもできます</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Thank you, Miles&#39;</span><span class="p">,</span> <span class="s2">&quot;descendant-or-self::*[contains(concat(&#39; &#39;, normalize-space(@class), &#39; &#39;), &#39; notice &#39;)]&quot;</span><span class="p">);</span>
-<span class="c1">// We check this message is not on page.</span>
+<span class="c1">// このメッセージがページに無いことをチェックしています</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSee</span><span class="p">(</span><span class="s1">&#39;Form is filled incorrectly&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>You can check that specific element exists (or not) on a page</p>
+<p>特定の要素がページに存在する（あるいは存在しない）ことをチェック出来ます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeElement</span><span class="p">(</span><span class="s1">&#39;.notice&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSeeElement</span><span class="p">(</span><span class="s1">&#39;.error&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>We also have other useful commands to perform checks. Please note that they all start with the <code>see</code> prefix.</p>
+<p>私達は、他にもチェックを実行するために役立つメソッドを用意しています。それらがすべて<code>see</code>というプレフィックスから始まっていることに注目してください。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInCurrentUrl</span><span class="p">(</span><span class="s1">&#39;/user/miles&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeCheckboxIsChecked</span><span class="p">(</span><span class="s1">&#39;#agree&#39;</span><span class="p">);</span>
@@ -258,20 +275,21 @@ A similar scenario can be rewritten with only one command.</p>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeLink</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<h4>Conditional Assertions</h4>
+<h4>条件付きアサーション</h4>
 
-<p>Sometimes you don&#39;t want the test to be stopped when an assertion fails. Maybe you have a long-running test and you want it to run to the end. In this case you can use conditional assertions. Each <code>see</code> method has a corresponding <code>canSee</code> method, and <code>dontSee</code> has a <code>cantSee</code> method. </p>
+<p>時にはアサーションが失敗したとしても、途中でテストを止めたくないでしょう。時間のかかるテストを行っていて、最後まで実行したいかもしれません。
+この場合には、条件付のアサーションを使用することが出来ます。<code>see</code>メソッドは<code>canSee</code>メソッドに対応しており、<code>dontSee</code>メソッドは<code>cantSee</code>メソッドに対応しています。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">canSeeInCurrentUrl</span><span class="p">(</span><span class="s1">&#39;/user/miles&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">canSeeCheckboxIsChecked</span><span class="p">(</span><span class="s1">&#39;#agree&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">cantSeeInField</span><span class="p">(</span><span class="s1">&#39;user[name]&#39;</span><span class="p">,</span> <span class="s1">&#39;Miles&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>Each failed assertion will be shown in test results. Still, a failed assertion won&#39;t stop the test.</p>
+<p>それぞれの失敗したアサーションはテスト結果に示されますが、アサーションが失敗することでテストが止まることは無いでしょう。</p>
 
-<h4>Grabbers</h4>
+<h4>グラバー</h4>
 
-<p>These commands retrieve data that can be used in test. Imagine, your site generates a password for every user and you want to check the user can log into the site using this password.</p>
+<p>これらのメソッドはテストで使われるデータを取得します。あなたのサイトがすべてのユーザーごとにパスワードを発行指定、そのパスワードでユーザーがサイトにログインできることをチェックしたいという場面を想像してください。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">,</span> <span class="s1">&#39;miles@davis.com&#39;</span><span class="p">)</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Generate Password&#39;</span><span class="p">);</span>
@@ -282,17 +300,17 @@ A similar scenario can be rewritten with only one command.</p>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Log in!&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>Grabbers allow you to get a single value from the current page with commands.</p>
+<p>グラバーは現在のページから一つの値を取得できるメソッドです。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$token</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabTextFrom</span><span class="p">(</span><span class="s1">&#39;.token&#39;</span><span class="p">);</span>
 <span class="nv">$password</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabTextFrom</span><span class="p">(</span><span class="s2">&quot;descendant::input/descendant::*[@id = &#39;password&#39;]&quot;</span><span class="p">);</span>
 <span class="nv">$api_key</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabValueFrom</span><span class="p">(</span><span class="s1">&#39;input[name=api]&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<h4>Comments</h4>
+<h4>コメント</h4>
 
-<p>Within a long scenario you should describe what actions you are going to perform and what results to achieve.
-Commands like <code>amGoingTo</code>, <code>expect</code>, <code>expectTo</code> help you in making tests more descriptive.</p>
+<p>長いシナリオ内では、これから実行しようとしている行動とそれによって得られる結果を説明するべきです。
+<code>amGoingTo</code>, <code>expect</code>, <code>expectTo</code>というメソッドは、よりわかりやすいテストを作成する助けとなります。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amGoingTo</span><span class="p">(</span><span class="s1">&#39;submit user form with invalid values&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;user[email]&#39;</span><span class="p">,</span> <span class="s1">&#39;miles&#39;</span><span class="p">);</span>
@@ -301,22 +319,22 @@ Commands like <code>amGoingTo</code>, <code>expect</code>, <code>expectTo</code>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Form is filled incorrectly&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<h4>Cookies, Urls, Title, etc</h4>
+<h4>クッキー、URL、タイトル、その他</h4>
 
-<p>Actions for cookies:</p>
+<p>クッキーを扱うためのメソッド：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">setCookie</span><span class="p">(</span><span class="s1">&#39;auth&#39;</span><span class="p">,</span> <span class="s1">&#39;123345&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabCookie</span><span class="p">(</span><span class="s1">&#39;auth&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeCookie</span><span class="p">(</span><span class="s1">&#39;auth&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>Actions for checking page title:</p>
+<p>ページのタイトルを扱うためのメソッド:</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInTitle</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSeeInTitle</span><span class="p">(</span><span class="s1">&#39;Register&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>Actions for url:</p>
+<p>URLを扱うためのメソッド:</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeCurrentUrlEquals</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeCurrentUrlMatches</span><span class="p">(</span><span class="s1">&#39;~$/users/(\d+)~&#39;</span><span class="p">);</span>
@@ -326,12 +344,12 @@ Commands like <code>amGoingTo</code>, <code>expect</code>, <code>expectTo</code>
 </code></pre></div>
 <h2>Selenium WebDriver</h2>
 
-<p>A nice feature of Codeception is that most scenarios can be easily ported between the testing backends.
-Your PhpBrowser tests we wrote previously can be executed inside a real browser (or even PhantomJS) with Selenium WebDriver.</p>
+<p>Codeceptionのすばらしい特徴は、ほとんどのシナリオが異なるテスト動作環境に容易に移植できることです。
+これまでに書いてきたPhpBrowserテストはSelenium WebDriverを使って、実際のブラウザの中で（あるいはPhantomJSでさえ）実行出来ます。</p>
 
-<p>The only thing we need to change is to reconfigure and rebuild the AcceptanceTester class, to use <strong>WebDriver</strong> instead of PhpBrowser.</p>
+<p>ただひとつだけ変更しなければならない事は、AcceptanceTesterクラスがPhpBrowserの代わりに<strong>WebDriver</strong>を使用するように設定してビルドし直すことです。</p>
 
-<p>Modify your <code>acceptance.suite.yml</code> file:</p>
+<p><code>acceptance.suite.yml</code>ファイルを変更してください：</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">AcceptanceTester</span>
 <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span>
@@ -340,34 +358,35 @@ Your PhpBrowser tests we wrote previously can be executed inside a real browser 
     <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
         <span class="l-Scalar-Plain">WebDriver</span><span class="p-Indicator">:</span>
             <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="s">&#39;http://localhost/myapp/&#39;</span>
-            <span class="l-Scalar-Plain">browser</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">firefox</span>            
+            <span class="l-Scalar-Plain">browser</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">firefox</span>
 </code></pre></div>
-<p>In order to run Selenium tests you need to <a href="http://seleniumhq.org/download/">download Selenium Server</a> and get it running (Alternatively you may use <a href="http://phantomjs.org/">PhantomJS</a> headless browser in <code>ghostdriver</code> mode).</p>
+<p>Seleniumでテストを実行するために、<a href="http://seleniumhq.org/download/">Selenium Server</a>をダウンロードして、起動しておく必要があります。（替わりに<code>ghostdriver</code>モードで動くヘッドレスブラウザの<a href="http://phantomjs.org/">PhantomJS</a>を使うことも出来ます。）</p>
 
-<p>If you run acceptance tests with Selenium, Firefox will be started and all actions will be performed step by step using browser engine. </p>
+<p>Seleniumを使用して受け入れテストを実行するならば、Firefoxから始められます。ブラウザエンジンを使用する事ですべての処理がステップ実行されます。</p>
 
-<p>In this case <code>seeElement</code> won&#39;t just check that the element exists on a page, but it will also check that element is actually visible to user.</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span> 
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeElement</span><span class="p">(</span><span class="s1">&#39;#modal&#39;</span><span class="p">);</span> 
+<p>この場合、<code>seeElement</code>メソッドはページにその要素が存在する事だけをチェックするのではなく、実際のユーザーからの可視性もチェックします。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeElement</span><span class="p">(</span><span class="s1">&#39;#modal&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <h4>Wait</h4>
 
-<p>While testing web application, you may need to wait for JavaScript events to occur. Due to its asynchronous nature, complex JavaScript interactions are hard to test. That&#39;s why you may need to use <code>wait</code> actions, which can be used to specify what event you expect to occur on a page, before proceeding the test.</p>
+<p>ウェブアプリケーションをテストしている間に、JavaScriptのeventが起こるまで待機しておく必要があるかもしれません。
+複雑なJavaScriptの処理は、その非同期性によってテストが困難になります。テストが先に進んでしまう前に、そのページで起こると予測しているeventを指定できるように、<code>wait</code>メソッドが必要なのです。</p>
 
-<p>For example: </p>
+<p>例：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">waitForElement</span><span class="p">(</span><span class="s1">&#39;#agree_button&#39;</span><span class="p">,</span> <span class="mi">30</span><span class="p">);</span> <span class="c1">// secs</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;#agree_button&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>In this case we are waiting for agree button to appear and then clicking it. If it didn&#39;t appear for 30 seconds, test will fail. There are other <code>wait</code> methods you may use.</p>
+<p>この場合には、agree buttonが表示されるまで待機し、表示されたらクリックします。30秒経過しても表示されなかったときは、テストは失敗します。他にも使える<code>wait</code>メソッドがあります。</p>
 
-<p>See Codeception&#39;s <a href="http://codeception.com/docs/modules/WebDriver">WebDriver module documentation</a> for the full reference.</p>
+<p>詳細なリファレンスはCodeception&#39;s <a href="http://codeception.com/docs/modules/WebDriver">WebDriver module documentation</a>を参照してください。</p>
 
-<h3>Multi Session Testing</h3>
+<h3>複数セッションのテスト</h3>
 
-<p>Codeception allows you to execute actions in concurrent sessions. The most obvious case for it is testing realtime messaging between users on site. In order to do it you will need to launch two browser windows at the same time for the same test. Codeception has very smart concept for doing this. It is called <strong>Friends</strong>.</p>
+<p>Codeceptionは同時に複数のセッションを実行出来ます。サイト上でユーザ同士がリアルタイムにメッセージをやり取りする場合がもっともわかりやすいです。そのためには２つのブラウザウィンドウを同じテスト中に同時に立ち上げる必要があるでしょう。Codeceptionはこのための<strong>Friends</strong>と呼ばれるとってもスマートな方法が用意されています。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;try multi session&#39;</span><span class="p">);</span>
@@ -383,11 +402,11 @@ Your PhpBrowser tests we wrote previously can be executed inside a real browser 
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Hello all!&#39;</span><span class="p">,</span> <span class="s1">&#39;.message&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>In this case we did some actions in second window with <code>does</code> command on a friend object.</p>
+<p>この場合には、2つ目のウィンドウでfriendオブジェクトが<code>does</code>メソッドを使用していくつかの行動をしました。</p>
 
-<h3>Cleaning Things Up</h3>
+<h3>クリーンアップ</h3>
 
-<p>While testing, your actions may change the data on the site. Tests will fail if trying to create or update the same data twice. To avoid this problem, your database should be repopulated for each test. Codeception provides a <code>Db</code> module for that purpose. It will load a database dump after each passed test. To make repopulation work, create an sql dump of your database and put it into the <strong>/tests/_data</strong> directory. Set the database connection and path to the dump in the global Codeception config.</p>
+<p>テストをしている中で、あなたの行動はサイト上のデータを変えてしまうかもしれません。2度同じデータを生成したり、アップデートしようとしてテストは失敗する事になるでしょう。この問題を避けるために、データベースはそれぞれのテストごとに再構築する必要があります。Codeceptionはそのために<code>Db</code>モジュールを提供しています。テストを通過した後にデータベースのdumpをロードします。データベースの再構築を機能させるためには、データベースをdumpしてsqlファイルを作成し、<strong>/tests/_data</strong>ディレクトリに配置してください。Codeceptionのglobalの設定にデータベースへの接続情報とパスをセットしてください。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># in codeception.yml:</span>
 <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
@@ -397,18 +416,18 @@ Your PhpBrowser tests we wrote previously can be executed inside a real browser 
             <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span> <span class="s">&#39;[set</span><span class="nv"> </span><span class="s">password]&#39;</span>
             <span class="l-Scalar-Plain">dump</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">tests/_data/dump.sql</span>
 </code></pre></div>
-<h3>Debugging</h3>
+<h3>デバッグ</h3>
 
-<p>Codeception modules can print valuable information while running. Just execute tests with the <code>--debug</code> option to see running details. For any custom output use <code>codecept_debug</code> function.</p>
+<p>Codeceptionモジュールは実行中に価値のある情報を出力できます。実行中の詳細を見るために<code>--debug</code>オプションをテスト起動時に付けるだけです。出力をカスタマイズするには<code>codecept_debug</code>ファンクションを使います。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nx">codecept_debug</span><span class="p">(</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabTextFrom</span><span class="p">(</span><span class="s1">&#39;#name&#39;</span><span class="p">));</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>On each fail, the snapshot of the last shown page will be stored in the <strong>tests/_log</strong> directory. PhpBrowser will store HTML code and WebDriver will save the screenshot of a page.</p>
+<p>テストの失敗ごとに、最後に表示されていたページのスナップショットを<strong>tests/_log</strong>ディレクトリに保存します。PhpBrowserはHTMLのコードを保存し、WebDriverはページのスクリーンショットを保存します。</p>
 
-<h2>Conclusion</h2>
+結論</h2>
 
-<p>Writing acceptance tests with Codeception and PhpBrowser is a good start. You can easily test your Joomla, Drupal, WordPress sites, as well as those made with frameworks. Writing acceptance tests is like describing a tester&#39;s actions in PHP. They are quite readable and very easy to write. Don&#39;t forget to repopulate the database on each test run.</p>
+<p>CodeceptionとPhpBrowserで受け入れテストを書くことは、良いスタートです。フレームワークで作られたサイトと同じように、Joomla, Drupal, WordPressのサイトも簡単にテスト出来ます。受け入れテストを書くことはPHPでのテスターの行動を説明するようなものです。可読性に長け、とても書きやすいです。テストを実行するごとにデータベースの再構築を忘れないように。</p>
 
     </section>
 </div>
@@ -417,7 +436,7 @@ Your PhpBrowser tests we wrote previously can be executed inside a real browser 
 <div id="footer_wrap" class="outer">
     <footer class="inner">
         <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-02-20 16:41:43 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+        <p>Last updated: 2015-02-23 14:09:44 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
         <div id="contributors"></div>
     </footer>
 </div>

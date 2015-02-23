@@ -32,15 +32,15 @@
 <!-- MAIN CONTENT -->
 <div id="main_content_wrap" class="outer">
     <section id="main_content" class="inner">
-        <h1>Functional Tests</h1>
+        <h1>機能テスト</h1>
 
-<p>Now that we&#39;ve written some acceptance tests, functional tests are almost the same, with just one major difference: functional tests don&#39;t require a web server to run tests.</p>
+<p>今、私達はいくつかの受け入れテストを書いてきましたが、機能テストもほぼ同様に書けます。ひとつの大きな違いがあるだけです：機能テストは実行するのにWebサーバーを必要としないことです。</p>
 
-<p>In simple terms we set <code>$_REQUEST</code>, <code>$_GET</code> and <code>$_POST</code> variables and then we execute application from a test. This may be valuable as functional tests are faster and provide detailed stack traces on failures.</p>
+<p>簡単に言えば、<code>$_REQUEST</code>や<code>$_GET</code>、<code>$_POST</code>の変数をセットし、テストからアプリケーションを実行します。このことは機能テストがより速く動作し、失敗時に詳細なスタックトレースを提供するので価値のあることでしょう。</p>
 
-<p>Codeception can connect to different web frameworks which support functional testing: Symfony2, Laravel4, Yii2, Zend Framework and others. You just need to enable desired module in your functional suite config to start.</p>
+<p>Codeceptionは機能テストをサポートしている異なるフレームワークと接続出来ます:Symfony2, Laravel4, Yii2, Zend Frameworkなどです。あなたはお望みのモジュールをfunctionalスイートの設定において使用できるようにするだけです。</p>
 
-<p>Modules for all of these frameworks share the same interface, and thus your tests are not bound to any one of them. This is a sample functional test.</p>
+<p>これらのフレームワークモジュールは同じインターフェイスを持っているので、フレームワークにテストが縛られることはありません。以下は機能テストのサンプルです。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>
@@ -49,94 +49,94 @@
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="s1">&#39;Davis&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Enter&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Hello, Miles&#39;</span><span class="p">,</span> <span class="s1">&#39;h1&#39;</span><span class="p">);</span>
-<span class="c1">// $I-&gt;seeEmailIsSent() - special for Symfony2</span>
+<span class="c1">// $I-&gt;seeEmailIsSent() - Symfony2特有のメソッドです</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>As you see you can use same tests for functional and acceptance testing. </p>
+<p>ご覧の通り、機能テストと受け入れテストで同じテストを使うことが出来ます。</p>
 
-<h2>Pitfalls</h2>
+<h2>落とし穴</h2>
 
-<p>Acceptance tests are usually much slower than functional tests. But functional tests are less stable as they run Codeception and application in one environment.</p>
+<p>通常、受け入れテストは機能テストよりも相当な時間がかかります。しかし機能テストはひとつの環境でCodeceptionとアプリケーションを実行するため、より不安定になります。</p>
 
-<h4>Headers, Cookies, Sessions</h4>
+<h4>ヘッダー、クッキー、セッション</h4>
 
-<p>One of the common issues with functional tests is usage of PHP functions that deal with <code>headers</code>, <code>sessions</code>, <code>cookies</code>.
-As you know, <code>header</code> function triggers an error if it is executed more than once for the same header. In functional tests we run application multiple times, thus, we will get lots of trash errors in the result.</p>
+<p>機能テストの一般的な問題のひとつに、<code>headers</code>, <code>sessions</code>, <code>cookies</code>を扱うPHPメソッドの使い方があります。
+ご存知のように、<code>header</code>メソッドは同じヘッダを2回以上実行するとエラーを発生させます。機能テストにおいてはアプリケーションを何回も実行するため、テスト結果にくだらないエラーがたくさん含まれてしまうでしょう。</p>
 
-<h4>Shared Memory</h4>
+<h4>共有メモリ</h4>
 
-<p>In functional testing unlike the traditional way, PHP application does not stop after it finished processing a request. 
-As all requests run in one memory container they are not isolated.
-So <strong>if you see that your tests are mysteriously failing when they shouldn&#39;t - try to execute a single test.</strong>
-This will check if tests were isolated during run. Because it&#39;s really easy to spoil environment as all tests are run in shared memory.
-Keep your memory clean, avoid memory leaks and clean global and static variables.</p>
+<p>従来の方法とは違い、機能テストではリクエストの処理が終わった後にPHPアプリケーションを停止しません。
+ひとつのメモリコンテナですべてのリクエストが実行されるので、リクエストが分離されることはありません。
+したがって、<strong>もしあなたが、失敗するはずないと思っているテストが何故か失敗するときは、単一のテストで実行してみてください。</strong>
+これはテストの実行中にそれぞれが分離されているかをチェックします。すべてのテストがメモリを共有して実行されていると容易に環境を壊してしまうからです。
+メモリをきれいに保ち、メモリリークを避け、globalやstaticな変数をきれいにしてください。</p>
 
-<h2>Enabling Framework Modules</h2>
+<h2>フレームワークモジュールを使う</h2>
 
-<p>You have a functional testing suite in <code>tests/functional</code> dir.
-To start you need to include one of the framework modules in suite config file: <code>tests/functional.suite.yml</code>. Below we provide simplified instructions for setting up functional tests with the most popular PHP frameworks.</p>
+<p>機能テストスイートは<code>tests/functional</code>ディレクトリにあります。
+はじめに、スイートの設定ファイル:<code>tests/functional.suite.yml</code> にフレームワークモジュールを一つ含める必要があります。下記にもっともポピュラーなPHPフレームワークで機能テストをセットアップする簡単な手順を提供しています。</p>
 
 <h3>Symfony2</h3>
 
-<p>To perform Symfony2 integrations you don&#39;t need to install any bundles or do any configuration changes.
-You just need to include the <code>Symfony2</code> module into your test suite. If you also use Doctrine2, don&#39;t forget to include it too.</p>
+<p>Symfony2で動作させるために、バンドルをインストールする必要も設定を変更することもありません。
+テストスイートに<code>Symfony2</code>モジュールを追加する必要があるだけです。もしDoctrine2も使用するのであれば、忘れずに追加してください。</p>
 
-<p>Example of <code>functional.suite.yml</code></p>
+<p><code>functional.suite.yml</code>の例</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
 <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Symfony2</span><span class="p-Indicator">,</span> <span class="nv">Doctrine2</span><span class="p-Indicator">,</span> <span class="nv">TestHelper</span><span class="p-Indicator">]</span> 
 </code></pre></div>
-<p>By default this module will search for App Kernel in the <code>app</code> directory.</p>
+<p>デフォルトでは、このモジュールは<code>app</code>ディレクトリのApp Kernelを検索するでしょう。</p>
 
-<p>The module uses the Symfony Profiler to provide additional information and assertions.</p>
+<p>モジュールは追加の情報とアサーションを提供するためにSymfony Profilerを使用します。</p>
 
-<p><a href="http://codeception.com/docs/modules/Symfony2">See the full reference</a></p>
+<p><a href="http://codeception.com/docs/modules/Symfony2">詳しくはリファレンス全文を見てください。</a></p>
 
 <h3>Laravel 4</h3>
 
-<p><a href="http://codeception.com/docs/modules/Laravel4">Laravel</a> module requires no configuration and can be easily set up.</p>
+<p><a href="http://codeception.com/docs/modules/Laravel4">Laravel</a> モジュールは設定も必要なく、簡単にセットアップ出来ます。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
 <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Laravel4</span><span class="p-Indicator">,</span> <span class="nv">TestHelper</span><span class="p-Indicator">]</span>
 </code></pre></div>
 <h3>Yii2</h3>
 
-<p>Yii2 tests are included in <a href="https://github.com/yiisoft/yii2-app-basic">Basic</a> and <a href="https://github.com/yiisoft/yii2-app-advanced">Advanced</a> application templates. Follow Yii2 guides to start.</p>
+<p>Yii2のテストは<a href="https://github.com/yiisoft/yii2-app-basic">Basic</a> と <a href="https://github.com/yiisoft/yii2-app-advanced">Advanced</a>アプリケーションテンプレートに含まれています。 始めるには、Yii2のガイドに従ってください。</p>
 
 <h3>Yii</h3>
 
-<p>By itself Yii framework does not have an engine for functional testing.
-So Codeception is the first and the only functional testing framework for Yii.
-To use it with Yii include <code>Yii1</code> module into config.</p>
+<p>Yiiフレームワークは、単体では機能テストを動作させる仕組みを持っていません。
+なので、CodeceptionがYiiフレームワークの最初で唯一の機能テストです。
+Yiiで機能テストを使用するには設定に<code>Yii1</code>モジュールを追加してください。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
 <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Yii1</span><span class="p-Indicator">,</span> <span class="nv">TestHelper</span><span class="p-Indicator">]</span>
 </code></pre></div>
-<p>To avoid common pitfalls we discussed earlier, Codeception provides basic hooks over Yii engine.
-Please set them up following <a href="http://codeception.com/docs/modules/Yii1">the installation steps in module reference</a>.</p>
+<p>先ほど議論した落とし穴を避けるために、CodeceptionはYiiエンジン上に基盤となるフックを提供しています。
+それをthe installation steps in module referenceのページに従って設定してください。</p>
 
 <h3>Zend Framework 2</h3>
 
-<p>Use <a href="http://codeception.com/docs/modules/ZF2">ZF2</a> module to run functional tests inside Zend Framework 2.</p>
+<p>Zend Framework 2の内部で機能テストを実行するには<a href="http://codeception.com/docs/modules/ZF2">ZF2</a> モジュールを使用してください。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
 <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">ZF2</span><span class="p-Indicator">,</span> <span class="nv">TestHelper</span><span class="p-Indicator">]</span>
 </code></pre></div>
 <h3>Zend Framework 1.x</h3>
 
-<p>The module for Zend Framework is highly inspired by ControllerTestCase class, used for functional testing with PHPUnit. 
-It follows similar approaches for bootstrapping and cleaning up. To start using Zend Framework in your functional tests, include the <code>ZF1</code> module.</p>
+<p>Zend FrameworkのためのモジュールはPHPUnitの機能テストに使われるControllerTestCaseクラスに強く影響を受けています。
+ブートストラップとクリーンアップに同様のアプローチが使われています。機能テストでZend Frameworkを使用する場合は<code>ZF1</code>モジュールを追加してください。</p>
 
-<p>Example of <code>functional.suite.yml</code></p>
+<p><code>functional.suite.yml</code>の例</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
 <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">ZF1</span><span class="p-Indicator">,</span> <span class="nv">TestHelper</span><span class="p-Indicator">]</span> 
 </code></pre></div>
-<p><a href="http://codeception.com/docs/modules/ZF1">See the full reference</a></p>
+<p><a href="http://codeception.com/docs/modules/ZF1">詳しくはリファレンス全文を見てください。</a></p>
 
 <h3>Phalcon 1.x</h3>
 
-<p><code>Phalcon1</code> module requires creating bootstrap file which returns instance of <code>\Phalcon\Mvc\Application</code>. To start writing functional tests with Phalcon support you should enable <code>Phalcon1</code> module and provide path to this bootstrap file:</p>
+<p><code>Phalcon1</code>モジュールは<code>\Phalcon\Mvc\Application</code>のインスタンスを返すブートストラップファイルを作成する必要があります。Phalconで機能テストを始めるには、<code>Phalcon1</code>モジュールを追加し、このブートストラップファイルにパスを通す必要があります。:</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
 <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Phalcon1</span><span class="p-Indicator">,</span> <span class="nv">FunctionalHelper</span><span class="p-Indicator">]</span>
@@ -144,85 +144,86 @@ It follows similar approaches for bootstrapping and cleaning up. To start using 
         <span class="l-Scalar-Plain">Phalcon1</span>
             <span class="l-Scalar-Plain">bootstrap</span><span class="p-Indicator">:</span> <span class="s">&#39;app/config/bootstrap.php&#39;</span>
 </code></pre></div>
-<p><a href="http://codeception.com/docs/modules/Phalcon1">See the full reference</a></p>
+<p><a href="http://codeception.com/docs/modules/Phalcon1">詳しくはリファレンス全文を見てください。</a></p>
 
-<h2>Writing Functional Tests</h2>
+<h2>機能テストを書く</h2>
 
-<p>Functional tests are written in the same manner as <a href="http://codeception.com/docs/04-AcceptanceTests">Acceptance Tests</a> with <code>PhpBrowser</code> module enabled. All framework modules and <code>PhpBrowser</code> module share the same methods and the same engine.</p>
+<p>機能テストは<code>PhpBrowser</code>モジュールでの<a href="http://codeception.com/docs/04-AcceptanceTests">受け入れテスト</a>と同じような方法で書かれます。すべてのフレームワークモジュールと<code>PhpBrowser</code>モジュールは同じメソッドと同じエンジンを共有しています。</p>
 
-<p>Therefore we can open a web page with <code>amOnPage</code> command.</p>
+<p>したがって、私たちは<code>amOnPage</code>メソッドでウェブページを開くことが出来ます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">;</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>We can click links to open web pages of application.</p>
+<p>アプリケーションのページを開くリンクをクリックします。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Logout&#39;</span><span class="p">);</span>
-<span class="c1">// click link inside .nav element</span>
+<span class="c1">// .nav要素のリンクをクリックする</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Logout&#39;</span><span class="p">,</span> <span class="s1">&#39;.nav&#39;</span><span class="p">);</span>
-<span class="c1">// click by CSS</span>
+<span class="c1">// CSSセレクタによるクリック</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;a.logout&#39;</span><span class="p">);</span>
-<span class="c1">// click with strict locator</span>
+<span class="c1">// strict locatorを使用したクリック</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">([</span><span class="s1">&#39;class&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;logout&#39;</span><span class="p">]);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>We can submit forms as well:</p>
+<p>フォームの送信も同様です。：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">&#39;form#login&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;john&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;123456&#39;</span><span class="p">]);</span>
-<span class="c1">// alternatively</span>
+<span class="c1">// 代替</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;#login input[name=name]&#39;</span><span class="p">,</span> <span class="s1">&#39;john&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;#login input[name=password]&#39;</span><span class="p">,</span> <span class="s1">&#39;123456&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Submit&#39;</span><span class="p">,</span> <span class="s1">&#39;#login&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>And do assertions:</p>
+<p>そしてアサーションをします。：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Welcome, john&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Logged in successfully&#39;</span><span class="p">,</span> <span class="s1">&#39;.notice&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeCurrentUrlEquals</span><span class="p">(</span><span class="s1">&#39;/profile/john&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>Framework modules also contain additional methods to access framework internals. For instance, <code>Laravel4</code>, <code>Phalcon1</code>, and <code>Yii2</code> modules have <code>seeRecord</code> method which uses ActiveRecord layer to check that record exists in database.
-<code>Laravel4</code> module also contains methods to do additional session checks. You may find <code>seeSessionHasErrors</code> useful when you test form validations.</p>
+<p>フレームワークのモジュールはフレームワーク内部にアクセスするメソッドも含んでいます。例えば、<code>Laravel4</code>, <code>Phalcon1</code>, そして <code>Yii2</code>モジュールはデータベースにレコードが存在するかチェックするためのActiveRecord layerを使用する<code>seeRecord</code>メソッドを持っています。
+<code>Laravel4</code>モジュールはセッションをチェックするメソッドも含んでいます。フォームのバリデーションをテストするときに<code>seeSessionHasErrors</code>メソッドは役に立つと分かるでしょう。</p>
 
-<p>Take a look at the complete reference for module you are using. Most of its methods are common for all modules but some of them are unique.</p>
+<p>使用するモジュールの完全なリファレンスを見てください。モジュールのほとんどのメソッドはすべてに共通で、固有のメソッドは数種類です。</p>
 
-<p>Also you can access framework globals inside a test or access Depenency Injection containers inside <code>FunctionalHelper</code> class.</p>
+<p>また、フレームワーク内部globalないし、<code>FunctionalHelper</code>クラスの依存関係注入コンテナの内部へもアクセス出来ます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">class</span> <span class="nc">FunctionalHelper</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span>
 <span class="p">{</span>
     <span class="k">function</span> <span class="nf">doSomethingWithMyService</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="nv">$service</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">&#39;Symfony2&#39;</span><span class="p">)</span> <span class="c1">// lookup for Symfony 2 module</span>
-            <span class="o">-&gt;</span><span class="na">container</span> <span class="c1">// get current DI container</span>
-            <span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;my_service&#39;</span><span class="p">);</span> <span class="c1">// access a service</span>
+        <span class="nv">$service</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">&#39;Symfony2&#39;</span><span class="p">)</span> <span class="c1">// Symfony 2モジュールの検索</span>
+            <span class="o">-&gt;</span><span class="na">container</span> <span class="c1">// 現在のDI containerを取得</span>
+            <span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;my_service&#39;</span><span class="p">);</span> <span class="c1">// サービスにアクセス</span>
 
         <span class="nv">$service</span><span class="o">-&gt;</span><span class="na">doSomething</span><span class="p">();</span>
     <span class="p">}</span>
 <span class="p">}</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>We accessed Symfony2 internal kernel and took a service out of container. We also created custom method in <code>FunctionalTester</code> class which can be used in tests.</p>
+<p>Symfony2内部のカーネルにアクセスし、サービスコンテナを取得しました。私たちはテストで使用出来る<code>FunctionalTester</code>クラスのメソッドをカスタマイズして作ることも出来ます。</p>
 
-<p>You can learn more about accessing framework you use by checking <em>Public Properties</em> section in the reference for the corresponding module. </p>
+<p>使用するモジュールに対応するリファレンスの<em>Public Properties</em>の節をチェックすることで、もっとフレームワークにアクセスする情報を得ることが出来ます。</p>
 
-<h2>Error Reporting</h2>
+<h2>エラーレポート</h2>
 
-<p>By default Codeception uses <code>E_ALL &amp; ~E_STRICT &amp; ~E_DEPRECATED</code> error reporting level. 
-In functional tests you might want to change this level depending on framework&#39;s error policy.
-The error reporting level can be set in the suite configuraion file:</p>
+<p>Codeceptionはデフォルトで<code>E_ALL &amp; ~E_STRICT &amp; ~E_DEPRECATED</code>のエラー出力レベルを使用しています。
+機能テストの中で、エラーレベルをフレームワークごとの方針に変更したいと思うかもしれません。
+エラー出力レベルはスイートの設定ファイルで設定する事が出来ます：</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
 <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Yii1</span><span class="p-Indicator">,</span> <span class="nv">TestHelper</span><span class="p-Indicator">]</span>
 <span class="l-Scalar-Plain">error_level</span><span class="p-Indicator">:</span> <span class="s">&quot;E_ALL</span><span class="nv"> </span><span class="s">&amp;</span><span class="nv"> </span><span class="s">~E_STRICT</span><span class="nv"> </span><span class="s">&amp;</span><span class="nv"> </span><span class="s">~E_DEPRECATED&quot;</span>
 </code></pre></div>
-<p><code>error_level</code> can be set globally in <code>codeception.yml</code> file.</p>
+<p><code>error_level</code>は<code>codeception.yml</code>ファイルにグローバルに定義することも出来ます。</p>
 
-<h2>Conclusion
-<p>Functional tests are great if you are using powerful frameworks. By using functional tests you can access and manipulate their internal state. 
-This makes your tests shorter and faster. In other cases, if you don&#39;t use frameworks there is no practical reason to write functional tests.
-If you are using a framework other than the ones listed here, create a module for it and share it with community.</p>
+<h2>結論</h2>
+
+<p>パワフルなフレームワークを使用しているならば、機能テストはすばらしいです。機能テストを使用する事で、フレームワークの内部状態にアクセスでき、制御する事が出来ます。
+このことはテストをより短く、より速くしてくれます。フレームワークを使用しない場合ならば、機能テストを書く実用的な理由はないです。
+もしここで挙げたものと違うフレームワークを使用しているならば、モジュールを作成して、コミュニティで共有してください。</p>
 
     </section>
 </div>
@@ -231,7 +232,7 @@ If you are using a framework other than the ones listed here, create a module fo
 <div id="footer_wrap" class="outer">
     <footer class="inner">
         <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-02-20 16:41:43 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+        <p>Last updated: 2015-02-23 14:09:44 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
         <div id="contributors"></div>
     </footer>
 </div>
