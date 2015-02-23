@@ -32,17 +32,18 @@
 <!-- MAIN CONTENT -->
 <div id="main_content_wrap" class="outer">
     <section id="main_content" class="inner">
-        <h1>Working with Data</h1>
+        <h1>データを取り扱う</h1>
 
-<p>Tests should not affect each other. That&#39;s a rule of thumb. When tests interact with database, they may change data inside it, which would eventually lead to data inconsistency. A test may try to insert a record that has already been inserted, or retrieve a deleted record. To avoid test failures, the database should be brought to its initial state before each test. Codeception has different methods and approaches to get your data cleaned.</p>
+<p>テストはお互いに影響を及ぼし合ってはなりません。これが大雑把なルールです。
+テストがデータベースとやり取りする際に内部のデータを変更しかねないため、最終的にデータの不一致や矛盾を生じさせるかもしれないのです。テストは既に挿入されているレコードを挿入したり、削除されているレコードを検索しようとするかもしれません。テストの失敗を回避するため、データベースは各テストを行う前に初期状態になっていなければなりません。Codeceptionには、データをクリーンにするための方法やアプローチがいくつか存在します。</p>
 
-<p>This chapter summarizes all of the notices on cleaning ups from the previous chapters and suggests the best strategies of how to choose data storage backends.</p>
+<p>この章では、前章のクリーンアップに関する注意を要約すると共に、データストレージバックエンドを選択する方法の最善策について提案します。</p>
 
-<p>When we decide to clean up a database, we should make this cleaning as fast as possible. Tests should always run fast. Rebuilding the database from scratch is not the best way, but might be the only one. In any case, you should use a special test database for testing. <strong>Do not ever run tests on development or production database!</strong></p>
+<p>私たちがデータベースをクリーンアップすると決めた時、私たちはそれをできるだけ速く行うべきです。テストは常に速く実行される必要があります。データベースを一から再構築するのは最良の方法とは言えないかもしれませんが、唯一の方法とも言えるかもしれません。いずれにせよ、テストのためだけに特別なデータベースを使用してください。<strong>絶対に開発環境または本番環境のデータベースでテストを実行しないでください!</strong></p>
 
-<h2>Automatic Cleanup</h2>
+<h2>自動クリーンアップ</h2>
 
-<p>Codeception has a <code>Db</code> module, which takes on most of the tasks of database interaction. By default it will try to repopulate the database from a dump and clean it up after each test. This module expects a database dump in SQL format. It&#39;s already prepared for configuration in <code>codeception.yml</code>:</p>
+<p>Codeceptionにはデータベースと対話をする際に必要なほとんどのタスクを行ってくれる<code>Db</code>モジュールがあります。デフォルトでは、dumpからデータベースを再構築し、各テストが終了した後にクリーンアップを試みます。このモジュールのデータベースのdumpはSQLフォーマットです。<code>codeception.yml</code>内ですでに設定が準備されています。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
         <span class="l-Scalar-Plain">Db</span><span class="p-Indicator">:</span>
@@ -51,26 +52,25 @@
             <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span>
             <span class="l-Scalar-Plain">dump</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">tests/_data/your-dump-name.sql</span>
 </code></pre></div>
-<p>After you enable this module in your test suite, it will automatically populate the database from a dump and repopulate it on each test run. These settings can be changed through the <code>populate</code> and <code>cleanup</code> options, which may be set to <code>false</code>.</p>
+<p>あなたのテストスイートでこのモジュールを有効化したら、自動的にdumpからデータベースにデータが挿入され、各テストの実行時に再構築されます。これらの設定は<code>populate</code> と <code>cleanup</code>オプションの変更によって<code>false</code>に設定することができます。</p>
 
-<p>The <code>Db</code> module is a rough tool. It works for any type of database supported by PDO. It could be used for all of the tests if it wasn&#39;t so slow. Loading a dump can take a lot of time that can be saved by using other techniques. When your test and application share the same database connection, as may be the case in functional and unit tests, the best way to speed up everything is to put all of the code in transaction, rolled back when test ends. In acceptance tests, different database connections are used, you can speed up tests by using SQLite file database. Alternatively, you can avoid recreating database on every test, but cleaning up all updates after the test.</p>
+<p><code>Db</code>モジュールはラフなツールです。PDOでサポートされているどのデータベースでも動作します。もし速度が遅くなければ、すべてのテストで使用できます。dumpをロードするのはとても時間がかかりますが、他の手段を使うこともできます。機能テストや単体テストを行う際などにアプリケーションとテストがデータベース接続を共有している時、速度を向上させる最善策はすべてのコードをトランザクションに設置し、テスト終了時にロールバックすることです。</p>
 
-<h2>Separate connections</h2>
+<h2>分離された接続</h2>
 
-<p>In acceptance tests, your test is interacting with the application through a web server. There is no way to receive a database connection from the web server. This means that the test and the application will work with the same database but on different connections. Provide in the Db module the same credentials that your application uses, and then you can access the database for assertions (<code>seeInDatabase</code> actions) and perform automatic cleanups.</p>
+<p>受け入れテストでは、異なるデータベース接続が使用されているため、テスト速度を向上するにはSQLiteファイルのデータベースを使うことができます。また、代替案として、各テストごとにデータベースを作成するのを避け、テスト終了後にすべてのアップデートをクリーンアップすることも考えられます。Dbモジュールはあなたのアプリケーションと同等の機能を提供しており、アサーション(<code>seeInDatabase</code>アクション)のためにデータベースにアクセスしたり、自動クリーンアップしたりします。</p>
 
-<h2>Shared connections</h2>
+<h2>共有された接続</h2>
 
-<p>When an application or its parts are run within the Codeception process, you can use your application connection in your tests.
-If you can access the connection, all database operations can be put into one global transaction and rolled back at the end. That will dramatically improve performance. Nothing will be written to the database at the end, thus no database repopulation is actually needed.</p>
+<p>あなたのアプリケーションもしくはその一部がCodeceptionプロセス内で実行されている場合、アプリケーション接続をテストで使用することが可能です。接続にアクセスできれば、すべてのデータベース操作はグローバルトランザクションに含むことができ、最後にロールバックされます。それは劇的にパフォーマンスを改善するでしょう。最後にデータベースに何も書かれないため、実際にデータベースの再構築が必要とならないのです。</p>
 
-<h3>ORM modules</h3>
+<h3>ORM モジュール</h3>
 
-<p>If your application is using an ORM like Doctrine or Doctrine2, connect the respective modules to the suite. By default they will cover everything in a transaction. If you use several database connections, or there are transactions not tracked by the ORM, that module will be useless for you.</p>
+<p>アプリケーションがDoctrineやDoctrine2のようなORMを使用しているのでしたら、各モジュールでスイートに接続してください。デフォルトでは、トランザクション内のすべてをカバーします。もしあなたが複数のデータベース接続を使っていない、もしくはORMによって追跡されないトランザクションである場合、このモジュールはあなたの役には立たないでしょう。</p>
 
-<p>An ORM module can be connected with a <code>Db</code> module, but by default both will perform cleanup. Thus you should explicitly set which module is used:</p>
+<p>ORMモジュールは<code>Db</code>モジュールと接続できますが、デフォルトでは両方ともクリーンアップを行います。従って、あなたが明示的に使用しているモジュールを設定する必要があります。</p>
 
-<p>In <code>tests/functional.suite.yml</code>:</p>
+<p><code>tests/functional.suite.yml</code>は次のようになります。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Db</span><span class="p-Indicator">,</span> <span class="nv">Doctrine2</span><span class="p-Indicator">,</span> <span class="nv">FunctionalHelper</span><span class="p-Indicator">]</span>
     <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
@@ -79,34 +79,35 @@ If you can access the connection, all database operations can be put into one gl
 </code></pre></div>
 <p>Still, the <code>Db</code> module will perform database population from a dump before each test. Use <code>populate: false</code> to disable it.</p>
 
-<h3>Dbh module</h3>
+<p><code>Db</code>モジュールは未だテスト後にdumpからデータベースの再構築を行います。<code>populate: false</code>を使って、それを無効にしてください。</p>
 
-<p>If you use PostgreSQL, or any other database which supports nested transactions, you can use the <code>Dbh</code> module. It takes a PDO instance from your application, starts a transaction at the beginning of the tests, and rolls it back at the end.
-A PDO connection can be set in the bootstrap file. This module also overrides the <code>seeInDatabase</code> and <code>dontSeeInDatabase</code> actions of the <code>Db</code> module.</p>
+<h3>Dbh モジュール</h3>
 
-<p>To use the <code>Db</code> module for population and <code>Dbh</code> for cleanups, use this config:</p>
+<p>PostgreSQLまたは他のネストされたトランザクションをサポートしているデータベースを使っているのでしたら、<code>Dbh</code>モジュールを使用してください。アプリケーションからPDOインスタンスを取得し、テストの開始でトランザクションを開始して終了後にロールバックします。PDO接続はブートストラップファイルで定義することができます。このモジュールは<code>Db</code>モジュールの<code>seeInDatabase</code>メソッドと<code>dontSeeInDatabase</code>メソッドを上書きします。</p>
+
+<p>再構築に<code>Db</code>モジュールを使用し、クリーンアップに<code>Dhp</code>モジュールを行うには、次のように設定してください。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Db</span><span class="p-Indicator">,</span> <span class="nv">Dbh</span><span class="p-Indicator">,</span> <span class="nv">FunctionalHelper</span><span class="p-Indicator">]</span>
     <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
         <span class="l-Scalar-Plain">Db</span><span class="p-Indicator">:</span>
             <span class="l-Scalar-Plain">cleanup</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
 </code></pre></div>
-<p>Please, note that <code>Dbh</code> module should go after the <code>Db</code>. That allows the <code>Dbh</code> module to override actions.</p>
+<p><code>Dbh</code>モジュールは<code>Db</code>モジュールの後に来なければいけないことに注意してください。これによって<code>Dbh</code>モジュールはアクションを上書きできるようになります。</p>
 
-<h2>Fixtures</h2>
+<h2>フィクスチャ</h2>
 
-<p>Fixtures are sample data that we can use in tests. This data can be either generated, or taken from a sample database. Fixtures can be defined in separate PHP file and loaded in tests.</p>
+<p>フィクスチャはテストで使用できるサンプルデータです。このデータは生成されるか、サンプルデータベースから取得されます。フィクスチャは別のPHPファイルで定義され、テストにロードできます。</p>
 
-<h4>Fixtures for Acceptance and Functional Tests</h4>
+<h4>受け入れテストと機能テストのフィクスチャ</h4>
 
-<p>Let&#39;s create <code>fixtures.php</code> file in <code>tests/functional</code> and load data from database to be used in tests.</p>
+<p><code>tests/functional</code>内に<code>fixtures.php</code>ファイルを作り、テストで使用するデータをデータベースからロードしてみましょう。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="c1">// let&#39;s take user from sample database,</span>
-<span class="c1">// we can populate it with Db module</span>
+<span class="c1">// サンプルデータベースからユーザを取得します</span>
+<span class="c1">// Dbモジュールを使用します</span>
 <span class="nv">$john</span> <span class="o">=</span> <span class="nx">User</span><span class="o">::</span><span class="na">findOneBy</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;john&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>Fixture usage in a sample acceptance or functional test:</p>
+<p>受け入れテストと機能テストのサンプルでのフィクスチャの使用方法です:</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">require</span> <span class="s1">&#39;fixtures.php&#39;</span><span class="p">;</span>
 
@@ -115,23 +116,23 @@ A PDO connection can be set in the bootstrap file. This module also overrides th
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Welcome, John&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>Also you can use the <a href="https://github.com/fzaninotto/Faker">Faker</a> library to create test data within a bootstrap file.</p>
+<p>また、<a href="https://github.com/fzaninotto/Faker">Faker</a> ライブラリを使ってブートストラップファイル内にテストデータを作成することもできます。</p>
 
-<h3>Per Test Fixtures</h3>
+<h3>テストごとのフィクスチャ</h3>
 
-<p>If you want to create special database record for one test, you can use <a href="http://codeception.com/docs/modules/Db#haveInDatabase"><code>haveInDatabase</code></a> method of <code>Db</code> module.</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span> 
+<p>もしあなたが一つのテストに対して特別なデータベースレコードを作りたいのなら、<code>Db</code>モジュールの<a href="http://codeception.com/docs/modules/Db#haveInDatabase"><code>haveInDatabase</code></a>メソッドを使用できます。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveInDatabase</span><span class="p">(</span><span class="s1">&#39;posts&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Top 10 Testing Frameworks&#39;</span><span class="p">,</span> <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;1. Codeception&#39;</span><span class="p">));</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/posts&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Top 10 Testing Frameworks&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p><code>haveInDatabase</code> inserts a row with provided values into database. All added records will be deleted in the end of a test. In <code>MongoDB</code> module we have similar <a href="http://codeception.com/docs/modules/MongoDb#haveInCollection"><code>haveInCollection</code></a> method.</p>
+<p><code>haveInDatabase</code>は、与えられた値の行を新しくデータベースに挿入します。追加されたレコードはすべてテスト終了後に削除されます。似たように<code>MongoDB</code>モジュールでは、<a href="http://codeception.com/docs/modules/MongoDb#haveInCollection"><code>haveInCollection</code></a>メソッドが存在します。</p>
 
-<h2>Conclusion</h2>
+<h2>結論</h2>
 
-<p>Codeception is not abandoning the developer when dealing with data. Tools for database population and cleanups are bundled within the <code>Db</code> module. To manipulate sample data in a test, use fixtures that can be defined within the bootstrap file.</p>
+<p>Codeceptionは、データを取り扱う開発者を見捨てたりしません。データベースを構築したりクリーンアップするためのツールは<code>Db</code>モジュール内にバンドルされています。テストでサンプルデータを操作するには、ブートストラップファイル内で定義されるフィクスチャを使用してください。</p>
 
     </section>
 </div>
@@ -140,7 +141,7 @@ A PDO connection can be set in the bootstrap file. This module also overrides th
 <div id="footer_wrap" class="outer">
     <footer class="inner">
         <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-02-23 14:09:44 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+        <p>Last updated: 2015-02-23 15:02:04 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
         <div id="contributors"></div>
     </footer>
 </div>
