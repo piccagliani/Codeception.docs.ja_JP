@@ -1,13 +1,17 @@
-# Acceptance Testing
+# 受け入れテスト
 
-Acceptance testing can be performed by a non-technical person. That person can be your tester, manager or even client.
-If you are developing a web-application (and probably you are) the tester needs nothing more than a web browser to check that your site works correctly. You can reproduce a AcceptanceTester's actions in scenarios and run them automatically after each site change. Codeception keeps tests clean and simple, as if they were recorded from the words of AcceptanceTester.
+受け入れテストは、技術者ではない人でも実行することが出来ます。技術者ではないテスターやマネージャー、あるいはクライアントでも実行出来ます。
+あなたがウェブアプリケーションを開発している場合、（おそらくあなた自身である）テスターは、あなたのサイトが正しく動いているかをチェックするのにウェブブラウザ以外に必要なものはありません。
+シナリオでAcceptanceTesterクラスの行動を再現することによって、サイトを変更する毎にそれらを自動的に実行することができます。
+AcceptanceTesterの言葉から記録されたかのようCodeceptionは、テストを簡潔に保ってくれます。
 
-It makes no difference what CMS or Framework is used on the site. You can even test sites created on different platforms, like Java, .NET, etc. It's always a good idea to add tests to your web site. At least you will be sure that site features work after the last changes were made.
+CMSやフレームワークをアプリケーションに取り入れていても違いはありません。Java、.NETなど異なるプラットフォームでさえ同じようにテスト出来ます。
+どんな時でも、あなたのウェブサイトにテストを加えるということは良い考えだと言えるでしょう。
+少なくとも、最後の変更からアプリケーションがしっかりと機能していることに確信が持てるでしょう。
 
-## Sample Scenario
+## シナリオサンプル
 
-Probably the first test you would want to run would be signing in. In order to write such a test, we still require basic knowledge of PHP and HTML.
+おそらく、最初に実行したいテストはサインインする機能でしょう。そのようなテストを書くためには、基本的なPHPとHTMLの知識が必要です。
 
 ```php
 <?php
@@ -21,7 +25,7 @@ $I->see('Welcome, Davert!');
 ?>
 ```
 
-This scenario can probably be read by non-technical people. Codeception can even 'naturalize' this scenario, converting it into plain English:
+このシナリオは、おそらく非技術者の人でも読めます。Codeceptionはシナリオを平易な英語に変換し、'自然言語化'することさえ出来ます:
 
 ```bash
 I WANT TO SIGN IN
@@ -32,27 +36,32 @@ I click 'LOGIN'
 I see 'Welcome, Davert!'
 ```
 
-Such transformations can be done by command:
+そのような自然言語への翻訳は、コマンドによって行われます:
 
 ``` bash
 $ php codecept.phar generate:scenarios
 ```
 
-Generated scenarios will be stored in your ___data__ directory in text files.
+作成されたシナリオは __tests/_data__ディレクトリにテキストファイルとして格納されます。
 
-**This scenario can be performed either by a simple PHP Browser or by a browser with Selenium WebDriver**. We will start writing our first acceptance tests with a PhpBrowser.
+**このシナリオテストはシンプルなPHP BrowserでもSelenium WebDriverを使ったブラウザでも実行することが出来ます。**まずはPHP Browserで受け入れテストを書いて行きましょう。
 
 ## PHP Browser
 
-This is the fastest way to run acceptance tests, since it doesn't require running an actual browser. We use a PHP web scraper, which acts like a browser: it sends a request, then receives and parses the response. Codeception uses [Guzzle](http://guzzlephp.org) and Symfony BrowserKit to interact with HTML web pages. Please note that you can't test actual visibility of elements, or javascript interactions. Good thing about PhpBrowser is that it can be run in any environment with just PHP and cURL required.
+実際に動くブラウザが必要となるまでは、これはもっとも速く受け入れテストを実行する方法です。
+リクエストを送り、それからレスポンスを受け取って解析する、というようなブラウザのような動きをするPHP web scraperを使用しています。
+Codeceptionは[Guzzle](http://guzzlephp.org)とSymfony BrowserKitをHTMLページを操作するのに使用しています。
+HTMLのある要素の実際の可視性や、javascriptの動作をテストできないことに注意してください。
+PHP Browserの利点は、PHPとcURLだけでどんな環境でも実行できることです。
 
-Common PhpBrowser drawbacks:
+一般的なPHP Browserの欠点：
 
-* you can click only on links with valid urls or form submit buttons
-* you can't fill fields that are not inside a form
-* you can't work with JavaScript interactions: modal windows, datepickers, etc.
+* 有効なURLのリンクとフォームの送信ボタンしかクリックできないこと
+* フォームの中にないフィールドには書き込めないこと
+* JavaScriptによる動作は機能しないこと：モーダルを表示させたり、datepickersの使用など
 
-Before we start we need a local copy of the site running on your host. We need to specify the `url` parameter in the acceptance suite config (tests/acceptance.suite.yml).
+テストを書き始める前に、アプリケーションが動作しているホストをローカルコピーしてください。
+受け入れテストスイートの設定ファイル (tests/acceptance.suite.yml) に、`url`パラメータを指定する必要があるからです。
 
 ``` yaml
 class_name: AcceptanceTester
@@ -66,7 +75,8 @@ modules:
             url: [your site's url]
 ```
 
-We should start by creating a 'Cept' file in the __tests/acceptance__ directory. Let's call it __SigninCept.php__. We will write the first lines into it.
+それでは、__tests/acceptance__ディレクトリに'Cept'ファイルを作成してください。ファイル名は __SigninCept.php__とします。
+最初の行に以下のように書きます。
 
 ```php
 <?php
@@ -75,7 +85,8 @@ $I->wantTo('sign in with valid account');
 ?>
 ```
 
-The `wantTo` section describes your scenario in brief. There are additional comment methods that are useful to make a Codeception scenario a BDD Story. If you have ever written a BDD scenario in Gherkin, you can write a classic feature story:
+`wantTo`という部分はシナリオを簡潔に説明しています。
+他にもBDDのようなCodeceptionのシナリオを書くための有用なコメント追加メソッドがあります。GherkinでBDDのシナリオを書いたことがある人なら、以下のようにフィーチャーを書くことができます。
 
 ```bash
 As an Account Holder
@@ -83,20 +94,21 @@ I want to withdraw cash from an ATM
 So that I can get money when the bank is closed
 ```
 
-in Codeception style:
+Codeceptionでは以下のように書きます:
 
 ```php
 <?php
 $I = new AcceptanceTester($scenario);
-$I->am('Account Holder'); 
+$I->am('Account Holder');
 $I->wantTo('withdraw cash from an ATM');
 $I->lookForwardTo('get money when the bank is closed');
 ?>
 ```
 
-After we have described the story background, let's start writing a scenario.
+ストーリーの前提を説明した上で、シナリオを書き始めましょう。
 
-The `$I` object is used to write all interactions. The methods of the `$I` object are taken from the `PhpBrowser` and `Db` modules. We will briefly describe them here:
+この `$I`オブジェクトは、すべての動作を記述するために使われます。`$I`オブジェクトのメソッドは`PhpBrowser`モジュールや`Db`モジュールから取得されています。
+簡単にそれを説明します：
 
 ```php
 <?php
@@ -104,27 +116,30 @@ $I->amOnPage('/login');
 ?>
 ```
 
-We assume that all `am` commands should describe the starting environment. The `amOnPage` command sets the starting point of a test to the __/login__ page.
+常に`am`は、最初の状態を記述するように想定しています。`amOnPage`メソッドは__/login__ページが最初の状態だと設定しています。
 
-With the `PhpBrowser` you can click the links and fill the forms. That will probably be the majority of your actions.
+`PhpBrowser`では、リンクのクリックとフォームを埋めることが出来ます。これらは、おそらくもっとも多い動作だと思います。
 
-#### Click
+#### クリック
 
-Emulates a click on valid anchors. The page from the "href" parameter will be opened. As a parameter you can specify the link name or a valid CSS or XPath selector. 
+有効なリンクのクリックをエミュレートします。
+"href"属性の値のページが開きます。リンク名やCSSセレクター、XPathでクリックするリンクを指定できます。
 
 ```php
 <?php
-$I->click('Log in'); 
-// CSS selector applied
+$I->click('Log in');
+// CSSセレクターを使用する場合
 $I->click('#login a');
-// XPath
+// XPathを使用する場合
 $I->click('//a[@id=login]');
-// Using context as second argument
+// 第二引数としてコンテキストを使用する場合
 $I->click('Login', '.nav');
 ?>
 ```
 
-Codeception tries to locate element either by its text, name, CSS or XPath. You can specify locator type manually by passing array as a parameter. We call this a **strict locator**. Available strict locator types are: 
+Codeceptionは、テキストやname属性、CSSセレクタ、XPathのどれかで要素を検索しようとします。
+locatorの種類を配列として渡すことで、指定することもできます。我々は **strict locator**呼んでいます。
+利用できるstrict locatorの種類は以下です：
 
 * id
 * name
@@ -135,18 +150,18 @@ Codeception tries to locate element either by its text, name, CSS or XPath. You 
 
 ```php
 <?php
-// By specifying locator type
+// locatorの種類で指定する場合
 $I->click(['link' => 'Login']);
 $I->click(['class' => 'btn']);
 ?>
 ```
 
-Before clicking the link you can perform a check if the link really exists on 
-a page. This can be done by the `seeLink` action.
+リンクをクリックする前に、本当にリンクが存在するかどうかチェックすることもできます。
+その場合`seeLink`メソッドを使用します。
 
 ```php
 <?php
-// checking that link actually exists
+// 実際にリンクが存在するかチェックする
 $I->seeLink('Login');
 $I->seeLink('Login','/login');
 $I->seeLink('#login a','/login');
@@ -154,45 +169,45 @@ $I->seeLink('#login a','/login');
 ```
 
 
-#### Forms
+#### フォーム
 
-Clicking the links is not what takes the most time during testing a web site. If your site consists only of links you can skip test automation.
-The most routine waste of time goes into the testing of forms. Codeception provides several ways of doing that.
+ウェブサイトのテストにおいてもっとも時間が取られることは、リンクをクリックすることではないです。もし、リンクだけで構成されているサイトならテストを自動化する必要は無いでしょう。
+もっとも時間を消費する機能はフォームです。Codeceptionはフォームを処理する方法をいくつか提供します。
 
-Let's submit this sample form inside the Codeception test.
+それでは、Codeceptionのテストでフォームを送信してみましょう。
 
 ```html
 <form method="post" action="/update" id="update_form">
      <label for="user_name">Name</label>
      <input type="text" name="user[name]" id="user_name" />
      <label for="user_email">Email</label>
-     <input type="text" name="user[email]" id="user_email" />     
+     <input type="text" name="user[email]" id="user_email" />
      <label for="user_gender">Gender</label>
      <select id="user_gender" name="user[gender]">
           <option value="m">Male</option>
           <option value="f">Female</option>
-     </select>     
+     </select>
      <input type="submit" name="submitButton" value="Update" />
 </form>
 ```
 
-From a user's perspective, a form consists of fields which should be filled, and then an Update button clicked. 
+ユーザーからの視点で見ると、このフォームは埋める必要のある複数の項目から構成されており、最後にはUpdateボタンがクリックされます。
 
 ```php
 <?php
-// we are using label to match user_name field
+// user_name項目に対応するラベルを使います
 $I->fillField('Name', 'Miles');
-// we can use input name or id
+// inputタグのname属性やid属性を使用しています
 $I->fillField('user[email]','miles@davis.com');
 $I->selectOption('Gender','Male');
 $I->click('Update');
 ?>
 ```
 
-To match fields by their labels, you should write a `for` attribute in the label tag.
+それぞれのフィールドをラベルで検索するためには、labelタグに`for`属性を書く必要があります。
 
-From the developer's perspective, submitting a form is just sending a valid post request to the server. Sometimes it's easier to fill all of the fields at once and send the form without clicking a 'Submit' button.
-A similar scenario can be rewritten with only one command.
+開発者から見ると、フォームを送信することは、サーバーに有効なPOSTリクエストを送信しているだけです。
+時には、一度にすべての項目に書き込み、'Submit'ボタンをクリックすることなく送信してしまう方が楽です。そのようなシナリオをたった一つのメソッドで書き換えることが出来ます。
 
 ```php
 <?php
@@ -204,9 +219,10 @@ $I->submitForm('#update_form', array('user' => array(
 ?>
 ```
 
-The `submitForm` is not emulating a user's actions, but it's quite useful in situations when the form is not formatted properly, for example to discover that labels aren't set or that fields have unclean names or badly written ids, or the form is sent by a javascript call.
+`submitForm`メソッドはユーザーの行動をエミュレートしてはいませんが、フォームが適切にフォーマットされていない時に、非常に有効です。
+例えば、ラベルがついていなかったり、不適切なname属性やid属性がつけられているフォームやjavascriptによって送信されているフォームです。
 
-By default, submitForm doesn't send values for buttons.  The last parameter allows specifying what button values should be sent, or button values can be implicitly specified in the second parameter.
+デフォルトでは、`submitForm`メソッドはボタンの値を送信することはありません。どのボタンのvalueを送信するかは最後の引数に指定出来ますし、あるいは第二引数に含めて指定することも出来ます。
 
 ```php
 <?php
@@ -215,7 +231,7 @@ $I->submitForm('#update_form', array('user' => array(
      'email' => 'Davis',
      'gender' => 'm'
 )), 'submitButton');
-// this would be the same effect, but the value has to be implicitly specified
+// これは同じ機能を果たしますが、送信ボタンのvalueは指定する必要があります
 $I->submitForm('#update_form', array('user' => array(
      'name' => 'Miles',
      'email' => 'Davis',
@@ -225,11 +241,12 @@ $I->submitForm('#update_form', array('user' => array(
 ?>
 ```
 
-#### AJAX Emulation
+#### Ajaxエミュレーター
 
-As we know, PHP browser can't process JavaScript. Still, all the ajax calls can be easily emulated by sending the proper requests to the server.
+ご存知のように、PHP browserではjavascriptは機能しません。
+しかし、すべてのajax呼び出しは、適切なリクエストをサーバーに送信することで簡単にエミュレート出来ます。
 
-Consider using these methods for ajax interactions.
+ajax通信には以下のメソッドが使えることを覚えておいてください。
 
 ```php
 <?php
@@ -238,27 +255,27 @@ $I->sendAjaxPostRequest('/update', array('name' => 'Miles', 'email' => 'Davis'))
 ?>
 ```
 
-#### Assertions
+#### アサーション
 
-In the PHP browser you can test the page contents. In most cases you just need to check that the required text or element is on the page.
+PHP browserでは、ページの内容をテスト出来ます。ほとんどの場合は、ページに必要なテキストや要素が存在しているかチェックする必要があるのみでしょう。
 
-The most useful command for this is `see`.
+そのためにもっとも使い勝手の良いメソッドは`see`です。
 
 ```php
 <?php
-// We check that 'Thank you, Miles' is on page.
+// 'Thank you, Miles'というテキストがページにあることをチェックします
 $I->see('Thank you, Miles');
-// We check that 'Thank you Miles' is inside 
-// the element with 'notice' class.
+// 'Thank you Miles'の内部をチェックします
+// この要素は'notice'というクラス属性を持っています
 $I->see('Thank you, Miles', '.notice');
-// Or using XPath locators
+// XPathを使用することもできます
 $I->see('Thank you, Miles', "descendant-or-self::*[contains(concat(' ', normalize-space(@class), ' '), ' notice ')]");
-// We check this message is not on page.
+// このメッセージがページに無いことをチェックしています
 $I->dontSee('Form is filled incorrectly');
 ?>
 ```
 
-You can check that specific element exists (or not) on a page
+特定の要素がページに存在する（あるいは存在しない）ことをチェック出来ます。
 
 ```php
 <?php
@@ -267,7 +284,7 @@ $I->dontSeeElement('.error');
 ?>
 ```
 
-We also have other useful commands to perform checks. Please note that they all start with the `see` prefix.
+私達は、他にもチェックを実行するために役立つメソッドを用意しています。それらがすべて`see`というプレフィックスから始まっていることに注目してください。
 
 ```php
 <?php
@@ -278,9 +295,10 @@ $I->seeLink('Login');
 ?>
 ```
 
-#### Conditional Assertions
+#### 条件付きアサーション
 
-Sometimes you don't want the test to be stopped when an assertion fails. Maybe you have a long-running test and you want it to run to the end. In this case you can use conditional assertions. Each `see` method has a corresponding `canSee` method, and `dontSee` has a `cantSee` method. 
+時にはアサーションが失敗したとしても、途中でテストを止めたくないでしょう。時間のかかるテストを行っていて、最後まで実行したいかもしれません。
+この場合には、条件付のアサーションを使用することが出来ます。`see`メソッドは`canSee`メソッドに対応しており、`dontSee`メソッドは`cantSee`メソッドに対応しています。
 
 ```php
 <?php
@@ -290,11 +308,11 @@ $I->cantSeeInField('user[name]', 'Miles');
 ?>
 ```
 
-Each failed assertion will be shown in test results. Still, a failed assertion won't stop the test.
+それぞれの失敗したアサーションはテスト結果に示されますが、アサーションが失敗することでテストが止まることは無いでしょう。
 
-#### Grabbers
+#### グラバー
 
-These commands retrieve data that can be used in test. Imagine, your site generates a password for every user and you want to check the user can log into the site using this password.
+これらのメソッドはテストで使われるデータを取得します。あなたのサイトがすべてのユーザーごとにパスワードを発行指定、そのパスワードでユーザーがサイトにログインできることをチェックしたいという場面を想像してください。
 
 ```php
 <?php
@@ -308,7 +326,7 @@ $I->click('Log in!');
 ?>
 ```
 
-Grabbers allow you to get a single value from the current page with commands.
+グラバーは現在のページから一つの値を取得できるメソッドです。
 
 ```php
 <?php
@@ -318,10 +336,10 @@ $api_key = $I->grabValueFrom('input[name=api]');
 ?>
 ```
 
-#### Comments
+#### コメント
 
-Within a long scenario you should describe what actions you are going to perform and what results to achieve.
-Commands like `amGoingTo`, `expect`, `expectTo` help you in making tests more descriptive.
+長いシナリオ内では、これから実行しようとしている行動とそれによって得られる結果を説明するべきです。
+`amGoingTo`, `expect`, `expectTo`というメソッドは、よりわかりやすいテストを作成する助けとなります。
 
 ```php
 <?php
@@ -333,9 +351,9 @@ $I->see('Form is filled incorrectly');
 ?>
 ```
 
-#### Cookies, Urls, Title, etc
+#### クッキー、URL、タイトル、その他
 
-Actions for cookies:
+クッキーを扱うためのメソッド：
 
 ```php
 <?php
@@ -344,8 +362,7 @@ $I->grabCookie('auth');
 $I->seeCookie('auth');
 ?>
 ```
-
-Actions for checking page title:
+ページのタイトルを扱うためのメソッド:
 
 ```php
 <?php
@@ -354,7 +371,7 @@ $I->dontSeeInTitle('Register');
 ?>
 ```
 
-Actions for url:
+URLを扱うためのメソッド:
 
 ```php
 <?php
@@ -367,12 +384,12 @@ $user_id = $I->grabFromCurrentUrl('~$/user/(\d+)/~');
 
 ## Selenium WebDriver
 
-A nice feature of Codeception is that most scenarios can be easily ported between the testing backends.
-Your PhpBrowser tests we wrote previously can be executed inside a real browser (or even PhantomJS) with Selenium WebDriver.
+Codeceptionのすばらしい特徴は、ほとんどのシナリオが異なるテスト動作環境に容易に移植できることです。
+これまでに書いてきたPhpBrowserテストはSelenium WebDriverを使って、実際のブラウザの中で（あるいはPhantomJSでさえ）実行出来ます。
 
-The only thing we need to change is to reconfigure and rebuild the AcceptanceTester class, to use **WebDriver** instead of PhpBrowser.
+ただひとつだけ変更しなければならない事は、AcceptanceTesterクラスがPhpBrowserの代わりに**WebDriver**を使用するように設定してビルドし直すことです。
 
-Modify your `acceptance.suite.yml` file:
+`acceptance.suite.yml`ファイルを変更してください：
 
 ```yaml
 class_name: AcceptanceTester
@@ -383,27 +400,28 @@ modules:
     config:
         WebDriver:
             url: 'http://localhost/myapp/'
-            browser: firefox            
+            browser: firefox
 ```
 
-In order to run Selenium tests you need to [download Selenium Server](http://seleniumhq.org/download/) and get it running (Alternatively you may use [PhantomJS](http://phantomjs.org/) headless browser in `ghostdriver` mode).
+Seleniumでテストを実行するために、[Selenium Server](http://seleniumhq.org/download/)をダウンロードして、起動しておく必要があります。（替わりに`ghostdriver`モードで動くヘッドレスブラウザの[PhantomJS](http://phantomjs.org/)を使うことも出来ます。）
 
-If you run acceptance tests with Selenium, Firefox will be started and all actions will be performed step by step using browser engine. 
+Seleniumを使用して受け入れテストを実行するならば、Firefoxから始められます。ブラウザエンジンを使用する事ですべての処理がステップ実行されます。
 
-In this case `seeElement` won't just check that the element exists on a page, but it will also check that element is actually visible to user.
+この場合、`seeElement`メソッドはページにその要素が存在する事だけをチェックするのではなく、実際のユーザーからの可視性もチェックします。
 
 ```php
-<?php 
-$I->seeElement('#modal'); 
+<?php
+$I->seeElement('#modal');
 ?>
 ```
 
 
 #### Wait
 
-While testing web application, you may need to wait for JavaScript events to occur. Due to its asynchronous nature, complex JavaScript interactions are hard to test. That's why you may need to use `wait` actions, which can be used to specify what event you expect to occur on a page, before proceeding the test.
+ウェブアプリケーションをテストしている間に、JavaScriptのeventが起こるまで待機しておく必要があるかもしれません。
+複雑なJavaScriptの処理は、その非同期性によってテストが困難になります。テストが先に進んでしまう前に、そのページで起こると予測しているeventを指定できるように、`wait`メソッドが必要なのです。
 
-For example: 
+例：
 
 ```php
 <?php
@@ -412,13 +430,13 @@ $I->click('#agree_button');
 ?>
 ```
 
-In this case we are waiting for agree button to appear and then clicking it. If it didn't appear for 30 seconds, test will fail. There are other `wait` methods you may use.
+この場合には、agree buttonが表示されるまで待機し、表示されたらクリックします。30秒経過しても表示されなかったときは、テストは失敗します。他にも使える`wait`メソッドがあります。
 
-See Codeception's [WebDriver module documentation](http://codeception.com/docs/modules/WebDriver) for the full reference.
+詳細なリファレンスはCodeception's [WebDriver module documentation](http://codeception.com/docs/modules/WebDriver)を参照してください。
 
-### Multi Session Testing 
+### 複数セッションのテスト
 
-Codeception allows you to execute actions in concurrent sessions. The most obvious case for it is testing realtime messaging between users on site. In order to do it you will need to launch two browser windows at the same time for the same test. Codeception has very smart concept for doing this. It is called **Friends**.
+Codeceptionは同時に複数のセッションを実行出来ます。サイト上でユーザ同士がリアルタイムにメッセージをやり取りする場合がもっともわかりやすいです。そのためには２つのブラウザウィンドウを同じテスト中に同時に立ち上げる必要があるでしょう。Codeceptionはこのための**Friends**と呼ばれるとってもスマートな方法が用意されています。
 
 ```php
 <?php
@@ -437,11 +455,11 @@ $I->see('Hello all!', '.message');
 ?>
 ```
 
-In this case we did some actions in second window with `does` command on a friend object.
+この場合には、2つ目のウィンドウでfriendオブジェクトが`does`メソッドを使用していくつかの行動をしました。
 
-### Cleaning Things Up
+### クリーンアップ
 
-While testing, your actions may change the data on the site. Tests will fail if trying to create or update the same data twice. To avoid this problem, your database should be repopulated for each test. Codeception provides a `Db` module for that purpose. It will load a database dump after each passed test. To make repopulation work, create an sql dump of your database and put it into the __/tests/_data__ directory. Set the database connection and path to the dump in the global Codeception config.
+テストをしている中で、あなたの行動はサイト上のデータを変えてしまうかもしれません。2度同じデータを生成したり、アップデートしようとしてテストは失敗する事になるでしょう。この問題を避けるために、データベースはそれぞれのテストごとに再構築する必要があります。Codeceptionはそのために`Db`モジュールを提供しています。テストを通過した後にデータベースのdumpをロードします。データベースの再構築を機能させるためには、データベースをdumpしてsqlファイルを作成し、__/tests/_data__ディレクトリに配置してください。Codeceptionのglobalの設定にデータベースへの接続情報とパスをセットしてください。
 
 ```yaml
 # in codeception.yml:
@@ -454,9 +472,9 @@ modules:
             dump: tests/_data/dump.sql
 ```
 
-### Debugging
+### デバッグ
 
-Codeception modules can print valuable information while running. Just execute tests with the `--debug` option to see running details. For any custom output use `codecept_debug` function.
+Codeceptionモジュールは実行中に価値のある情報を出力できます。実行中の詳細を見るために`--debug`オプションをテスト起動時に付けるだけです。出力をカスタマイズするには`codecept_debug`ファンクションを使います。
 
 ```php
 <?php
@@ -465,8 +483,8 @@ codecept_debug($I->grabTextFrom('#name'));
 ```
 
 
-On each fail, the snapshot of the last shown page will be stored in the __tests/_log__ directory. PhpBrowser will store HTML code and WebDriver will save the screenshot of a page.
+テストの失敗ごとに、最後に表示されていたページのスナップショットを__tests/_log__ディレクトリに保存します。PhpBrowserはHTMLのコードを保存し、WebDriverはページのスクリーンショットを保存します。
 
-## Conclusion
+## 結論
 
-Writing acceptance tests with Codeception and PhpBrowser is a good start. You can easily test your Joomla, Drupal, WordPress sites, as well as those made with frameworks. Writing acceptance tests is like describing a tester's actions in PHP. They are quite readable and very easy to write. Don't forget to repopulate the database on each test run.
+CodeceptionとPhpBrowserで受け入れテストを書くことは、良いスタートです。フレームワークで作られたサイトと同じように、Joomla, Drupal, WordPressのサイトも簡単にテスト出来ます。受け入れテストを書くことはPHPでのテスターの行動を説明するようなものです。可読性に長け、とても書きやすいです。テストを実行するごとにデータベースの再構築を忘れないように。
