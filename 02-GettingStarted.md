@@ -139,7 +139,7 @@ Codeceptionではグローバルな設定を行う`codeception.yml`と各スイ�
 $ php codecept.phar run
 ```
 
-最初の引数を使用すれば、1つ以上の指定したスイートのみテストを実行することができます。
+最初の引数を使用すれば、1つのスイートからテストを実行することができます。
 
 ```bash
 $ php codecept.phar run acceptance
