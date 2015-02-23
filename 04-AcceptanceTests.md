@@ -387,7 +387,7 @@ $user_id = $I->grabFromCurrentUrl('~$/user/(\d+)/~');
 Codeceptionのすばらしい特徴は、ほとんどのシナリオが異なるテスト動作環境に容易に移植できることです。
 これまでに書いてきたPhpBrowserテストはSelenium WebDriverを使って、実際のブラウザの中で（あるいはPhantomJSでさえ）実行出来ます。
 
-ただひとつだけ変更しなければならない事は、AcceptanceTester classがPhpBrowserの代わりに**WebDriver**を使用するように設定してビルドし直すことです。
+ただひとつだけ変更しなければならない事は、AcceptanceTesterクラスがPhpBrowserの代わりに**WebDriver**を使用するように設定してビルドし直すことです。
 
 `acceptance.suite.yml`ファイルを変更してください：
 
@@ -419,7 +419,7 @@ $I->seeElement('#modal');
 #### Wait
 
 ウェブアプリケーションをテストしている間に、JavaScriptのeventが起こるまで待機しておく必要があるかもしれません。
-複雑なJavaScriptの処理は、その非同期性がによってテストが困難になります。テストが先に進んでしまう前に、そのページで起こると予測しているeventを指定できるように、`wait`メソッドが必要なのです。
+複雑なJavaScriptの処理は、その非同期性によってテストが困難になります。テストが先に進んでしまう前に、そのページで起こると予測しているeventを指定できるように、`wait`メソッドが必要なのです。
 
 例：
 
@@ -430,7 +430,7 @@ $I->click('#agree_button');
 ?>
 ```
 
-この場合には、agree buttonが表示されるまで待機し、表示されたらクリックします。30秒間表示されなかったときは、テストは失敗します。他にも使える`wait`メソッドがあります。
+この場合には、agree buttonが表示されるまで待機し、表示されたらクリックします。30秒経過しても表示されなかったときは、テストは失敗します。他にも使える`wait`メソッドがあります。
 
 詳細なリファレンスはCodeception's [WebDriver module documentation](http://codeception.com/docs/modules/WebDriver)を参照してください。
 
