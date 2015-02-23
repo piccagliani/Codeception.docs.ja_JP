@@ -2,9 +2,9 @@
 
 今、私達はいくつかの受け入れテストを書いてきましたが、機能テストもほぼ同様に書けます。ひとつの大きな違いがあるだけです：機能テストは実行するのにWebサーバーを必要としないことです。
 
-簡単に言えば、`$_REQUEST`や`$_GET`、`$_POST`の変数をセットし、テストからアプリケーションを実行します。このことは機能テストがより速く動作し、失敗時に詳細なスタックとレースを提供するので価値のあることでしょう。
+簡単に言えば、`$_REQUEST`や`$_GET`、`$_POST`の変数をセットし、テストからアプリケーションを実行します。このことは機能テストがより速く動作し、失敗時に詳細なスタックトレースを提供するので価値のあることでしょう。
 
-Codeceptionは機能テストをサポートしている異なるフレームワークと接続出来ます:Symfony2, Laravel4, Yii2, Zend Frameworkなどです。あなたはただ求められるモジュールをfunctionalスイートの設定において使用できるようにするだけです。
+Codeceptionは機能テストをサポートしている異なるフレームワークと接続出来ます:Symfony2, Laravel4, Yii2, Zend Frameworkなどです。あなたはお望みのモジュールをfunctionalスイートの設定において使用できるようにするだけです。
 
 これらのフレームワークモジュールは同じインターフェイスを持っているので、フレームワークにテストが縛られることはありません。以下は機能テストのサンプルです。
 
@@ -50,7 +50,7 @@ $I->see('Hello, Miles', 'h1');
 Symfony2で動作させるために、バンドルをインストールする必要も設定を変更することもありません。
 テストスイートに`Symfony2`モジュールを追加する必要があるだけです。もしDoctrine2も使用するのであれば、忘れずに追加してください。
 
-`functional.suite.yml`の書き方
+`functional.suite.yml`の例
 
 ```yaml
 class_name: FunctionalTester
@@ -109,7 +109,7 @@ modules:
 Zend FrameworkのためのモジュールはPHPUnitの機能テストに使われるControllerTestCaseクラスに強く影響を受けています。
 ブートストラップとクリーンアップに同様のアプローチが使われています。機能テストでZend Frameworkを使用する場合は`ZF1`モジュールを追加してください。
 
-`functional.suite.yml`の書き方
+`functional.suite.yml`の例
 
 ```yaml
 class_name: FunctionalTester
@@ -166,7 +166,7 @@ $I->click(['class' => 'logout']);
 ```php
 <?php
 $I->submitForm('form#login', ['name' => 'john', 'password' => '123456']);
-// 同じ操作
+// 代替
 $I->fillField('#login input[name=name]', 'john');
 $I->fillField('#login input[name=password]', '123456');
 $I->click('Submit', '#login');
