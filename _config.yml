@@ -4,4 +4,6 @@ defaults:
       layout: "default"
 exclude: [en, build.sh]
 markdown:    redcarpet
+redcarpet:
+  extensions: ["tables"]
 highlighter: pygments

@@ -1,13 +1,13 @@
-# Customization
+# カスタマイズ
 
-In this chapter we will explain how you can extend and customize file structure and test execution routines.
+この章では、どのようにしてファイル構造やテスト実行ルーチンをカスタマイズできるのか、説明します。
 
-## One Runner for Multiple Applications
+## 複数アプリケーションのための1つのランナー
 
-In case your project consists of several applications (frontend, admin, api) or you use Symfony2 framework with its bundles, you may be interested in having all tests for all applications (bundles) to be executed in one runner.
-In this case you will get one report that covers the whole project.
+プロジェクトが複数のアプリケーション（frontend, admin, api）で構成されていたり、バンドルとともにSymfony2を使っている場合、すべてのアプリケーション（バンドル）に対するすべてのテストを1ランナーで実行することに興味があるのではないでしょうか。
+ここではプロジェクト全体をカバーする1つのレポートを取得してみます。
 
-Place `codeception.yml` file into root folder of your project and specify paths to other `codeception.yml` configs you want to include.
+`codeception.yml` ファイルをプロジェクトのルートフォルダに配置して、インクルードしたい他の `codeception.yml` へのパスを指定します。
 
 ``` yaml
 include:
@@ -20,20 +20,20 @@ settings:
   colors: false
 ```
 
-You should also specify path to `log` directory, where the reports and logs will be stored.
+レポートやログの出力先となる `log` ディレクトリへのパスも指定してください。
 
-### Namespaces
+### 名前空間
 
-To avoid naming conflicts between Actor classes and Helper classes, they should be added into namespaces.
-To create test suites with namespaces you can add `--namespace` option to bootstrap command.
+アクタークラスとヘルパークラスの名前空間が衝突するのを避けるため、それらは名前空間に属すべきです。
+名前空間を持つテストスイートを作成するためには、ブートストラップコマンドに `--namespace` オプションを付与します。
 
 ``` bash
 $ php codecept.phar bootstrap --namespace frontend
 ```
 
-This will bootstrap a new project with `namespace: frontend` parameter in `codeception.yml` file. 
-Helpers will be in `frontend\Codeception\Module` namespace and Actor classes will be in `frontend` namespace.
-Thus, newly generated tests will look like this:
+これにより、`namespace: frontend` パラメータを持つ `codeception.yml` ファイルとともに、新しいプロジェクトが作成されます。
+ヘルパークラスの名前空間は `frontend\Codeception\Module` に、アクタークラスの名前空間は `frontend` になります。
+こうして、新しく作成されたテストは次のようになります。
 
 ```php
 <?php use frontend\AcceptanceTester;
@@ -42,19 +42,19 @@ $I = new AcceptanceTester($scenario);
 ?>
 ```
 
-Once each of your applications (bundles) has its own namespace and different Helper or Actor classes, you can execute all tests in one runner. Run codeception tests as usual, using meta-config we created earlier:
+それぞれのアプリケーション（バンドル）が自身の名前空間と異なるヘルパーやアクタークラスを持つようになって、全てのテストを1ランナーで実行できるようになります。先ほど作成したメタ設定を使って、通常どおりCodeceptionを実行します。
 
 ```bash
 $ php codecept.phar run
 ```
 
-This will launch test suites for all 3 applications and merge the reports from all of them. Basically that would be very useful when you run your tests on Continuous Integration server and you want to get one report in JUnit and HTML format. Codecoverage report will be merged too.
+これにより、3つのすべてのアプリケーションのテストスイートが起動し、すべてのテストレポートがマージされます。これはつまり、継続的インテグレーションサーバー上でテストを実行し、1つのJUnitとHTML形式のレポートを取得したい場合に大変役に立ちます。コードカバレッジレポートについても同じくマージされます。
 
-If your applications uses same helpers, follow the next section of this chapter.
+もし各アプリケーションが共通のヘルパーを利用している場合、次のセクションに従ってください。
 
-## Autoload Helper classes
+## ヘルパークラスのオートロード
 
-There is global `_bootstrap.php` file. This file is included at the very beginning of execution. We recommend to use it to initialize autoloaders and constants. It is especially useful if you want to include Modules or Helper classes that are not stored in `tests/_helpers` directory.
+グローバルな `_bootstrap.php` ファイルがあります。このファイルはテスト実行の冒頭でインクルードされます。このファイルをオートローダーや定数の初期化に利用することをおすすめします。特に、`tests/_helpers` ディレクトリに格納されていないモジュールやヘルパークラスをインクルードしたい場合に役に立ちます。
 
 ```php
 <?php
@@ -62,8 +62,8 @@ require_once __DIR__.'/../lib/tests/helpers/MyHelper.php';
 ?>
 ```
 
-Alternatively you can use Composer's autoloader. Codeception has its autoloader too.
-It's not PSR-0 compatible (yet), but it is still very useful when you need to declare alternative path for Helper classes:
+代替として、Composerのオートローダーを使用することができます。Codeceptionも独自のオートローダーを持っています。
+これは（まだ）PSR-0の互換性はありませんが、ヘルパークラスへの代替パスを宣言する場合に非常に便利です。
 
 ```php
 <?php
@@ -71,7 +71,7 @@ Codeception\Util\Autoload::registerSuffix('Helper', __DIR__.'/../lib/tests/helpe
 ?>
 ```
 
-Now all classes with suffix `Helper` will be additionally searched in `__DIR__.'/../lib/tests/helpers'. You can declare to load helpers of specific namespace. 
+これで、`__DIR__.'/../lib/tests/helpers'` から検索された、名前が`Helper`で終わる全てのクラスが追加されます。特定の名前空間に属すヘルパーをロードするよう宣言することもできます。
 
 ```php
 <?php
@@ -79,11 +79,11 @@ Codeception\Util\Autoload::register('MyApp\\Test', 'Helper', __DIR__.'/../lib/te
 ?>
 ```
 
-That will point autoloader to look for classes like `MyApp\Test\MyHelper` in path `__DIR__.'/../lib/tests/helpers'`.
+これは `__DIR__.'/../lib/tests/helpers'` 内の `MyApp\Test\MyHelper` のようなクラスを探すようオートローダーに示します。
 
-Alternatively you can use autoloader to specify path for **PageObject and Controller** classes, if they have appropriate suffixes in their names.
+あるいは、クラス名に適切な接尾辞がつけられている場合に **ページオブジェクトとコントローラー** クラスへのパスを指定するためにオートローダーを使用することができます。
 
-Example of `tests/_bootstrap.php` file:
+`tests/_bootstrap.php` ファイルの例:
 
 ``` php
 <?php
@@ -93,20 +93,20 @@ Codeception\Util\Autoload::register('MyApp\\Test', 'Controller', __DIR__.'/contr
 ?>
 ```
 
-## Extension classes
+## 拡張クラス
 
-<div class="alert">This section requires advanced PHP skills and some knowlegde of Codeception and PHPUnit internals.</div>
+<div class="alert">このセクションは高度なPHPのスキルと、CodeceptionとPHPUnitの内部に関する一部の知識を必要とします。</div>
 
-Codeception has limited capabilities to extend its core features.
-Extensions are not supposed to override current functionality, but are pretty useful if you are experienced developer and you want to hook into testing flow.
+Codeceptionはコアな機能を拡張する限定的な機能を持っています。
+拡張機能は現在の機能をオーバーライドすることを想定していませんが、もしあなたが経験のある開発者でテストのフローをフックしたい場合にはとても便利です。
 
-Basically speaking, Extensions are nothing more then event listeners based on [Symfony Event Dispatcher](http://symfony.com/doc/current/components/event_dispatcher/introduction.html) component.
+基本的には、拡張機能は [Symfony Event Dispatcher](http://symfony.com/doc/current/components/event_dispatcher/introduction.html) コンポーネントを基盤とするイベントリスナー以上の何ものでもありません。
 
-Here are the events and event classes. The events are listed in order they happen during execution. Each event has a corresponding class, which is passed to listener, and contains specific objects.
+これらがイベントとイベントクラスです。テスト実行中に発生する順番で一覧化しています。それぞれのイベントには対応したクラスがあり、特定のオブジェクトを含んでイベントリスターに渡されます。
 
-### Events
+### イベント
 
-|    Event             |     When?                               | What contains?
+|    イベント          |     いつ？                              | 何を含む？
 |:--------------------:| --------------------------------------- | --------------------------:
 | `suite.before`       | Before suite is executed                | [Suite, Settings](https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/SuiteEvent.php)
 | `test.start`         | Before test is executed                 | [Test](https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/TestEvent.php)
@@ -125,9 +125,9 @@ Here are the events and event classes. The events are listed in order they happe
 | `test.fail.print`    | When test fails are printed             | [Test, Fail](https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/FailEvent.php)
 | `result.print.after` | After result was printed                | [Result, Printer](https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/PrintResultEvent.php)
 
-There may be a confusion between `test.start`/`test.before` and `test.after`/`test.end`. Start/end events are triggered by PHPUnit itself. But before/after events are triggered by Codeception. Thus, when you have classical PHPUnit test (extended from `PHPUnit_Framework_TestCase`), before/after events won't be triggered for them. On `test.before` event you can mark test as skipped or incomplete, which is not possible in `test.start`. You can learn more from [Codeception internal event listeners](https://github.com/Codeception/Codeception/tree/master/src/Codeception/Subscriber).
+`test.start`と`test.before`、 `test.after`と`test.end`とに混乱するかもしれません。Start/endイベントはPHPUnit自身によって発生されますが、before/afterイベントはCodeceptionによって発生されます。ですので、伝統的な（`PHPUnit_Framework_TestCase`を継承した）PHPUnitのテストではbefore/afterイベントは発生しません。`test.before`イベントでは、`test.start`では不可能な、スキップされたか不完全なテストを追跡することができます。[Codeception internal event listeners](https://github.com/Codeception/Codeception/tree/master/src/Codeception/Subscriber)にてより多くのことを学ぶことができます。
 
-The extension class itself is inherited from `Codeception\Platform\Extension`.
+拡張クラスは `Codeception\Platform\Extension` クラスを継承します。
 
 ``` php
 <?php
@@ -157,17 +157,17 @@ class MyCustomExtension extends \Codeception\Platform\Extension
 ?>
 ```  
 
-By implementing event handling methods you can listen to event and even update passed objects.
-Extensions have some basic methods you can use:
+イベントハンドラーメソッドを実行することにより、渡されたオブジェクトを更新してもイベントをリッスンすることができます。
+拡張クラスはいくつかの基本的なメソッドを持っています。
 
-* `write` - prints to screen
-* `writeln` - prints to screen with line end char at the end
-* `getModule` - allows you to access a module
-* `_reconfigure` - can be implemented instead of overriding constructor. 
+* `write` - コンソールに出力する
+* `writeln` - 改行コードとおともにコンソールに出力する
+* `getModule` - モジュールにアクセスする
+* `_reconfigure` - コンストラクターをオーバーライドする替わりに実装する
 
-### Enabling Extension
+### 拡張機能の有効化
 
-Once you've implemented a simple extension class, you should include it in `tests/_bootstrap.php` file:
+単純な拡張クラスを実装したら、`tests/_bootstrap.php`ファイルにインクルードしてください。
 
 ``` php
 <?php
@@ -175,7 +175,7 @@ include_once '/path/to/my/MyCustomExtension.php';
 ?>
 ```
 
-Then you can enable it in `codeception.yml`:
+`codeception.yml` で拡張機能を有効にします。
 
 ```yaml
 extensions:
@@ -183,11 +183,11 @@ extensions:
 
 ```
 
-### Configuring Extension
+### 拡張機能の設定
 
-In extension you can access currently passed options via `options` property.
-You also can access global config via `\Codeception\Configuration::config()` method. 
-But if you want to have custom options for your extension, you can pass them in `codeception.yml` file:
+拡張クラスでは `options` プロパティを介して現状渡されたオプションにアクセスすることができます。
+また、`\Codeception\Configuration::config()` を利用してグローバル設定にアクセスすることもできます。
+もし拡張クラスにカスタムなオプションを持たせたい場合、`codeception.yml` ファイルからそれを渡すことができます。
 
 ```yaml
 extensions:
@@ -198,14 +198,14 @@ extensions:
 
 ```
 
-Passed configuration is accessible via `config` property: `$this->config['param']`.
+渡された設定には次のように `config` プロパティを介してアクセスすることができます。 `$this->config['param']`
 
-Check out a very basic extension [Notifier](https://github.com/Codeception/Notifier).
+とても基本的な拡張機能である [Notifier](https://github.com/Codeception/Notifier) を確認してください。
 
-## Group Classes
+## グループクラス
 
-Group Classes are extensions listening to events of a tests belonging to a specific group.
-When a test is added to a group:
+グループクラスは特定のグループに属すテストのイベントをリッスンするための拡張機能です。
+テストが次のグループに追加されたとき、
 
 ```php
 <?php 
@@ -214,7 +214,7 @@ $I = new AcceptanceTester($scenario);
 ?>
 ```
 
-This test will trigger events:
+このテストは次のイベントを発生させます。
 
 * `test.before.admin`
 * `step.before.admin`
@@ -223,7 +223,7 @@ This test will trigger events:
 * `test.fail.admin`
 * `test.after.admin`
 
-A group class is built to listen to these events. It is pretty useful when additional setup is required for some of your tests. Let's say you want to load fixtures for tests that belong to `admin` group:
+グループクラスはこれらのイベントをリッスンするために構築されています。これは、テストに追加の設定が必要になった場合にとても便利です。`admin` グループに属すテストのためにフィクスチャをロードしたいとしましょう。
 
 ```php
 <?php
@@ -250,18 +250,18 @@ class AdminGroup extends \Codeception\Platform\Group
 ?>
 ```
 
-A group class can be created with `php codecept.phar generate:group groupname` command.
-Group class will be stored in `tests/_groups` directory.
+グループクラスは `php codecept.phar generate:group groupname` コマンドによって作成することができます。
+グループクラスは `tests/_groups` ディレクトリに格納されます。
 
-A group class can be enabled just like you enable extension class. In file `codeception.yml`:
+拡張クラスと同様、`codeception.yml` にてグループクラスを有効にすることができます。
 
 ``` yaml
 extensions:
     enabled: [AdminGroup]    
 ```
 
-Now Admin group class will listen to all events of tests that belong to the `admin` group.
+これで Adminグループクラスは `admin`グループに属すテストのすべてのイベントをリッスンするようになります。
 
-## Conclusion
+## まとめ
 
-Each feature mentioned above may dramatically help when using Codeception to automate testing of large projects, although some features may require advanced knowledge of PHP. There is no "best practice" or "use cases" when we talk about groups, extensions, or other powerful features of Codeception. If you see you have a problem that can be solved using these extensions, then give them a try. 
+これまでに述べてきた各機能は、いくつかについては高度なPHPの知識を必要とするかもしれませんが、規模の大きいプロジェクトのテストをCodeceptionで自動化する際に、劇的に役立つことがあります。グループや拡張機能やそのほかCodeceptionの強力な機能には「ベストプラクティス」や「ユースケース」は存在しません。これらの拡張機能を使うことで解決できそうな問題に直面した場合、試してみてください。
