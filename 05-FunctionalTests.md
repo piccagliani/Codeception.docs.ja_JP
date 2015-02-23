@@ -25,12 +25,12 @@ $I->see('Hello, Miles', 'h1');
 
 ## 落とし穴
 
-通常、受け入れテストは機能テストよりも相当な時間がかかります。しかし機能テストはひとつの環境でCodeceptionとアプリケーションを実行できるほど安定しません。
+通常、受け入れテストは機能テストよりも相当な時間がかかります。しかし機能テストはひとつの環境でCodeceptionとアプリケーションを実行するため、より不安定になります。
 
 #### ヘッダー、クッキー、セッション
 
 機能テストの一般的な問題のひとつに、`headers`, `sessions`, `cookies`を扱うPHPメソッドの使い方があります。
-ご存知のように、`header`メソッドは同じヘッダを2回以上実行するとエラーを発生させます。機能テストにおいてはアプリケーションを何回も実行するため、たくさんエラーが起こってしまうでしょう。
+ご存知のように、`header`メソッドは同じヘッダを2回以上実行するとエラーを発生させます。機能テストにおいてはアプリケーションを何回も実行するため、テスト結果にくだらないエラーがたくさん含まれてしまうでしょう。
 
 #### 共有メモリ
 
@@ -48,7 +48,7 @@ $I->see('Hello, Miles', 'h1');
 ### Symfony2
 
 Symfony2で動作させるために、バンドルをインストールする必要も設定を変更することもありません。
-テストスイートに`Symfony2`モジュールを追加するひつようがあるだけです。もしDoctrine2も使用するのであれば、忘れずに追加してください。
+テストスイートに`Symfony2`モジュールを追加する必要があるだけです。もしDoctrine2も使用するのであれば、忘れずに追加してください。
 
 `functional.suite.yml`の書き方
 
@@ -92,7 +92,7 @@ modules:
 ```
 
 先ほど議論した落とし穴を避けるために、CodeceptionはYiiエンジン上に基盤となるフックを提供しています。
-それを次にしたがってセットアップしてください。[the installation steps in module reference](http://codeception.com/docs/modules/Yii1)
+それをthe installation steps in module referenceのページに従って設定してください。
 
 ### Zend Framework 2
 
@@ -106,8 +106,8 @@ modules:
 
 ### Zend Framework 1.x
 
-Zend FrameworkのためのモジュールはPHPUnitの機能テストに使われるControllerTestCase classに強く影響を受けています。
-ブートストラップとクリーンアップに同様のアプローチが使われています。機能テストでZend Frameworkを使用する場合は`ZF1`を追加してください。
+Zend FrameworkのためのモジュールはPHPUnitの機能テストに使われるControllerTestCaseクラスに強く影響を受けています。
+ブートストラップとクリーンアップに同様のアプローチが使われています。機能テストでZend Frameworkを使用する場合は`ZF1`モジュールを追加してください。
 
 `functional.suite.yml`の書き方
 
@@ -121,7 +121,7 @@ modules:
 
 ### Phalcon 1.x
 
-`Phalcon1`モジュールは`\Phalcon\Mvc\Application`のインスタンスを返すブートストラップファイルを作成する必要があります。Phalconで機能テストを始めるには、`Phalcon1`モジュール追加し、このブートストラップファイルにパスを通す必要があります。:
+`Phalcon1`モジュールは`\Phalcon\Mvc\Application`のインスタンスを返すブートストラップファイルを作成する必要があります。Phalconで機能テストを始めるには、`Phalcon1`モジュールを追加し、このブートストラップファイルにパスを通す必要があります。:
 
 ```yaml
 class_name: FunctionalTester
@@ -136,7 +136,7 @@ modules:
 
 ## 機能テストを書く
 
-機能テストは`PhpBrowser`モジュールでの[Acceptance Tests](http://codeception.com/docs/04-AcceptanceTests)と同じような方法で書かれます。すべてのフレームワークモジュールと`PhpBrowser`モジュールは同じメソッドと同じエンジンを共有しています。
+機能テストは`PhpBrowser`モジュールでの[受け入れテスト](http://codeception.com/docs/04-AcceptanceTests)と同じような方法で書かれます。すべてのフレームワークモジュールと`PhpBrowser`モジュールは同じメソッドと同じエンジンを共有しています。
 
 したがって、私たちは`amOnPage`メソッドでウェブページを開くことが出来ます。
 
@@ -184,7 +184,7 @@ $I->seeCurrentUrlEquals('/profile/john');
 ```
 
 フレームワークのモジュールはフレームワーク内部にアクセスするメソッドも含んでいます。例えば、`Laravel4`, `Phalcon1`, そして `Yii2`モジュールはデータベースにレコードが存在するかチェックするためのActiveRecord layerを使用する`seeRecord`メソッドを持っています。
-`Laravel4`モジュールはセッションをチェックするメソッドも含んでいます。フォームのバリデーションをテストするときに`seeSessionHasErrors`メソッドは役に立つとわかるでしょう。
+`Laravel4`モジュールはセッションをチェックするメソッドも含んでいます。フォームのバリデーションをテストするときに`seeSessionHasErrors`メソッドは役に立つと分かるでしょう。
 
 使用するモジュールの完全なリファレンスを見てください。モジュールのほとんどのメソッドはすべてに共通で、固有のメソッドは数種類です。
 
@@ -196,9 +196,9 @@ class FunctionalHelper extends \Codeception\Module
 {
     function doSomethingWithMyService()
     {
-        $service = $this->getModule('Symfony2') // Symfony 2モジュールを調べてください
-            ->container // 現在のDI containerを取得get current DI container
-            ->get('my_service'); // access a service
+        $service = $this->getModule('Symfony2') // Symfony 2モジュールの検索
+            ->container // 現在のDI containerを取得
+            ->get('my_service'); // サービスにアクセス
 
         $service->doSomething();
     }
@@ -206,14 +206,14 @@ class FunctionalHelper extends \Codeception\Module
 ?>
 ```
 
-Symfony2内部のカーネルにアクセスし、サービスコンテナを取得しました。私たちはテストで使用出来る`FunctionalTester`クラスのメソッドをカスタムして作ることも出来ます。
+Symfony2内部のカーネルにアクセスし、サービスコンテナを取得しました。私たちはテストで使用出来る`FunctionalTester`クラスのメソッドをカスタマイズして作ることも出来ます。
 
 使用するモジュールに対応するリファレンスの*Public Properties*の節をチェックすることで、もっとフレームワークにアクセスする情報を得ることが出来ます。
 
 ## エラーレポート
 
 Codeceptionはデフォルトで`E_ALL & ~E_STRICT & ~E_DEPRECATED`のエラー出力レベルを使用しています。
-機能テストの中で、このエラーレベルを変更したい場合はフレームワークごとの方針に従ってください。
+機能テストの中で、エラーレベルをフレームワークごとの方針に変更したいと思うかもしれません。
 エラー出力レベルはスイートの設定ファイルで設定する事が出来ます：
 
 ```yaml
