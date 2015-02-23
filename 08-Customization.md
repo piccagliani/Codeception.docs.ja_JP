@@ -25,7 +25,7 @@ settings:
 ### 名前空間
 
 アクタークラスとヘルパークラスの名前空間が衝突するのを避けるため、それらは名前空間に属すべきです。
-名前空間を持つテストスーとを作成するためには、ブートストラップコマンドに `--namespace` オプションを付与します。
+名前空間を持つテストスイートを作成するためには、ブートストラップコマンドに `--namespace` オプションを付与します。
 
 ``` bash
 $ php codecept.phar bootstrap --namespace frontend
@@ -33,7 +33,7 @@ $ php codecept.phar bootstrap --namespace frontend
 
 これにより、`namespace: frontend` パラメータを持つ `codeception.yml` ファイルとともに、新しいプロジェクトが作成されます。
 ヘルパークラスの名前空間は `frontend\Codeception\Module` に、アクタークラスの名前空間は `frontend` になります。
-こうして、あたしく作成されたテストは次のようになります。
+こうして、新しく作成されたテストは次のようになります。
 
 ```php
 <?php use frontend\AcceptanceTester;
@@ -82,7 +82,6 @@ Codeception\Util\Autoload::register('MyApp\\Test', 'Helper', __DIR__.'/../lib/te
 これは `__DIR__.'/../lib/tests/helpers'` 内の `MyApp\Test\MyHelper` のようなクラスを探すようオートローダーに示します。
 
 あるいは、クラス名に適切な接尾辞がつけられている場合に **ページオブジェクトとコントローラー** クラスへのパスを指定するためにオートローダーを使用することができます。
-Alternatively you can use autoloader to specify path for **PageObject and Controller** classes, if they have appropriate suffixes in their names.
 
 `tests/_bootstrap.php` ファイルの例:
 
@@ -103,8 +102,7 @@ Codeceptionはコアな機能を拡張する限定的な機能を持っていま
 
 基本的には、拡張機能は [Symfony Event Dispatcher](http://symfony.com/doc/current/components/event_dispatcher/introduction.html) コンポーネントを基盤とするイベントリスナー以上の何ものでもありません。
 
-これらがイベントとイベントクラスです。
-Here are the events and event classes. テスト実行中に発生する順番で一覧化しています。それぞれのイベントには対応したクラスがあり、特定のオブジェクトを含んでイベントリスターに渡されます。
+これらがイベントとイベントクラスです。テスト実行中に発生する順番で一覧化しています。それぞれのイベントには対応したクラスがあり、特定のオブジェクトを含んでイベントリスターに渡されます。
 
 ### イベント
 
@@ -266,4 +264,4 @@ extensions:
 
 ## まとめ
 
-これまでに述べてきた各機能は、いくつかについては高度なPHPの知識を必要とするかもしれませんが、規模の大きいプロジェクトのテストをCodeceptionで自動化する際に、劇的に役立つことがあります。グループや拡張機能やそのほかCodeceptionの協力な機能には「ベストプラクティス」や「ユースケース」は存在しません。これらの拡張機能を使うことで解決できそうな問題に直面した場合、試してみてください。
+これまでに述べてきた各機能は、いくつかについては高度なPHPの知識を必要とするかもしれませんが、規模の大きいプロジェクトのテストをCodeceptionで自動化する際に、劇的に役立つことがあります。グループや拡張機能やそのほかCodeceptionの強力な機能には「ベストプラクティス」や「ユースケース」は存在しません。これらの拡張機能を使うことで解決できそうな問題に直面した場合、試してみてください。
