@@ -34,11 +34,11 @@
     <section id="main_content" class="inner">
         <h1>機能テスト</h1>
 
-<p>今、私達はいくつかの受け入れテストを書いてきましたが、機能テストもほぼ同様に書けます。ひとつの大きな違いがあるだけです：機能テストは実行するのにWebサーバーを必要としないことです。</p>
+<p>いま、私達はいくつかの受け入れテストを書いてきましたが、機能テストもほぼ同様に書けます。1つの大きな違いがあるだけです：機能テストは実行するのにWebサーバーを必要としないことです。</p>
 
 <p>簡単に言えば、<code>$_REQUEST</code>や<code>$_GET</code>、<code>$_POST</code>の変数をセットし、テストからアプリケーションを実行します。このことは機能テストがより速く動作し、失敗時に詳細なスタックトレースを提供するので価値のあることでしょう。</p>
 
-<p>Codeceptionは機能テストをサポートしている異なるフレームワークと接続出来ます:Symfony2, Laravel4, Yii2, Zend Frameworkなどです。あなたはお望みのモジュールをfunctionalスイートの設定において使用できるようにするだけです。</p>
+<p>Codeceptionは機能テストをサポートしている異なるフレームワークと接続できます:Symfony2, Laravel4, Yii2, Zend Frameworkなどです。あなたはお望みのモジュールをfunctionalスイートの設定において使用できるようにするだけです。</p>
 
 <p>これらのフレームワークモジュールは同じインターフェイスを持っているので、フレームワークにテストが縛られることはありません。以下は機能テストのサンプルです。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
@@ -52,29 +52,29 @@
 <span class="c1">// $I-&gt;seeEmailIsSent() - Symfony2特有のメソッドです</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>ご覧の通り、機能テストと受け入れテストで同じテストを使うことが出来ます。</p>
+<p>ご覧の通り、機能テストと受け入れテストで同じテストを使うことができます。</p>
 
 <h2>落とし穴</h2>
 
-<p>通常、受け入れテストは機能テストよりも相当な時間がかかります。しかし機能テストはひとつの環境でCodeceptionとアプリケーションを実行するため、より不安定になります。</p>
+<p>通常、受け入れテストは機能テストよりも相当な時間がかかります。しかし機能テストは1つの環境でCodeceptionとアプリケーションを実行するため、より不安定になります。</p>
 
 <h4>ヘッダー、クッキー、セッション</h4>
 
-<p>機能テストの一般的な問題のひとつに、<code>headers</code>, <code>sessions</code>, <code>cookies</code>を扱うPHPメソッドの使い方があります。
+<p>機能テストの一般的な問題の1つに、<code>headers</code>, <code>sessions</code>, <code>cookies</code>を扱うPHPメソッドの使い方があります。
 ご存知のように、<code>header</code>メソッドは同じヘッダを2回以上実行するとエラーを発生させます。機能テストにおいてはアプリケーションを何回も実行するため、テスト結果にくだらないエラーがたくさん含まれてしまうでしょう。</p>
 
 <h4>共有メモリ</h4>
 
 <p>従来の方法とは違い、機能テストではリクエストの処理が終わった後にPHPアプリケーションを停止しません。
-ひとつのメモリコンテナですべてのリクエストが実行されるので、リクエストが分離されることはありません。
-したがって、<strong>もしあなたが、失敗するはずないと思っているテストが何故か失敗するときは、単一のテストで実行してみてください。</strong>
+1つのメモリコンテナですべてのリクエストが実行されるので、リクエストが分離されることはありません。
+したがって、<strong>もしあなたが、失敗するはずないと思っているテストがなぜか失敗するときは、単一のテストで実行してみてください。</strong>
 これはテストの実行中にそれぞれが分離されているかをチェックします。すべてのテストがメモリを共有して実行されていると容易に環境を壊してしまうからです。
 メモリをきれいに保ち、メモリリークを避け、globalやstaticな変数をきれいにしてください。</p>
 
 <h2>フレームワークモジュールを使う</h2>
 
 <p>機能テストスイートは<code>tests/functional</code>ディレクトリにあります。
-はじめに、スイートの設定ファイル:<code>tests/functional.suite.yml</code> にフレームワークモジュールを一つ含める必要があります。下記にもっともポピュラーなPHPフレームワークで機能テストをセットアップする簡単な手順を提供しています。</p>
+はじめに、スイートの設定ファイル:<code>tests/functional.suite.yml</code> にフレームワークモジュールを1つ含める必要があります。下記に最もポピュラーなPHPフレームワークで機能テストをセットアップする簡単な手順を提供しています。</p>
 
 <h3>Symfony2</h3>
 
@@ -94,7 +94,7 @@
 
 <h3>Laravel 4</h3>
 
-<p><a href="http://codeception.com/docs/modules/Laravel4">Laravel</a> モジュールは設定も必要なく、簡単にセットアップ出来ます。</p>
+<p><a href="http://codeception.com/docs/modules/Laravel4">Laravel</a> モジュールは設定も必要なく、簡単にセットアップできます。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
 <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Laravel4</span><span class="p-Indicator">,</span> <span class="nv">TestHelper</span><span class="p-Indicator">]</span>
@@ -150,7 +150,7 @@ Yiiで機能テストを使用するには設定に<code>Yii1</code>モジュー
 
 <p>機能テストは<code>PhpBrowser</code>モジュールでの<a href="http://codeception.com/docs/04-AcceptanceTests">受け入れテスト</a>と同じような方法で書かれます。すべてのフレームワークモジュールと<code>PhpBrowser</code>モジュールは同じメソッドと同じエンジンを共有しています。</p>
 
-<p>したがって、私たちは<code>amOnPage</code>メソッドでウェブページを開くことが出来ます。</p>
+<p>したがって、私たちは<code>amOnPage</code>メソッドでウェブページを開くことができます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">;</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
@@ -183,12 +183,12 @@ Yiiで機能テストを使用するには設定に<code>Yii1</code>モジュー
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeCurrentUrlEquals</span><span class="p">(</span><span class="s1">&#39;/profile/john&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>フレームワークのモジュールはフレームワーク内部にアクセスするメソッドも含んでいます。例えば、<code>Laravel4</code>, <code>Phalcon1</code>, そして <code>Yii2</code>モジュールはデータベースにレコードが存在するかチェックするためのActiveRecord layerを使用する<code>seeRecord</code>メソッドを持っています。
+<p>フレームワークのモジュールはフレームワーク内部にアクセスするメソッドも含んでいます。たとえば、<code>Laravel4</code>, <code>Phalcon1</code>, そして <code>Yii2</code>モジュールはデータベースにレコードが存在するかチェックするためのActiveRecord layerを使用する<code>seeRecord</code>メソッドを持っています。
 <code>Laravel4</code>モジュールはセッションをチェックするメソッドも含んでいます。フォームのバリデーションをテストするときに<code>seeSessionHasErrors</code>メソッドは役に立つと分かるでしょう。</p>
 
 <p>使用するモジュールの完全なリファレンスを見てください。モジュールのほとんどのメソッドはすべてに共通で、固有のメソッドは数種類です。</p>
 
-<p>また、フレームワーク内部globalないし、<code>FunctionalHelper</code>クラスの依存関係注入コンテナの内部へもアクセス出来ます。</p>
+<p>また、フレームワーク内部globalないし、<code>FunctionalHelper</code>クラスの依存関係注入コンテナの内部へもアクセスできます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">class</span> <span class="nc">FunctionalHelper</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span>
 <span class="p">{</span>
@@ -203,25 +203,25 @@ Yiiで機能テストを使用するには設定に<code>Yii1</code>モジュー
 <span class="p">}</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>Symfony2内部のカーネルにアクセスし、サービスコンテナを取得しました。私たちはテストで使用出来る<code>FunctionalTester</code>クラスのメソッドをカスタマイズして作ることも出来ます。</p>
+<p>Symfony2内部のカーネルにアクセスし、サービスコンテナを取得しました。私たちはテストで使用できる<code>FunctionalTester</code>クラスのメソッドをカスタマイズして作ることもできます。</p>
 
-<p>使用するモジュールに対応するリファレンスの<em>Public Properties</em>の節をチェックすることで、もっとフレームワークにアクセスする情報を得ることが出来ます。</p>
+<p>使用するモジュールに対応するリファレンスの<em>Public Properties</em>の節をチェックすることで、もっとフレームワークにアクセスする情報を得ることができます。</p>
 
 <h2>エラーレポート</h2>
 
 <p>Codeceptionはデフォルトで<code>E_ALL &amp; ~E_STRICT &amp; ~E_DEPRECATED</code>のエラー出力レベルを使用しています。
 機能テストの中で、エラーレベルをフレームワークごとの方針に変更したいと思うかもしれません。
-エラー出力レベルはスイートの設定ファイルで設定する事が出来ます：</p>
+エラー出力レベルはスイートの設定ファイルで設定する事ができます：</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
 <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Yii1</span><span class="p-Indicator">,</span> <span class="nv">TestHelper</span><span class="p-Indicator">]</span>
 <span class="l-Scalar-Plain">error_level</span><span class="p-Indicator">:</span> <span class="s">&quot;E_ALL</span><span class="nv"> </span><span class="s">&amp;</span><span class="nv"> </span><span class="s">~E_STRICT</span><span class="nv"> </span><span class="s">&amp;</span><span class="nv"> </span><span class="s">~E_DEPRECATED&quot;</span>
 </code></pre></div>
-<p><code>error_level</code>は<code>codeception.yml</code>ファイルにグローバルに定義することも出来ます。</p>
+<p><code>error_level</code>は<code>codeception.yml</code>ファイルにグローバルに定義することもできます。</p>
 
-<h2>結論</h2>
+<h2>まとめ</h2>
 
-<p>パワフルなフレームワークを使用しているならば、機能テストはすばらしいです。機能テストを使用する事で、フレームワークの内部状態にアクセスでき、制御する事が出来ます。
+<p>パワフルなフレームワークを使用しているならば、機能テストはすばらしいです。機能テストを使用する事で、フレームワークの内部状態にアクセスでき、制御する事ができます。
 このことはテストをより短く、より速くしてくれます。フレームワークを使用しない場合ならば、機能テストを書く実用的な理由はないです。
 もしここで挙げたものと違うフレームワークを使用しているならば、モジュールを作成して、コミュニティで共有してください。</p>
 
@@ -232,7 +232,7 @@ Yiiで機能テストを使用するには設定に<code>Yii1</code>モジュー
 <div id="footer_wrap" class="outer">
     <footer class="inner">
         <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-02-23 16:47:13 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+        <p>Last updated: 2015-02-24 17:17:17 +0900, Based on <a href="https://github.com/Codeception/Codeception/releases/tag/2.0.11">Codeception 2.0.11</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

@@ -41,7 +41,7 @@
 これは一見、Codeceptionがあなたのテストに制限を掛けているように見えますがそうではありません。
 カスタムモジュールに自分自身のアクションやアサーションを書き込むことによって、テストスイートを拡張することができるのです。</p>
 
-<p>以下のテストを見てみて下さい。</p>
+<p>以下のテストを見てみてください。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>
@@ -52,17 +52,17 @@
 </code></pre></div>
 <p>これは異なるエンティティで動作します。ウェブページはPhpBrowserモジュールをロードすることができ、データベースのアサーションはDbモジュールを使用し、ファイルの状態はFilesystemモジュールで確認することができます。</p>
 
-<p>モジュールはスイートの設定でアクタークラスに取り付けられています。例えば<code>tests/functional.suite.yml</code>では次のようになっています。</p>
+<p>モジュールはスイートの設定でアクタークラスに取り付けられています。たとえば<code>tests/functional.suite.yml</code>では次のようになっています。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
 <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">PhpBrowser</span><span class="p-Indicator">,</span> <span class="nv">Db</span><span class="p-Indicator">,</span> <span class="nv">Filesystem</span><span class="p-Indicator">]</span>
 </code></pre></div>
-<p>FunctionalTesterクラスはモジュールに定義されているメソッドを持っています。実際にはそれらは含まれておらず、プロキシのように動作しています。どのモジュールがそのアクションを実行するのか知っており、その中にパラメータを渡すのです。お使いのIDEがFunctionalTesterの持っているすべてのメソッドを見るには<code>build</code>コマンドを使います。対応するモジュールからの署名をコピーしてFunctionalTesterクラスの定義を生成します。</p>
+<p>FunctionalTesterクラスはモジュールに定義されているメソッドを持っています。しかしメソッドは実際にクラスの中に含まれてるわけではなく、プロキシのように動作しています。Testerクラスはどのモジュールがそのアクションを実行するのか知っており、その中にパラメータを渡すのです。お使いのIDEがFunctionalTesterの持っているすべてのメソッドを見るには<code>build</code>コマンドを使います。対応するモジュールからの署名をコピーしてFunctionalTesterクラスの定義を生成します。</p>
 
 <h2>スタンダードモジュール</h2>
 
 <p>Codeceptionには異なる目的や環境のためのテストを実行するのに役立つバンドルされたモジュールが多くあります。
-多くのモジュールは一定ではありません - 多くのフレームワークやORMがサポートされているように成長していくべきです。
+多くのモジュールは一定ではありません - より多くのフレームワークやORMがサポートされるように成長していくべきです。
 Modulesセクションのメインメニュー下にリストがあるので確認してみてください。</p>
 
 <p>これらのモジュールはすべてドキュメント化されています。詳細なリファレンスは<a href="https://github.com/Codeception/Codeception/tree/master/docs/modules">GitHub</a>で確認できます。</p>
@@ -75,7 +75,7 @@ Modulesセクションのメインメニュー下にリストがあるので確�
 
 <p>ノート: ヘルパークラスの名前は&quot;*Helper.php&quot;で終わらなければなりません。</p>
 
-<p>例えば、FunctionalHelperクラスを拡張するとします。これはデフォルトでは、FunctionalTesterクラスと機能テストスイートにリンクされています。</p>
+<p>たとえば、FunctionalHelperクラスを拡張するとします。これはデフォルトでは、FunctionalTesterクラスと機能テストスイートにリンクされています。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">namespace</span> <span class="nx">Codeception\Module</span><span class="p">;</span>
 <span class="c1">// here you can define custom functions for FunctionalTester</span>
@@ -91,7 +91,7 @@ Modulesセクションのメインメニュー下にリストがあるので確�
 
 <p>アサーションは少し注意が必要です。まず始めに、すべてのアサーションの接頭語が <code>see</code> もしくは <code>dontSee</code> になっていることを推奨します。</p>
 
-<p>例えばこのようになります。</p>
+<p>たとえばこのようになります。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seePageReloaded</span><span class="p">();</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeClassIsLoaded</span><span class="p">(</span><span class="nv">$classname</span><span class="p">);</span>
@@ -142,7 +142,7 @@ Modulesセクションのメインメニュー下にリストがあるので確�
 
 <h3>モジュールの接続</h3>
 
-<p>他のモジュールから内部データや関数にアクセスすることも可能です。例えば、あなたのモジュールはDoctrineからの接続、もしくはSymfonyからウェブブラウザが必要になることがあります。</p>
+<p>他のモジュールから内部データや関数にアクセスすることも可能です。たとえば、Doctrineモジュールからデータベースコネクションが、Symfonyモジュールからウェブブラウザーが必要になることがあります。</p>
 
 <p>モジュールは<code>getModule</code>メソッドを通じて相互に作用できます。このメソッドは必要なモジュールがロードされていない場合、例外を投げることを覚えておいてください。</p>
 
@@ -175,7 +175,7 @@ Modulesセクションのメインメニュー下にリストがあるので確�
 
 <p>各モジュールは、実行中のテストからのイベントを処理することができます。モジュールはテスト前に実行させることもできますし、テストが終了してからでも実行できます。これはブートストラップやクリーンアップをする際に役立ちます。また、テストが失敗した時のために特殊な動作を定義することも可能です。これは問題をデバッグする際に便利です。</p>
 
-<p>例えば、PhpBrowserモジュールはテストが失敗した時、<code>tests/_output</code>ディレクトリに現在のウェブページを保存します。</p>
+<p>たとえば、PhpBrowserモジュールはテストが失敗した時、<code>tests/_output</code>ディレクトリに現在のウェブページを保存します。</p>
 
 <p>すべてのフックは<code>\Codeception\Module</code>で定義されており、ここにリストされています。あなたは自由にそれをあなたのモジュールで再定義することができます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
@@ -217,15 +217,15 @@ Modulesセクションのメインメニュー下にリストがあるので確�
     <span class="p">}</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p><code>_</code>から始まるメソッドはアクタークラスに追加されないことに注意して下さい。
+<p><code>_</code>から始まるメソッドはアクタークラスに追加されないことに注意してください。
 これらはpublicとして定義されますが、内部的な目的でのみ使用されます。</p>
 
 <h3>デバッグ</h3>
 
-<p>先述したように、<code>_failed</code>フックはテストが失敗した際のデバッグに役立ちます。現在のテストの状態を保存し、それをユーザに見せることができますが、これだけではありません。</p>
+<p>先述したように、<code>_failed</code>フックはテストが失敗した際のデバッグに役立ちます。現在のテストの状態を保存し、それをユーザに見せることができますが、それは<code>_failed</code>フックだけではありません。</p>
 
 <p>各モジュールは、デバッグ中に有用的であると思われる内部の値を出力することができます。
-例えばPhpBrowserモジュールは、新しいページに移動するたびにレスポンスコードと現在のURLを出力します。
+たとえばPhpBrowserモジュールは、新しいページに移動するたびにレスポンスコードと現在のURLを出力します。
 このように、モジュールはブラックボックスではありません。彼らはテスト中に何が起きているのかを見せようとしているのです。あなたがテストをデバッグする際の苦痛を減らしてくれるのです。</p>
 
 <p>追加の情報を表示するには、モジュールの<code>debug</code> と <code>debugSection</code>メソッドを使用します。
@@ -279,7 +279,6 @@ PhpBrowserでどのように動作するか、例を見てみましょう。</p>
 <p>オプションと必須のパラメータは<code>$config</code>プロパティからアクセスすることができます。その値を取得するには、<code>$this-&gt;config[&#39;parameter&#39;]</code>を使ってください。</p>
 
 <h3>ダイナミックな設定(Dynamic Configuration)</h3>
-
 <p>もしあなたが実行時にモジュールを再設定したければ、モジュールの<code>_reconfigure</code>メソッドを使用してください。
 それをヘルパークラスから呼び出し、変更したいすべてのフィールドに渡すことができます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
@@ -297,7 +296,7 @@ PhpBrowserでどのように動作するか、例を見てみましょう。</p>
 <span class="p">}</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>継承されたヘルパーでは、あなた自身によって実装されているメソッドを書き換えて下さい。
+<p>継承されたヘルパーでは、あなた自身によって実装されているメソッドを書き換えてください。
 あなたがテストセッションの開始と終了をカスタマイズする際のオプションである<code>_before</code> と <code>_after</code>フックも置き換えることができます。</p>
 
 <p>親クラスのメソッドが子クラスで使用すべきでない場合、それらを無効にすることができます。Codeceptionにはいくつかのオプションがあります。</p>
@@ -334,9 +333,8 @@ PhpBrowserでどのように動作するか、例を見てみましょう。</p>
 <p><code>$includeInheritedActions</code>をfalseに設定することで、生成されたアクターに親クラスのメソッドを含まないのです。
 ヘルパークラスでは継承したメソッドを、引き続き使用することが可能です。</p>
 
-<h2>結論</h2>
-
-<p>モジュールはCodeceptionの真の力です。これらはアクタークラス（UnitTester、FunctionalTester、AcceptanceTesterなど）への複数の継承をエミュレートするために使用されます。Codeceptionはウェブリクエスト、アクセスデータ、人気PHPライブラリとのインタラクション等をエミュレートするモジュールを提供しています。あなたのアプリケーションは、カスタムされたアクションが必要になるでしょう。これらはヘルパークラスで定義することができます。もしあなたが他の人にも役立ちそうなモジュールを書いたのでしたら、ぜひシェアしてください。Codeceptionリポジトリをフォークし、モジュールを<strong>src/Codeception/Module</strong>ディレクトリ内に設置し、プルリクエストを送信して下さい。</p>
+<h2>まとめ</h2>
+<p>モジュールはCodeceptionの真髄です。これらはアクタークラス（UnitTester、FunctionalTester、AcceptanceTesterなど）への複数の継承をエミュレートするために使用されます。Codeceptionはウェブリクエスト、アクセスデータ、人気PHPライブラリとのインタラクション等をエミュレートするモジュールを提供しています。あなたのアプリケーションは、カスタムされたアクションが必要になるでしょう。これらはヘルパークラスで定義することができます。もしあなたが他の人にも役立ちそうなモジュールを書いたのでしたら、ぜひシェアしてください。Codeceptionリポジトリをフォークし、モジュールを<strong>src/Codeception/Module</strong>ディレクトリ内に設置し、プルリクエストを送信してください。</p>
 
     </section>
 </div>
@@ -345,7 +343,7 @@ PhpBrowserでどのように動作するか、例を見てみましょう。</p>
 <div id="footer_wrap" class="outer">
     <footer class="inner">
         <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-02-23 16:47:13 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+        <p>Last updated: 2015-02-24 17:17:17 +0900, Based on <a href="https://github.com/Codeception/Codeception/releases/tag/2.0.11">Codeception 2.0.11</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

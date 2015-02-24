@@ -36,7 +36,7 @@
 
 <p>あるタイミングでアプリケーションのどの箇所がテストされていて、どの箇所がテストされていないのか確認したくなると思います。
 そのような状況に<a href="http://ja.wikipedia.org/w/index.php?title=%E3%82%B3%E3%83%BC%E3%83%89%E3%82%AB%E3%83%90%E3%83%AC%E3%83%83%E3%82%B8">コードカバレッジ</a>が使われます。
-カバレッジレポートを収集するためにテストを実行すると、そのテストによって実行された全てのクラス、メソッド、そして行の統計情報を取得します。
+カバレッジレポートを収集するためにテストを実行すると、そのテストによって実行されたすべてのクラス、メソッド、そして行の統計情報を取得します。
 スクリプトの全行数と通過した行数との比率が、主要なカバレッジ基準となります。理想論では100%のカバレッジを取得する必要がありますが、実際には80%で十分でしょう。なぜなら、100%のカバレッジであったとしても致命的なエラーやクラッシュを防ぐことができないからです。</p>
 
 <p><strong>Codeceptionはバージョン1.5からコードカバレッジ用のツールを備えています。カバレッジを収集するためには <code>xdebug</code> が必要となります。</strong>.</p>
@@ -53,7 +53,7 @@ SeleniumやPhpBrowserによるテストはコードカバレッジを収集す�
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">true</span>
 </code></pre></div>
-<p>今はこれで大丈夫ですが、最終的なカバレッジレポートにはどのファイルが表示されるべきなのでしょうか？次のように、ブラックリストとホワイトリストのフィルタを提供することで、ファイルをフィルタリングすることができます。</p>
+<p>いまはこれで大丈夫ですが、最終的なカバレッジレポートにはどのファイルが表示されるべきなのでしょうか？次のように、ブラックリストとホワイトリストのフィルタを提供することで、ファイルをフィルタリングすることができます。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">whitelist</span><span class="p-Indicator">:</span>
         <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span>
@@ -95,8 +95,8 @@ SeleniumやPhpBrowserによるテストはコードカバレッジを収集す�
 もし上に書いた設定を行っているのであれば準備完了です。
 必要なことはCodeceptionを <code>--coverage</code> オプションとともに実行することです。</p>
 
-<p>CloverのXMLレポートや良い感じのHTMLレポートを生成するためには、<code>--coverage-xml</code> と <code>--coverage-html</code> のオプションについても追加します。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">codecept run --coverage --coverage-xml --coverage-html</span>
+<p>CloverのXMLレポートや良い感じのHTMLレポートを生成するためには、<code>--xml</code> と <code>--html</code> のオプションについても追加します。</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">codecept run --coverage --xml --html</span>
 </code></pre></div>
 <p>XMLとHTMLレポートは <code>_output</code> ディレクトリに格納されます。レポートを確認するための一番の方法は、<code>tests/_output/coverage</code> ディレクトリから <code>index.html</code> をブラウザで開くことです。
 CloverのXMLレポートはPHPStormのようなIDEやJenkinsのような継続的インテグレーションサーバーで利用されます。</p>
@@ -167,7 +167,7 @@ c3がウェブサーバー（ローカル、リモートのどちらであろう
 <div id="footer_wrap" class="outer">
     <footer class="inner">
         <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-02-23 16:47:13 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+        <p>Last updated: 2015-02-24 17:17:17 +0900, Based on <a href="https://github.com/Codeception/Codeception/releases/tag/2.0.11">Codeception 2.0.11</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

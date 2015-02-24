@@ -67,7 +67,7 @@
 <span class="c1">//...</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>それぞれのアプリケーション（バンドル）が自身の名前空間と異なるヘルパーやアクタークラスを持つようになって、全てのテストを1ランナーで実行できるようになります。先ほど作成したメタ設定を使って、通常どおりCodeceptionを実行します。</p>
+<p>それぞれのアプリケーション（バンドル）が自身の名前空間と異なるヘルパーやアクタークラスを持つようになって、すべてのテストを1ランナーで実行できるようになります。先ほど作成したメタ設定を使って、通常どおりCodeceptionを実行します。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run
 </code></pre></div>
 <p>これにより、3つのすべてのアプリケーションのテストスイートが起動し、すべてのテストレポートがマージされます。これはつまり、継続的インテグレーションサーバー上でテストを実行し、1つのJUnitとHTML形式のレポートを取得したい場合に大変役に立ちます。コードカバレッジレポートについても同じくマージされます。</p>
@@ -87,7 +87,7 @@
 <span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">registerSuffix</span><span class="p">(</span><span class="s1">&#39;Helper&#39;</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../lib/tests/helpers&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>これで、<code>__DIR__.&#39;/../lib/tests/helpers&#39;</code> から検索された、名前が<code>Helper</code>で終わる全てのクラスが追加されます。特定の名前空間に属すヘルパーをロードするよう宣言することもできます。</p>
+<p>これで、<code>__DIR__.&#39;/../lib/tests/helpers&#39;</code> から検索された、名前が<code>Helper</code>で終わるすべてのクラスが追加されます。特定の名前空間に属すヘルパーをロードするよう宣言することもできます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">&#39;MyApp\\Test&#39;</span><span class="p">,</span> <span class="s1">&#39;Helper&#39;</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../lib/tests/helpers&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
@@ -205,7 +205,7 @@
 </tr>
 </tbody></table>
 
-<p><code>test.start</code>と<code>test.before</code>、 <code>test.after</code>と<code>test.end</code>とに混乱するかもしれません。Start/endイベントはPHPUnit自身によって発生されますが、before/afterイベントはCodeceptionによって発生されます。ですので、伝統的な（<code>PHPUnit_Framework_TestCase</code>を継承した）PHPUnitのテストではbefore/afterイベントは発生しません。<code>test.before</code>イベントでは、<code>test.start</code>では不可能な、スキップされたか不完全なテストを追跡することができます。<a href="https://github.com/Codeception/Codeception/tree/master/src/Codeception/Subscriber">Codeception internal event listeners</a>にてより多くのことを学ぶことができます。</p>
+<p><code>test.start</code>と<code>test.before</code>、 <code>test.after</code>と<code>test.end</code>とに混乱するかもしれません。Start/endイベントはPHPUnit自身によって発生されますが、before/afterイベントはCodeceptionによって発生されます。ですので、従来の（<code>PHPUnit_Framework_TestCase</code>を継承した）PHPUnitのテストではbefore/afterイベントは発生しません。<code>test.before</code>イベントでは、<code>test.start</code>では不可能な、スキップされたか不完全なテストを追跡することができます。<a href="https://github.com/Codeception/Codeception/tree/master/src/Codeception/Subscriber">Codeception internal event listeners</a>にてより多くのことを学ぶことができます。</p>
 
 <p>拡張クラスは <code>Codeception\Platform\Extension</code> クラスを継承します。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
@@ -334,7 +334,7 @@
 <div id="footer_wrap" class="outer">
     <footer class="inner">
         <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-02-23 16:47:13 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+        <p>Last updated: 2015-02-24 17:17:17 +0900, Based on <a href="https://github.com/Codeception/Codeception/releases/tag/2.0.11">Codeception 2.0.11</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

@@ -48,7 +48,7 @@
 <li>どのように並列プロセス間でテストを分割すべきか？</li>
 </ul>
 
-<p>これらのどの疑問に対しても、適切な1つの答えというのはありません。その代わりに、我々はあなたのニーズに沿うように構成することができ、簡単にカスタマイズ可能なソリューションを提供します。また、参考となるいくつかのアイディアについても共有します。</p>
+<p>これらのどの疑問に対しても、適切な1つの答えというのはありません。その代わりに、私たちはあなたのニーズに沿うように構成することができ、簡単にカスタマイズ可能なソリューションを提供します。また、参考となるいくつかのアイディアについても共有します。</p>
 
 <h2>なにをすればいい？</h2>
 
@@ -60,9 +60,9 @@
 <li>テスト結果をマージする</li>
 </ul>
 
-<p>これらのステップの実施にタスクランナーを利用することを提案します。このガイドでは <a href="http://robo.li"><strong>Robo</strong></a> というタスクランナーを使用します。これは非常に簡単に利用できるモダンなPHPのタスクランナーです。バックグラウンドおよび並列プロセスの起動に <a href="http://symfony.com/doc/current/components/process.html">Symfony Process</a> を使っています。ステップ2に必要なのはこれだけです！ではステップ1とステップ2はどうでしょう？我々はテストをグループに分割するのと、テスト結果をJUnit XMLレポートにマージするために robo <a href="https://github.com/Codeception/robo-paracept">tasks</a> を作成しました。</p>
+<p>これらのステップの実施にタスクランナーを利用することを提案します。このガイドでは <a href="http://robo.li"><strong>Robo</strong></a> というタスクランナーを使用します。これは非常に簡単に利用できるモダンなPHPのタスクランナーです。バックグラウンドおよび並列プロセスの起動に <a href="http://symfony.com/doc/current/components/process.html">Symfony Process</a> を使っています。ステップ2に必要なのはこれだけです！ではステップ1とステップ2はどうでしょう？私たちはテストをグループに分割するのと、テスト結果をJUnit XMLレポートにマージするために robo <a href="https://github.com/Codeception/robo-paracept">tasks</a> を作成しました。</p>
 
-<p>まとめると、我々に必要なものは以下となります。</p>
+<p>まとめると、私たちに必要なものは以下となります。</p>
 
 <ul>
 <li><a href="http://robo.li">Robo</a> - タスクランナー</li>
@@ -200,7 +200,7 @@ tests/functional/AdminCest.php:deleteUser
     <span class="p">}</span>
 <span class="cp">?&gt;</span><span class="x">    </span>
 </code></pre></div>
-<p>我々は何か重要なことを見落としています。異なるプロセスに異なるデータベースを定義することを忘れていますね。これは <a href="http://codeception.com/docs/07-AdvancedUsage#Environments">環境</a> を利用して行うことができます。<code>acceptance.suite.yml</code> に新しく5つの環境を定義しましょう。</p>
+<p>私たちは何か重要なことを見落としています。異なるプロセスに異なるデータベースを定義することを忘れていますね。これは <a href="http://codeception.com/docs/07-AdvancedUsage#Environments">環境</a> を利用して行うことができます。<code>acceptance.suite.yml</code> に新しく5つの環境を定義しましょう。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">AcceptanceTester</span>
 <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">WebDriver</span><span class="p-Indicator">,</span> <span class="nv">Db</span><span class="p-Indicator">]</span>
@@ -290,7 +290,7 @@ tests/functional/AdminCest.php:deleteUser
 
 <h3>すべてを統合する</h3>
 
-<p>これまでのステップを統括して1つのコマンドとするために、新しくpublicな <code>parallelAll</code> メソッドを定義し、全てのコマンドを実行するようにします。<code>parallelRun</code> の結果を保存して、最終的な終了コードとして使います。</p>
+<p>これまでのステップを統括して1つのコマンドとするために、新しくpublicな <code>parallelAll</code> メソッドを定義し、すべてのコマンドを実行するようにします。<code>parallelRun</code> の結果を保存して、最終的な終了コードとして使います。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
     <span class="k">function</span> <span class="nf">parallelAll</span><span class="p">()</span>
     <span class="p">{</span>
@@ -303,7 +303,7 @@ tests/functional/AdminCest.php:deleteUser
 </code></pre></div>
 <h2>まとめ</h2>
 
-<p>Codeceptionはテストを並列実行するためのツールを提供していません。これは複雑なタスクであり、解決策はプロジェクトに依存しています。我々はすべての必要なステップを行うために外部ツールとしての <a href="http://robo.li">Robo</a> タスクランナーを使いました。テストを並列実行するための準備としてCodeceptionの動的グループと環境の仕組みを利用しました。さらに、テストプロセスに応じて動的な設定を行うための拡張機能とグループクラスを作成することができます。</p>
+<p>Codeceptionはテストを並列実行するためのツールを提供していません。これは複雑なタスクであり、解決策はプロジェクトに依存しています。私たちはすべての必要なステップを行うために外部ツールとしての <a href="http://robo.li">Robo</a> タスクランナーを使いました。テストを並列実行するための準備としてCodeceptionの動的グループと環境の仕組みを利用しました。さらに、テストプロセスに応じて動的な設定を行うための拡張機能とグループクラスを作成することができます。</p>
 
     </section>
 </div>
@@ -312,7 +312,7 @@ tests/functional/AdminCest.php:deleteUser
 <div id="footer_wrap" class="outer">
     <footer class="inner">
         <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-02-23 16:47:13 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+        <p>Last updated: 2015-02-24 17:17:17 +0900, Based on <a href="https://github.com/Codeception/Codeception/releases/tag/2.0.11">Codeception 2.0.11</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

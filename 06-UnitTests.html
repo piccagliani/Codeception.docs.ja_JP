@@ -34,18 +34,18 @@
     <section id="main_content" class="inner">
         <h1>単体テスト</h1>
 
-<p>Codeceptionはテストの実行環境としてPHPUnitを使用しています。したがって、PHPUnitのどのテストでもCodeceptionのテストスイートに追加出来ますし、実行出来ます。
-今までにPHPUnitテストを書いていたならば、これまで書いてきたようにするだけです。
+<p>Codeceptionはテストの実行環境としてPHPUnitを使用しています。したがって、PHPUnitのどのテストでもCodeceptionのテストスイートに追加できますし、実行できます。
+いままでにPHPUnitテストを書いていたならば、これまで書いてきたようにするだけです。
 Codeceptionは簡単な共通処理に対して、すばらしいヘルパー機能を追加しています。</p>
 
 <p>単体テストの基礎はここでは割愛する代わりに、単体テストにCodeceptionが追加する特徴の基礎知識をお伝えしましょう。</p>
 
-<p><strong>もう一度言います: テストを実行するためにPHPUnitをインストールする必要はありません。Codeceptionも実行出来ます。</strong></p>
+<p><strong>もう一度言います: テストを実行するためにPHPUnitをインストールする必要はありません。Codeceptionも実行できます。</strong></p>
 
 <h2>テストを作成する</h2>
 
 <p>Codeceptionは簡単にテストを作成する、すばらしいジェネレーターを持っています。
-<code>\PHPUnit_Framework_TestCase</code>クラスを継承している従来のPHPUnitテストを生成するところから始める事が出来ます。
+<code>\PHPUnit_Framework_TestCase</code>クラスを継承している従来のPHPUnitテストを生成するところから始める事ができます。
 以下のようなコマンドで生成されます。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:phpunit unit Example
 </code></pre></div>
@@ -78,7 +78,7 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 <span class="p">}</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>このクラスは、はじめから<code>_before</code>と<code>_after</code>のメソッドが定義されています。それらは各テスト前にテスト用のオブジェクトを作成し、終了後に削除するのに使用出来ます。</p>
+<p>このクラスは、はじめから<code>_before</code>と<code>_after</code>のメソッドが定義されています。それらは各テスト前にテスト用のオブジェクトを作成し、終了後に削除するのに使用できます。</p>
 
 <p>ご覧の通り、PHPUnitとは違い、<code>setUp</code>と<code>tearDown</code>メソッドがエイリアス: <code>_before</code>, <code>_after</code>されています。</p>
 
@@ -92,7 +92,7 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 </code></pre></div>
 <h3>従来の単体テスト</h3>
 
-<p>Codeceptionの単体テストは、PHPUnitで書かれているのと全く同じように書かれています。：</p>
+<p>Codeceptionの単体テストは、PHPUnitで書かれているのとまったく同じように書かれています。：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">class</span> <span class="nc">UserTest</span> <span class="k">extends</span> <span class="nx">\Codeception\TestCase\Test</span>
 <span class="p">{</span>
@@ -146,7 +146,7 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 <span class="p">}</span>
 <span class="cp">?&gt;</span><span class="x">        </span>
 </code></pre></div>
-<p><code>specify</code>のコードブロックを使用する事で、テストを細かい単位で説明することが出来ます。このことはチームの全員にとってテストがとても見やすく、理解しやすい状態にしてくれます。</p>
+<p><code>specify</code>のコードブロックを使用する事で、テストを細かい単位で説明することができます。このことはチームの全員にとってテストがとても見やすく、理解しやすい状態にしてくれます。</p>
 
 <p><code>specify</code>ブロックの内部にあるコードは独立しています。上記の例だと、<code>$this-&gt;user</code>（他のどんなオブジェクトやプロパティでも）への変更は他のコードブロックに反映されないでしょう。</p>
 
@@ -165,11 +165,11 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 <span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
     <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Db</span><span class="p-Indicator">,</span> <span class="nv">UnitHelper</span><span class="p-Indicator">]</span>
 </code></pre></div>
-<p>UnitTesterのメソッドにアクセスする事で、テストの中で<code>UnitTester</code>のプロパティを使用出来ます。</p>
+<p>UnitTesterのメソッドにアクセスする事で、テストの中で<code>UnitTester</code>のプロパティを使用できます。</p>
 
 <h3>データベーステスト</h3>
 
-<p>それでは、どのようにデータベースのテストが出来るのか、見て行きましょう：</p>
+<p>それでは、どのようにデータベースのテストができるのか、見て行きましょう：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">function</span> <span class="nf">testSavingUser</span><span class="p">()</span>
 <span class="p">{</span>
@@ -189,7 +189,7 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 
 <p>Codeceptionはこのスイートにおいて、すべてのモジュールに定義されたプロパティとメソッドにアクセスする事を許可しています。このときはUnitTesterクラスを使うときとは違い、直接モジュールを使用する事で、モジュールのすべてのパブリックなプロパティへのアクセスを得られます。</p>
 
-<p>例えば、もし<code>Symfony2</code>を使うなら、このようにSymfonyのコンテナにアクセスします：</p>
+<p>たとえば、もし<code>Symfony2</code>を使うなら、このようにSymfonyのコンテナにアクセスします：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="sd">/**</span>
 <span class="sd"> * @var Symfony\Component\DependencyInjection\Container</span>
@@ -244,13 +244,13 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 <span class="nv">$name</span> <span class="o">=</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">();</span> <span class="c1">// &#39;john&#39;</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>スタブはPHPUnitのモックフレームワークから生成されます。<a href="https://github.com/padraic/mockery">Mockery</a>（<a href="https://github.com/Codeception/MockeryModule">Mockery module</a>とセット）、<a href="https://github.com/Codeception/AspectMock">AspectMock</a>、など他のものを代わりに使用することも出来ます。</p>
+<p>スタブはPHPUnitのモックフレームワークから生成されます。<a href="https://github.com/padraic/mockery">Mockery</a>（<a href="https://github.com/Codeception/MockeryModule">Mockery module</a>とセット）、<a href="https://github.com/Codeception/AspectMock">AspectMock</a>、など他のものを代わりに使用することもできます。</p>
 
 <p>スタブのユーティリティクラスの全リファレンスは<a href="/docs/reference/Stub">ここ</a>を見てください。</p>
 
-<h2>結論</h2>
+<h2>まとめ</h2>
 
-<p>テストスイートの中で、PHPUnitのテストはfirst-class citizensです。単体テストを書いて実行したいときはいつでも、PHPUnitをインストールする必要はなく、そのままCodeception上で実行することができます。幾分のすばらしい特徴は、Codeceptionモジュールを統合する事で共通の単体テストを追加できることです。単体テストや結合テストのほとんどにおいて、PHPUnitのテストだけで十分です。PHPUnitのテストは速く、維持しやすいからです。</p>
+<p>テストスイートの中で、PHPUnitのテストはfirst-class citizensです。単体テストを書いて実行したいときはいつでも、PHPUnitをインストールする必要はなく、そのままCodeception上で実行することができます。いくつかのすばらしい特徴は、Codeceptionモジュールを統合する事で共通の単体テストを追加できることです。単体テストや結合テストのほとんどにおいて、PHPUnitのテストだけで十分です。PHPUnitのテストは速く、維持しやすいからです。</p>
 
     </section>
 </div>
@@ -259,7 +259,7 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 <div id="footer_wrap" class="outer">
     <footer class="inner">
         <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-02-23 16:47:13 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+        <p>Last updated: 2015-02-24 17:17:17 +0900, Based on <a href="https://github.com/Codeception/Codeception/releases/tag/2.0.11">Codeception 2.0.11</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

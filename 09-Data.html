@@ -35,9 +35,9 @@
         <h1>データを取り扱う</h1>
 
 <p>テストはお互いに影響を及ぼし合ってはなりません。これが大雑把なルールです。
-テストがデータベースとやり取りする際に内部のデータを変更しかねないため、最終的にデータの不一致や矛盾を生じさせるかもしれないのです。テストは既に挿入されているレコードを挿入したり、削除されているレコードを検索しようとするかもしれません。テストの失敗を回避するため、データベースは各テストを行う前に初期状態になっていなければなりません。Codeceptionには、データをクリーンにするための方法やアプローチがいくつか存在します。</p>
+テストがデータベースとやり取りする際に内部のデータを変更しかねないため、最終的にデータの不一致や矛盾を生じさせるかもしれないのです。テストはすでに挿入されているレコードを挿入したり、削除されているレコードを検索しようとするかもしれません。テストの失敗を回避するため、データベースは各テストを行う前に初期状態になっていなければなりません。Codeceptionには、データをクリーンにするための方法やアプローチがいくつか存在します。</p>
 
-<p>この章では、前章のクリーンアップに関する注意を要約すると共に、データストレージバックエンドを選択する方法の最善策について提案します。</p>
+<p>この章では、前章のクリーンアップに関する注意を要約するとともに、データストレージバックエンドを選択する方法の最善策について提案します。</p>
 
 <p>私たちがデータベースをクリーンアップすると決めた時、私たちはそれをできるだけ速く行うべきです。テストは常に速く実行される必要があります。データベースを一から再構築するのは最良の方法とは言えないかもしれませんが、唯一の方法とも言えるかもしれません。いずれにせよ、テストのためだけに特別なデータベースを使用してください。<strong>絶対に開発環境または本番環境のデータベースでテストを実行しないでください!</strong></p>
 
@@ -77,8 +77,6 @@
         <span class="l-Scalar-Plain">Db</span><span class="p-Indicator">:</span>
             <span class="l-Scalar-Plain">cleanup</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
 </code></pre></div>
-<p>Still, the <code>Db</code> module will perform database population from a dump before each test. Use <code>populate: false</code> to disable it.</p>
-
 <p><code>Db</code>モジュールは未だテスト後にdumpからデータベースの再構築を行います。<code>populate: false</code>を使って、それを無効にしてください。</p>
 
 <h3>Dbh モジュール</h3>
@@ -120,7 +118,7 @@
 
 <h3>テストごとのフィクスチャ</h3>
 
-<p>もしあなたが一つのテストに対して特別なデータベースレコードを作りたいのなら、<code>Db</code>モジュールの<a href="http://codeception.com/docs/modules/Db#haveInDatabase"><code>haveInDatabase</code></a>メソッドを使用できます。</p>
+<p>もしあなたが1つのテストに対して特別なデータベースレコードを作りたいのなら、<code>Db</code>モジュールの<a href="http://codeception.com/docs/modules/Db#haveInDatabase"><code>haveInDatabase</code></a>メソッドを使用できます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveInDatabase</span><span class="p">(</span><span class="s1">&#39;posts&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Top 10 Testing Frameworks&#39;</span><span class="p">,</span> <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;1. Codeception&#39;</span><span class="p">));</span>
@@ -130,7 +128,7 @@
 </code></pre></div>
 <p><code>haveInDatabase</code>は、与えられた値の行を新しくデータベースに挿入します。追加されたレコードはすべてテスト終了後に削除されます。似たように<code>MongoDB</code>モジュールでは、<a href="http://codeception.com/docs/modules/MongoDb#haveInCollection"><code>haveInCollection</code></a>メソッドが存在します。</p>
 
-<h2>結論</h2>
+<h2>まとめ</h2>
 
 <p>Codeceptionは、データを取り扱う開発者を見捨てたりしません。データベースを構築したりクリーンアップするためのツールは<code>Db</code>モジュール内にバンドルされています。テストでサンプルデータを操作するには、ブートストラップファイル内で定義されるフィクスチャを使用してください。</p>
 
@@ -141,7 +139,7 @@
 <div id="footer_wrap" class="outer">
     <footer class="inner">
         <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-02-23 16:47:13 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+        <p>Last updated: 2015-02-24 17:17:17 +0900, Based on <a href="https://github.com/Codeception/Codeception/releases/tag/2.0.11">Codeception 2.0.11</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

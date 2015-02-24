@@ -35,12 +35,12 @@
         <h1>はじめに</h1>
 
 <p>はじめにCodeceptionの構造を見てみましょう。
-あなたは既に<a href="http://codeception.com/install">インストール</a> を終え、最初のテストをブートストラップしたと思います。
+あなたはすでに<a href="http://codeception.com/install">インストール</a> を終え、最初のテストをブートストラップしたと思います。
 Codeceptionは単体テスト、機能テスト、受け入れテストの3つを生成しました。これらについては前の章で解説してあります。<strong>/tests</strong> フォルダ内には、これら3つのテストに対応する名前の設定ファイルとディレクトリが存在します。これらは共通の目的を持つテストのための独立したグループなのです。</p>
 
 <h2>アクター(Actors)</h2>
 
-<p>Codeceptionの主な概念の1つは、人間の行動のように動作することです。UnitTesterは関数を実行し、コードのテストを行います。FunctionalTesterは内部の知識を持ち、アプリケーション全体をテストする有能なテスターです。そしてAcceptanceTesterは、私たちが提供するインタフェースを使ってアプリケーションを操作するユーザです。</p>
+<p>Codeceptionの主な概念の1つは、人間の行動のように動作することです。UnitTesterは関数を実行し、コードのテストを行います。FunctionalTesterは内部の知識を持ち、アプリケーション全体をテストする有能なテスターです。そしてAcceptanceTesterは、私たちが提供するインターフェイスを使ってアプリケーションを操作するユーザです。</p>
 
 <p>これらのアクターはそれぞれ、許可されたアクションを行うPHPのクラスなのです。彼らが異なる能力を持っていることにもうお気づきでしょう。これらのアクターは一定ではなく、あなたの手によって拡張することができます。各アクターはそれぞれのテストに対応しているのです。</p>
 
@@ -53,11 +53,11 @@ Codeceptionは単体テスト、機能テスト、受け入れテストの3つ�
 
 <p>デフォルトのテストは、まるで語り口のシナリオのようになっています。PHPファイルを有効なシナリオとして機能させるには、その末尾に<code>Cept</code>と付けてください。</p>
 
-<p>では例えば、<code>tests/acceptance/SigninCept.php</code>というファイルを作ってみたとしましょう。
-以下のコマンドを実行することでそれが出来上がります。</p>
+<p>ではたとえば、<code>tests/acceptance/SigninCept.php</code>というファイルを作ってみたとしましょう。
+以下のコマンドを実行することでそれができ上がります。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:cept acceptance Signin
 </code></pre></div>
-<p>シナリオはいつも、アクタークラスの初期化と共に開始します。その後、シナリオを書き進めていくには<code>$I-&gt;</code>と書き込み、自動補完機能で現れたリストの中からふさわしいアクションを選びます。</p>
+<p>シナリオはいつも、アクタークラスの初期化とともに開始します。その後、シナリオを書き進めていくには<code>$I-&gt;</code>と書き込み、自動補完機能で現れたリストの中からふさわしいアクションを選びます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
@@ -118,7 +118,7 @@ OK <span class="o">(</span><span class="m">1</span> <span class="nb">test</span>
 </code></pre></div>
 <p>これは皆さん自身のウェブサイトで再現可能なとてもシンプルなテストでした。ユーザのアクションをエミレートすることで、あなたのウェブサイトをすべて同様にテストすることができるのです。</p>
 
-<p>是非トライしてみましょう！</p>
+<p>ぜひトライしてみましょう！</p>
 
 <h2>モジュールとヘルパー</h2>
 
@@ -134,7 +134,7 @@ OK <span class="o">(</span><span class="m">1</span> <span class="nb">test</span>
 
 <h2>設定</h2>
 
-<p>Codeceptionではグローバルな設定を行う<code>codeception.yml</code>と各スイートの設定があります。また、<code>.dist</code>形式の設定もサポートしています。もし、あなたのプロジェクトに開発者が複数人いるようでしたら、共有の設定を<code>codeception.dist.yml</code>に書き、個人の設定を<code>codeception.yml</code>に書きましょう。スイートの設定も同様です。例えば、<code>unit.suite.yml</code>は<code>unit.suite.dist.yml</code>と一緒にマージしてください。</p>
+<p>Codeceptionではグローバルな設定を行う<code>codeception.yml</code>と各スイートの設定があります。また、<code>.dist</code>形式の設定もサポートしています。もし、あなたのプロジェクトに開発者が複数人いるようでしたら、共有の設定を<code>codeception.dist.yml</code>に書き、個人の設定を<code>codeception.yml</code>に書きましょう。スイートの設定も同様です。たとえば、<code>unit.suite.yml</code>は<code>unit.suite.dist.yml</code>と一緒にマージしてください。</p>
 
 <h2>テストの実行</h2>
 
@@ -188,9 +188,9 @@ OK <span class="o">(</span><span class="m">1</span> <span class="nb">test</span>
 <li><code>generate:scenarios</code> <em>スイート名</em> - テストからシナリオを含んだテキストファイルを生成します</li>
 </ul>
 
-<h2>結論</h2>
+<h2>まとめ</h2>
 
-<p>Codeceptionの構造について見てみました。あなたが必要とするほとんどのものは既に<code>bootstrap</code>コマンドによって生成されています。基本的な概念と構成が確認できたら、最初のシナリオを書いてみましょう。</p>
+<p>Codeceptionの構造について見てみました。あなたが必要とするほとんどのものはすでに<code>bootstrap</code>コマンドによって生成されています。基本的な概念と構成が確認できたら、最初のシナリオを書いてみましょう。</p>
 
     </section>
 </div>
@@ -199,7 +199,7 @@ OK <span class="o">(</span><span class="m">1</span> <span class="nb">test</span>
 <div id="footer_wrap" class="outer">
     <footer class="inner">
         <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-02-23 16:47:13 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+        <p>Last updated: 2015-02-24 17:17:17 +0900, Based on <a href="https://github.com/Codeception/Codeception/releases/tag/2.0.11">Codeception 2.0.11</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

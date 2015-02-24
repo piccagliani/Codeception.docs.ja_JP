@@ -34,12 +34,12 @@
     <section id="main_content" class="inner">
         <h1>受け入れテスト</h1>
 
-<p>受け入れテストは、技術者ではない人でも実行することが出来ます。技術者ではないテスターやマネージャー、あるいはクライアントでも実行出来ます。
+<p>受け入れテストは、技術者ではない人でも実行することができます。技術者ではないテスターやマネージャー、あるいはクライアントでも実行できます。
 あなたがウェブアプリケーションを開発している場合、（おそらくあなた自身である）テスターは、あなたのサイトが正しく動いているかをチェックするのにウェブブラウザ以外に必要なものはありません。
 シナリオでAcceptanceTesterクラスの行動を再現することによって、サイトを変更する毎にそれらを自動的に実行することができます。
 AcceptanceTesterの言葉から記録されたかのようCodeceptionは、テストを簡潔に保ってくれます。</p>
 
-<p>CMSやフレームワークをアプリケーションに取り入れていても違いはありません。Java、.NETなど異なるプラットフォームでさえ同じようにテスト出来ます。
+<p>CMSやフレームワークをアプリケーションに取り入れていても違いはありません。Java、.NETなど異なるプラットフォームでさえ同じようにテストできます。
 どんな時でも、あなたのウェブサイトにテストを加えるということは良い考えだと言えるでしょう。
 少なくとも、最後の変更からアプリケーションがしっかりと機能していることに確信が持てるでしょう。</p>
 
@@ -56,7 +56,7 @@ AcceptanceTesterの言葉から記録されたかのようCodeceptionは、テ�
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Welcome, Davert!&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>このシナリオは、おそらく非技術者の人でも読めます。Codeceptionはシナリオを平易な英語に変換し、&#39;自然言語化&#39;することさえ出来ます:</p>
+<p>このシナリオは、おそらく非技術者の人でも読めます。Codeceptionはシナリオを平易な英語に変換し、&#39;自然言語化&#39;することさえできます:</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">I WANT TO SIGN IN
 I am on page <span class="s1">&#39;/login&#39;</span>
 I fill field <span class="s1">&#39;username&#39;</span>, <span class="s1">&#39;davert&#39;</span>
@@ -69,11 +69,11 @@ I see <span class="s1">&#39;Welcome, Davert!&#39;</span>
 </code></pre></div>
 <p>作成されたシナリオは <strong>tests/_data</strong>ディレクトリにテキストファイルとして格納されます。</p>
 
-<p><strong>このシナリオテストはシンプルなPHP BrowserでもSelenium WebDriverを使ったブラウザでも実行することが出来ます。</strong>まずはPHP Browserで受け入れテストを書いて行きましょう。</p>
+<p><strong>このシナリオテストはシンプルなPHP BrowserでもSelenium WebDriverを使ったブラウザでも実行することができます。</strong>まずはPHP Browserで受け入れテストを書いて行きましょう。</p>
 
 <h2>PHP Browser</h2>
 
-<p>実際に動くブラウザが必要となるまでは、これはもっとも速く受け入れテストを実行する方法です。
+<p>実際に動くブラウザが必要となるまでは、これは最も速く受け入れテストを実行する方法です。
 リクエストを送り、それからレスポンスを受け取って解析する、というようなブラウザのような動きをするPHP web scraperを使用しています。
 Codeceptionは<a href="http://guzzlephp.org">Guzzle</a>とSymfony BrowserKitをHTMLページを操作するのに使用しています。
 HTMLのある要素の実際の可視性や、javascriptの動作をテストできないことに注意してください。
@@ -130,7 +130,7 @@ So that I can get money when the bank is closed
 </code></pre></div>
 <p>常に<code>am</code>は、最初の状態を記述するように想定しています。<code>amOnPage</code>メソッドは<strong>/login</strong>ページが最初の状態だと設定しています。</p>
 
-<p><code>PhpBrowser</code>では、リンクのクリックとフォームを埋めることが出来ます。これらは、おそらくもっとも多い動作だと思います。</p>
+<p><code>PhpBrowser</code>では、リンクのクリックとフォームを埋めることができます。これらは、おそらく最も多い動作だと思います。</p>
 
 <h4>クリック</h4>
 
@@ -147,7 +147,7 @@ So that I can get money when the bank is closed
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>Codeceptionは、テキストやname属性、CSSセレクタ、XPathのどれかで要素を検索しようとします。
-locatorの種類を配列として渡すことで、指定することもできます。我々は <strong>strict locator</strong>呼んでいます。
+locatorの種類を配列として渡すことで、指定することもできます。私たちは <strong>strict locator</strong>呼んでいます。
 利用できるstrict locatorの種類は以下です：</p>
 
 <ul>
@@ -175,8 +175,8 @@ locatorの種類を配列として渡すことで、指定することもでき�
 </code></pre></div>
 <h4>フォーム</h4>
 
-<p>ウェブサイトのテストにおいてもっとも時間が取られることは、リンクをクリックすることではないです。もし、リンクだけで構成されているサイトならテストを自動化する必要は無いでしょう。
-もっとも時間を消費する機能はフォームです。Codeceptionはフォームを処理する方法をいくつか提供します。</p>
+<p>ウェブサイトのテストにおいて最も時間が取られることは、リンクをクリックすることではないです。もし、リンクだけで構成されているサイトならテストを自動化する必要は無いでしょう。
+最も時間を消費する機能はフォームです。Codeceptionはフォームを処理する方法をいくつか提供します。</p>
 
 <p>それでは、Codeceptionのテストでフォームを送信してみましょう。</p>
 <div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;form</span> <span class="na">method=</span><span class="s">&quot;post&quot;</span> <span class="na">action=</span><span class="s">&quot;/update&quot;</span> <span class="na">id=</span><span class="s">&quot;update_form&quot;</span><span class="nt">&gt;</span>
@@ -205,7 +205,7 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <p>それぞれのフィールドをラベルで検索するためには、labelタグに<code>for</code>属性を書く必要があります。</p>
 
 <p>開発者から見ると、フォームを送信することは、サーバーに有効なPOSTリクエストを送信しているだけです。
-時には、一度にすべての項目に書き込み、&#39;Submit&#39;ボタンをクリックすることなく送信してしまう方が楽です。そのようなシナリオをたった一つのメソッドで書き換えることが出来ます。</p>
+時には、一度にすべての項目に書き込み、&#39;Submit&#39;ボタンをクリックすることなく送信してしまう方が楽です。そのようなシナリオをたった1つのメソッドで書き換えることができます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">&#39;#update_form&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;user&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
      <span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Miles&#39;</span><span class="p">,</span>
@@ -215,9 +215,9 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p><code>submitForm</code>メソッドはユーザーの行動をエミュレートしてはいませんが、フォームが適切にフォーマットされていない時に、非常に有効です。
-例えば、ラベルがついていなかったり、不適切なname属性やid属性がつけられているフォームやjavascriptによって送信されているフォームです。</p>
+たとえば、ラベルがついていなかったり、不適切なname属性やid属性がつけられているフォームやjavascriptによって送信されているフォームです。</p>
 
-<p>デフォルトでは、<code>submitForm</code>メソッドはボタンの値を送信することはありません。どのボタンのvalueを送信するかは最後の引数に指定出来ますし、あるいは第二引数に含めて指定することも出来ます。</p>
+<p>デフォルトでは、<code>submitForm</code>メソッドはボタンの値を送信することはありません。どのボタンのvalueを送信するかは最後の引数に指定できますし、あるいは第二引数に含めて指定することもできます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">&#39;#update_form&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;user&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
      <span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Miles&#39;</span><span class="p">,</span>
@@ -236,7 +236,7 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <h4>Ajaxエミュレーター</h4>
 
 <p>ご存知のように、PHP browserではjavascriptは機能しません。
-しかし、すべてのajax呼び出しは、適切なリクエストをサーバーに送信することで簡単にエミュレート出来ます。</p>
+しかし、すべてのajax呼び出しは、適切なリクエストをサーバーに送信することで簡単にエミュレートできます。</p>
 
 <p>ajax通信には以下のメソッドが使えることを覚えておいてください。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
@@ -246,9 +246,9 @@ locatorの種類を配列として渡すことで、指定することもでき�
 </code></pre></div>
 <h4>アサーション</h4>
 
-<p>PHP browserでは、ページの内容をテスト出来ます。ほとんどの場合は、ページに必要なテキストや要素が存在しているかチェックする必要があるのみでしょう。</p>
+<p>PHP browserでは、ページの内容をテストできます。ほとんどの場合は、ページに必要なテキストや要素が存在しているかチェックする必要があるのみでしょう。</p>
 
-<p>そのためにもっとも使い勝手の良いメソッドは<code>see</code>です。</p>
+<p>そのために最も使い勝手の良いメソッドは<code>see</code>です。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="c1">// &#39;Thank you, Miles&#39;というテキストがページにあることをチェックします</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Thank you, Miles&#39;</span><span class="p">);</span>
@@ -261,7 +261,7 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSee</span><span class="p">(</span><span class="s1">&#39;Form is filled incorrectly&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>特定の要素がページに存在する（あるいは存在しない）ことをチェック出来ます。</p>
+<p>特定の要素がページに存在する（あるいは存在しない）ことをチェックできます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeElement</span><span class="p">(</span><span class="s1">&#39;.notice&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSeeElement</span><span class="p">(</span><span class="s1">&#39;.error&#39;</span><span class="p">);</span>
@@ -278,7 +278,7 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <h4>条件付きアサーション</h4>
 
 <p>時にはアサーションが失敗したとしても、途中でテストを止めたくないでしょう。時間のかかるテストを行っていて、最後まで実行したいかもしれません。
-この場合には、条件付のアサーションを使用することが出来ます。<code>see</code>メソッドは<code>canSee</code>メソッドに対応しており、<code>dontSee</code>メソッドは<code>cantSee</code>メソッドに対応しています。</p>
+この場合には、条件付のアサーションを使用することができます。<code>see</code>メソッドは<code>canSee</code>メソッドに対応しており、<code>dontSee</code>メソッドは<code>cantSee</code>メソッドに対応しています。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">canSeeInCurrentUrl</span><span class="p">(</span><span class="s1">&#39;/user/miles&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">canSeeCheckboxIsChecked</span><span class="p">(</span><span class="s1">&#39;#agree&#39;</span><span class="p">);</span>
@@ -300,7 +300,7 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Log in!&#39;</span><span class="p">);</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>グラバーは現在のページから一つの値を取得できるメソッドです。</p>
+<p>グラバーは現在のページから1つの値を取得できるメソッドです。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$token</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabTextFrom</span><span class="p">(</span><span class="s1">&#39;.token&#39;</span><span class="p">);</span>
 <span class="nv">$password</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabTextFrom</span><span class="p">(</span><span class="s2">&quot;descendant::input/descendant::*[@id = &#39;password&#39;]&quot;</span><span class="p">);</span>
@@ -345,9 +345,9 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <h2>Selenium WebDriver</h2>
 
 <p>Codeceptionのすばらしい特徴は、ほとんどのシナリオが異なるテスト動作環境に容易に移植できることです。
-これまでに書いてきたPhpBrowserテストはSelenium WebDriverを使って、実際のブラウザの中で（あるいはPhantomJSでさえ）実行出来ます。</p>
+これまでに書いてきたPhpBrowserテストはSelenium WebDriverを使って、実際のブラウザの中で（あるいはPhantomJSでさえ）実行できます。</p>
 
-<p>ただひとつだけ変更しなければならない事は、AcceptanceTesterクラスがPhpBrowserの代わりに<strong>WebDriver</strong>を使用するように設定してビルドし直すことです。</p>
+<p>ただ1つだけ変更しなければならない事は、AcceptanceTesterクラスがPhpBrowserの代わりに<strong>WebDriver</strong>を使用するように設定してビルドし直すことです。</p>
 
 <p><code>acceptance.suite.yml</code>ファイルを変更してください：</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">AcceptanceTester</span>
@@ -360,7 +360,7 @@ locatorの種類を配列として渡すことで、指定することもでき�
             <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="s">&#39;http://localhost/myapp/&#39;</span>
             <span class="l-Scalar-Plain">browser</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">firefox</span>
 </code></pre></div>
-<p>Seleniumでテストを実行するために、<a href="http://seleniumhq.org/download/">Selenium Server</a>をダウンロードして、起動しておく必要があります。（替わりに<code>ghostdriver</code>モードで動くヘッドレスブラウザの<a href="http://phantomjs.org/">PhantomJS</a>を使うことも出来ます。）</p>
+<p>Seleniumでテストを実行するために、<a href="http://seleniumhq.org/download/">Selenium Server</a>をダウンロードして、起動しておく必要があります。（替わりに<code>ghostdriver</code>モードで動くヘッドレスブラウザの<a href="http://phantomjs.org/">PhantomJS</a>を使うこともできます。）</p>
 
 <p>Seleniumを使用して受け入れテストを実行するならば、Firefoxから始められます。ブラウザエンジンを使用する事ですべての処理がステップ実行されます。</p>
 
@@ -386,7 +386,7 @@ locatorの種類を配列として渡すことで、指定することもでき�
 
 <h3>複数セッションのテスト</h3>
 
-<p>Codeceptionは同時に複数のセッションを実行出来ます。サイト上でユーザ同士がリアルタイムにメッセージをやり取りする場合がもっともわかりやすいです。そのためには２つのブラウザウィンドウを同じテスト中に同時に立ち上げる必要があるでしょう。Codeceptionはこのための<strong>Friends</strong>と呼ばれるとってもスマートな方法が用意されています。</p>
+<p>Codeceptionは同時に複数のセッションを実行できます。サイト上でユーザ同士がリアルタイムにメッセージをやり取りする場合が最もわかりやすいです。そのためには2つのブラウザウィンドウを同じテスト中に同時に立ち上げる必要があるでしょう。Codeceptionはこのための<strong>Friends</strong>と呼ばれるとってもスマートな方法が用意されています。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;try multi session&#39;</span><span class="p">);</span>
@@ -425,9 +425,9 @@ locatorの種類を配列として渡すことで、指定することもでき�
 </code></pre></div>
 <p>テストの失敗ごとに、最後に表示されていたページのスナップショットを<strong>tests/_log</strong>ディレクトリに保存します。PhpBrowserはHTMLのコードを保存し、WebDriverはページのスクリーンショットを保存します。</p>
 
-結論</h2>
+<h2>まとめ</h2>
 
-<p>CodeceptionとPhpBrowserで受け入れテストを書くことは、良いスタートです。フレームワークで作られたサイトと同じように、Joomla, Drupal, WordPressのサイトも簡単にテスト出来ます。受け入れテストを書くことはPHPでのテスターの行動を説明するようなものです。可読性に長け、とても書きやすいです。テストを実行するごとにデータベースの再構築を忘れないように。</p>
+<p>CodeceptionとPhpBrowserで受け入れテストを書くことは、良いスタートです。フレームワークで作られたサイトと同じように、Joomla, Drupal, WordPressのサイトも簡単にテストできます。受け入れテストを書くことはPHPでのテスターの行動を説明するようなものです。可読性に長け、とても書きやすいです。テストを実行するごとにデータベースの再構築を忘れないように。</p>
 
     </section>
 </div>
@@ -436,7 +436,7 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <div id="footer_wrap" class="outer">
     <footer class="inner">
         <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-02-23 16:47:13 +0900, Based on <a href="https://github.com/Codeception/Codeception/tree/2.0">Codeception</a>@4e267293bb</p>
+        <p>Last updated: 2015-02-24 17:17:17 +0900, Based on <a href="https://github.com/Codeception/Codeception/releases/tag/2.0.11">Codeception 2.0.11</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
