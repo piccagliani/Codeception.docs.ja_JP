@@ -1,19 +1,19 @@
-# Advanced Usage
+# 高度な使用法
 
-In this chapter we will cover some techniques and options that you can use to improve your testing experience and stay with better organization of your project. 
+この章ではあなたのテストのエクスペリエンスを向上させ、プロジェクトをより良い組織に保つためのいくつかのテクニックとオプションについて取り上げます。
 
-## Cest Classes
+## Cestクラス
 
-In case you want to get a class-like structure for your Cepts, you can use the Cest format instead of plain PHP.
-It is very simple and is fully compatible with Cept scenarios. It means that if you feel that your test is long enough and you want to split it - you can easily move it into classes.
+もしCept形式に対して、クラスのような構造を持たせたい場合、プレーンなPHPの替わりにCest形式を利用することができます。
+Cest形式はとても単純でCept形式のシナリオと完全な互換性があります。これはつまり、テストが非常に長くなり分割したいと感じた場合、簡単にクラスに移動することができることを意味します。
 
-You can create Cest file by running the command:
+次のコマンドによりCestを作成することができます。
 
 ```bash
 $ php codecept.phar generate:cest suitename CestName
 ```
 
-The generated file will look like this:
+生成されたファイルは次のようになります。
 
 ```php
 <?php
@@ -35,11 +35,11 @@ class BasicCest
 ?>
 ```
 
-**Each public method of Cest (except those starting with `_`) will be executed as a test** and will receive Actor class as the first parameter and `$scenario` variable as the second one.
+**それぞれのpublicなメソッド（「_」で始まるものを除く）はテストとして実行され**、最初の引数としてアクタークラスを、2つ目の引数して`$scenario`変数を受け取ります。
 
-In `_before` and `_after` methods you can use common setups and teardowns for the tests in the class. This actually makes Cest tests more flexible then Cepts, which rely only on similar methods in Helper classes.
+`_before`と`_after`メソッドはそのクラスのテストに対する共通のセットアップとティアダウンのために使用することができます。このことが、類似の処理をヘルパークラスのみに依存するCept形式と比較して、Cest形式をより柔軟にしています。
 
-As you see, we are passing Actor object into `tryToTest` method. It allows us to write scenarios the way we did before.
+ご覧のように、`tryToTest`メソッドにアクターオブジェクトを渡しています。このオブジェクトを使ってこれまでにやってきた方法でシナリオを描くことができます。
 
 ```php
 <?php
@@ -61,13 +61,13 @@ class BasicCest
 ?>
 ```
 
-As you see, Cest class have no parents like `\Codeception\TestCase\Test` or `PHPUnit_Framework_TestCase`. This is done intentionally. It allows you to extend class with common behaviors and workarounds that may be used in child classes. But don't forget to make these methods `protected` so they won't be executed as tests.
+このように、Cestクラスは`\Codeception\TestCase\Test`や`PHPUnit_Framework_TestCase`といった親クラスを持ちません。意図的にそうしています。これにより、子クラスで使用することができる共通の振る舞いや処理を伴ってクラスを拡張することができます。ただし、それらのメソッドはテストとして実行されないよう`protected`なメソッドとして定義することを忘れないでください。
 
-Also you can define `_failed` method in Cest class which will be called if test finishes with `error` or fails.
+また、テストが`error`となったり失敗した時に呼ばれる`_failed`メソッドについてもCestクラスに定義することができます。
 
-### Before/After Annotations
+### Before/Afterアノテーション
 
-You can control execution flow with `@before` and `@after` annotations. You may move common actions into protected (non-test) methods and invoke them before or after the test method by putting them into annotations. It is possible to invoke several methods by using more than one `@before` or `@after` annotation. Methods are invoked in order from top to bottom.
+`@before`と`@after`アノテーションを使ってテストの実行フローをコントロールすることができます。共通のアクションをprotectedな（テストでない）メソッドに移動し、アノテーションを記述することによってテストの前後でそれらを呼び出すことができます。`@before`や`@after`アノテーションを複数利用することによって、複数のメソッドを呼び出すことが可能です。メソッドは上から下の順で呼び出されます。
 
 ```php
 <?php
@@ -107,12 +107,12 @@ class ModeratorCest {
 ?>
 ```
 
-You can also use `@before` and `@after` for included functions. But you can't have multiple annotations of the same kind for single method - one method can have only one `@before` and only one `@after` annotation.
+`@before`と`@after`アノテーションはインクルードされた関数に対しても使えます。ただし、1つのメソッドに対して同じ種類のアノテーションを複数記述することはできません。1つのメソッドに対して、1つの`@before`と1つの`@after`アノテーションのみですd - one method can have only one `@before` and only one `@after` annotation.
 
-### Depends Annotation
+### Dependsアノテーション
 
-With `@depends` annotation you can specify a test that should be passed before the current one. If that test fails, the current test will be skipped.
-You should pass a method name of a test you are relying on.
+`@depends`アノテーションを使って現在のテストが事前にどのテストにパスしているべきか、指定することができます。もし事前のテストが失敗したら、対象のテストはスキップされます。
+依存しているテストのメソッド名をアノテーションに記述してください。
 
 ```php
 <?php
@@ -134,28 +134,28 @@ class ModeratorCest {
 ?>
 ```
 
-Hint: `@depends` can be combined with `@before`.
+ヒント：`@depends`アノテーションは`@before`アノテーションと組み合わせることができます。
 
-## Interactive Console
+## インタラクティブ・コンソール
 
-Interactive console was added to try Codeception commands before executing them inside a test. 
+インタラクティブ・コンソールはCodeceptionのコマンドをテストで実行する前に試すために追加されました。
 
-![console](http://img267.imageshack.us/img267/204/003nk.png)
+![コンソール](http://img267.imageshack.us/img267/204/003nk.png)
 
-You can run the console with the following command:
+次のコマンドでコンソールを起動することができます。
 
 ``` bash
 $ php codecept.phar console suitename
 ```
 
-Now you can execute all commands of appropriate Actor class and see results immediately. This is especially useful when used with `WebDriver` module. It always takes too long to launch Selenium and browser for tests. But with console you can try different selectors, and different commands, and then write a test that would pass for sure when executed.
+これで、アクタークラスに対応したすべてのコマンドを実行することができ、結果をすぐに確認できます。特に、`WebDriver`モジュールと使用する場合に便利です。Selenuimとブラウザーの起動にはいつも長い時間がかかります。ところが、コンソールを使って別のセレクタ、異なるコマンドを試すことで、実行された際に確実にパスするテストを書くことができます。
 
-And a special hint: show your boss how you can nicely manipulate web pages with console and Selenium. It will be easy to convince to automate this steps and introduce acceptance testing to the project.
+特別なヒント：コンソールとSeleniumを使ってあなたがウェブページを上手に操作できるか上司に見せましょう。この手順を自動化し、プロジェクトに受け入れテストを導入することを説得しやすくなるでしょう。
 
-## Running from different folders
+## 異なるフォルダーからテストを実行する
 
-If you have several projects with Codeception tests, you can use single `codecept.phar` file to run all of your tests.
-You can pass `-c` option to any Codeception command, excluding `bootstrap`, to execute Codeception in another directory.
+もしCodeceptionを使ったプロジェクトが複数あったとしても、すべてのテストを1つの`codecept.phar`で実行することができます。
+異なるディレクトリーのCodeceptionを実行するために、`bootstrap`を除くすべてのコマンドに`-c`オプションが用意されています。
 
 ```bash
 $ php codecept.phar run -c ~/projects/ecommerce/
@@ -163,29 +163,29 @@ $ php codecept.phar run -c ~/projects/drupal/
 $ php codecept.phar generate:cept acceptance CreateArticle -c ~/projects/drupal/
 ```
 
-To create a project in directory different from the current one, just provide its path as a parameter.
+現在の場所と異なるディレクトリー内にプロジェクトを作成するには、パラメータとしてパスを指定するだけです。
 
 ```bash
 $ php codecept.phar bootstrap ~/projects/drupal/
 ```
 
-Basically `-c` option allows you to specify not only the path, but a config file to be used. Thus, you can have several `codeception.yml` files for your test suite. You may use it to specify different environments and settings. Just pass a filename into `-c` parameter to execute tests with specific config settings.
+基本的に`-c`オプションにはパスを指定しますが、使用する設定ファイルを指定することもできます。従って、テストスイートに対して複数の`codeception.yml`を持つことができます。さまざまな環境や設定を指定するためにこのオプションを使用することができます。特定の設定ファイルを使ってテストを実行するためには、`-c`オプションにファイル名を渡してください。
 
-## Groups
+## グループ
 
-There are several ways to execute bunch of tests. You can run tests from specific directory:
+テストをグルーピングして実行する方法はいくつかあります。特定のディレクトリを指定して実行することもできます。
 
 ```bash
 $ php codecept.phar run tests/acceptance/admin
 ```
 
-Or execute one (or several) specific groups of tests:
+また、特定の（もしくは複数の）グループを指定して実行することもできます。
 
 ```bash
 $ php codecept.phar run -g admin -g editor
 ```
 
-In this case all tests that belongs to groups `admin` and `editor` will be executed. Concept of groups was taken from PHPUnit and in classical PHPUnit tests they behave just in the same way. To add Cept to the group - use `$scenario` variable:
+このケースでは`admin`と`editor`グループに属すすべてのテストが実行されます。グループの概念はPHPUnitから取り入れたもので、従来のPHPUnitと同様の振る舞いをします。Ceptをグループに追加するには、`scenario`変数を使います。
 
 ```php
 <?php
@@ -201,7 +201,7 @@ $I->wantToTest('admin area');
 ?>
 ```
 
-For Tests and Cests you can use `@group` annotation to add a test to the group.
+Test形式とCest形式のテストでは、テストをグループに追加するために`@group`アノテーションを使います。
 
 ```php
 <?php
@@ -214,12 +214,13 @@ public function testAdminUser()
 }
 ?>
 ```
-Same annotation can be used in Cest classes.
 
-### Group Files
+Cestクラスでも同じアノテーションを使用できます。
 
-Groups can be defined in global or suite configuration file.
-Tests for groups can be specified as array or as path to file containing list of groups.
+### グループファイル
+
+グループはグローバルまたはテストスイートの設定ファイルで定義できます。
+グループに含まれるテストは、配列形式で指定するか、テストの一覧が含まれるファイルパスを指定します。
 
 ```yaml
 groups:
@@ -230,8 +231,8 @@ groups:
   slow: tests/_data/slow  
 ```
 
-For instance, you can create a file with the list of the most slow tests, and run them inside their own group.
-Group file is a plain text file with test names on separate lines:
+たとえば、最も遅いテストの一覧ファイルを作成し、それらのグループ内で実行することができます。
+グループファイルは各行にテスト名が記述されたプレーンテキストファイルです。
 
 ```bash
 tests/unit/DbTest.php
@@ -239,23 +240,23 @@ tests/unit/UserTest.php:create
 tests/unit/UserTest.php:update
 ```
 
-You can create group files manually or generate them from 3rd party applications. 
-For example, you may write a script that updates the slow group by taking the slowest tests from xml report.
+グループファイルは手動で作成することもできますし、サードパーティ製のアプリケーションによって生成することもできます。
+たとえば、XMLレポートから遅いテストを抽出してグループファイルを更新するスクリプトを記述することができるでしょう。
 
-You can even specify patterns for loading multiple group files by single definition:
+1つの定義で複数のグループファイルをロードするような、パターンについても指定することもできます。
 
 ```yaml
 groups:
   p*: tests/_data/p*
 ```
 
-This will load all found `p*` files in `tests/_data` as groups.
+これは、`tests/_data`内の`p*`パターンに一致するすべてのファイルをグループとしてロードします。
 
-## Refactoring
+## リファクタリング
 
-As the test base grows, tests will require refactoring to share common variables and behaviors. The classical example is a `login` action which may be called for every test of your test suite. It would be wise to write it once and use it in all tests.
+テストが成長していくにつれ、共通の変数や振る舞いを共有するためのリファクタリングが必要になります。古典的な例は、テストスイートのあらゆる箇所で呼び出される`login`アクションです。これは、1度だけ記述しすべてのテストで使用するようにするのが賢明です。
 
-It's pretty obvious that for such cases you can use your own PHP classes to define such methods.
+このようなケースにおいてPHPクラスの中にそれらのメソッドを定義するというのは明白です。
 
 ```php
 <?php
@@ -275,7 +276,7 @@ class TestCommons
 ?>
 ```
 
-Then this file can be required in `_bootstrap.php` file:
+そして、このファイルを`_bootstrap.php`ファイルから読み込みます。
 
 ```php
 <?php
@@ -284,7 +285,7 @@ require_once '/path/to/test/commons/TestCommons.php';
 ?>
 ```
 
-and used in your scenarios:
+シナリオの中で使います。
 
 ```php
 <?php
@@ -293,22 +294,22 @@ TestCommons::logMeIn($I);
 ?>
 ```
 
-If you caught the idea, let's learn some built-in features for structuring your test code. We will discover implementation of `PageObject` and `StepObject` patterns in Codeception.
+もしアイディアを得られたら、テストコードを構造化するためのいくつかのビルトイン機能について学びましょう。Codeceptionにおける`PageObject`と`StepObject`パターンの実装について学びます。
 
-## PageObjects
+## ページオブジェクト
 
-[PageObject pattern](http://code.google.com/p/selenium/wiki/PageObjects) is widely used by test automation engineers. The PageObject pattern represents a web page as a class and the DOM elements on that page as its properties, and some basic interactions as its methods.
-PageObjects are very important when you are developing a flexible architecture of your tests. Please do not hardcode complex CSS or XPath locators in your tests but rather move them into PageObject classes.
+[ページオブジェクトパターン](http://code.google.com/p/selenium/wiki/PageObjects)はテスト自動化エンジニアの間では広く使われています。ページオブジェクトパターンでは、ウェブページをクラスとして、ページ上のDOM要素をプロパティとして表現し、いくつかの基本的なインタラクションをメソッドして持ちます。
+ページオブジェクトはテストの柔軟なアーキテクチャを作りこむ際にとても重要です。複雑なCSSやXPathロケーターをテストにハードコードするのではなく、ページオブジェクトクラスに移動してください。
 
-Codeception can generate a PageObject class for you with command:
+Codeceptionは次のコマンドでページオブジェクトクラスを生成することができます。
 
 ```bash
 $ php codecept.phar generate:pageobject Login
 ```
 
-This will create a `LoginPage` class in `tests/_pages`. The basic PageObject is nothing more then empty class with a few stubs.
-It is expected you will get it populated with UI locators of a page it represents and then those locators will be used on a page.
-Locators are represented with public static properties:
+これにより、`tests/_pages`内に`LoginPage`クラスが作成されます。基本のページオブジェクトはいくつかのスタブを持った空クラス以上の何ものでもありません。
+空クラスであることは、ページオブジェクトがページを表現するUIロケーターとともに準備されることを期待しており、それらのロケーターはページで利用されるでしょう。
+ロケーターはpublicでstaticなプロパティとして定義されます。
 
 ```php
 <?php
@@ -323,7 +324,7 @@ class LoginPage
 ?>
 ```
 
-And this is how this page object can be used in a test:
+そして、ページオブジェクトはテストの中で次のように使用されます。
 
 ```php
 <?php
@@ -336,18 +337,19 @@ $I->click(LoginPage::$loginButton);
 $I->see('Welcome, bill');
 ?>
 ```
-As you see, you can freely change markup of your login page, and all the tests interacting with this page will have their locators updated according to properties of LoginPage class.
 
-But let's move further. A PageObject concept also defines that methods for the page interaction should also be stored in a PageObject class.
-This can't be done in `LoginPage` class we just generated. Because this class is accessible across all test suites, we do not know which Actor class will be used for interaction. Thus, we will need to generate another page object. In this case we will explicitly define the suite to be used:
+このとおり、あなたはログインページのマークアップを気兼ねなく変更することができ、このページを対象とするすべてのテストに含まれるロケーターはLoginPageクラスのプロパティに従って更新されるでしょう。
+
+しかし、ここでさらに先に進みましょう。ページオブジェクトの概念は、ページのインタラクションを行うメソッドについてもページオブジェクトクラスに含まれるべき、と規定しています。
+先ほど作成した`LoginPage`クラスではこれを行うことはできません。なぜなら、このクラスはすべてのテストスイートからアクセス可能なので、どのアクタークラスをインタラクションに使用するのかわからないためです。そのため、別のページオブジェクトを作成する必要があります。この例では、ページオブジェクトを使用するテストスイートを明示します。
 
 ```bash
 $ php codecept.phar generate:pageobject acceptance UserLogin
 ```
 
-*We called this class UserLogin for not to get into conflict with Login class we created before.*
+*先ほど作成したLoginクラスと名前が衝突しないよう、UserLoginクラスとします*
 
-This generated `UserLoginPage` class looks almost the same way as LoginPage class we had before with one difference. It now stores passed instance of Actor class. An AcceptanceTester can be accessed via `AcceptanceTester` property of that class. Let's define a `login` method in this class.
+作成された`UserLoginPage`クラスは1つの違いをのぞき、ほぼ先ほどのLoginPageクラスと同じように見えます。今度は渡されたアクタークラスのインスタンスを保持しています。AcceptanceTesterに`AcceptanceTester`プロパティを介してアクセスできます。では、このクラスに`login`メソッドを定義しましょう。
 
 ```php
 <?php
@@ -386,7 +388,7 @@ class UserLoginPage
 ?>
 ```
 
-And here is an example of how this PageObject can be used in a test.
+そして、これがテストの中でページオブジェクトを使用する方法の例です。
 
 ```php
 <?php
@@ -395,20 +397,20 @@ UserLoginPage::of($I)->login('bill evans', 'debby');
 ?>
 ```
 
-Probably we should merge the `UserLoginPage` and `LoginPage` classes as they do play the same role. But `LoginPage` can be used both in functional and acceptance tests, when `UserLoginPage` only in tests with `AcceptanceTester`. So it's up to you to use global page objects or local per suite page objects. If you feel like your functional tests have much in common with acceptance tests, you should store locators in global PageObject class and use StepObjects as an alternative to behavioral PageObjects.
+おそらく、`UserLoginPage`と`LoginPage`とは同じ役割を担っているようなので、マージすべきかもしれません。しかし、`LoginPage`が機能テストと受け入れテストの両方で使える一方、`UserLoginPage`は`AcceptanceTester`でのみ使うことができます。ですので、グローバルなページオブジェクトを利用するかテストスイート単位のページオブジェクトを使用するかはあなた次第です。もし機能テストと受け入れテストとに多くの共通点がある場合は、グローバルなページオブジェクトにロケーターを格納し、ページオブジェクトの振る舞いの部分については代替としてステップオブジェクトを使ってください。
 
-## StepObjects
+## ステップオブジェクト
 
-StepObjects pattern came from BDD frameworks. StepObject class contains a bunch of common actions that may be used widely in different tests.
-The `login` method we used above can be a good example of such method. Similarly actions for creating/updating/deleting resources should be moved to StepObject too. Let's create a StepObject class and see what it looks like.
+ステップオブジェクトパターンはBDDフレームワークに由来します。ステップオブジェクトは異なるテストで広く使われるであろう共通のアクション群を含みます。
+前述の`login`メソッドはそのような共通アクションの良い例です。似たようなアクションであるリソースの作成・更新・削除についてもステップオブジェくトに移動するべきです。ステップオブジェクトを作成し、どのようなものか見てみましょう。
 
-Lets create `Member` Steps class, generator will prompt you for methods to include, so let's add `login` to it.
+`Member`ステップクラスを作成しましょう。ジェネレーターが含まれるメソッドを聞いてくるので、`login`を追加しましょう。
 
 ```bash
 $ php codecept.phar generate:stepobject acceptance Member
 ```
 
-You will be asked to enter action names, but it's optional. Enter one at a time, and press Enter. After specifying all needed actions, leave empty line to go on to StepObject creation.
+アクション名を入力するよう求められますが、これはオプションです。はじめに「login」を入力し、エンターキーを押します。すべての必要なアクションを指定した後、ステップオブジェクトの作成に進むには空行のままにしておきます。
 
 ```bash
 $ php codecept.phar generate:stepobject acceptance Member
@@ -417,7 +419,7 @@ Add action to StepObject class (ENTER to exit):
 StepObject was created in <you path>/tests/acceptance/_steps/MemberSteps.php
 ```
 
-It will generate class in `tests/acceptance/_steps/MemberSteps.php` similar to this:
+これで次のような`tests/acceptance/_steps/MemberSteps.php`クラスが作成されます。
 
 ```php
 <?php
@@ -434,9 +436,9 @@ class MemberSteps extends \AcceptanceTester
 ?>
 ```
 
-As you see, this class is very simple. It extends `AcceptanceTester` class, thus, all methods and properties of `AcceptanceTester` are available for usage in it.
+ご覧のようにとてもシンプルなクラスです。`AcceptanceTester`クラスを継承しているので、`AcceptanceTester`のすべてのメソッドとプロパティがこのクラス内で利用可能です。
 
-`login` method can be implemented like this:
+`login`メソッドは次のように実装できるでしょう。
 
 ```php
 <?php
@@ -456,7 +458,7 @@ class MemberSteps extends \AcceptanceTester
 ?>
 ```
 
-In tests you can use a StepObject by instantiating `MemberSteps` class instead of `AcceptanceTester`.
+テストでは`AcceptanceTester`の代わりに`MemberSteps`クラスをインスタンス化することでステップオブジェクトを使用することができます。
 
 ```php
 <?php
@@ -465,17 +467,17 @@ $I->login('bill evans', 'debby');
 ?>
 ```
 
-As you see, StepObject class looks much simpler and readable then classical PageObject. 
-As an alternative to StepObject we could use methods of `AcceptanceHelper` class. In a helper we do not have access to `$I` object itself, thus it's better to use Helpers to implement new actions, and StepObjects to combine common scenarios.
+このように、ステップオブジェクトクラスは従来のページオブジェクトと比較してより単純で可読性に優れています。
+ステップオブジェクトの代替として`AcceptanceHelper`クラスを利用することができます。ヘルパーの内部では`$I`オブジェクトそのものにアクセスできないため、ヘルパーは新しいアクションを実装するために使い、ステップオブジェクトは共通のシナリオを統合するために使うのが良いでしょう。
 
-## Environments
+## 環境
 
-For cases where you need to run tests with different configurations you can define different config environments.
-The most typical use cases are running acceptance tests in different browsers, or running database tests using different database engines.
+別の設定を使ってテストを実行する必要がある場合、別の設定環境を定義することができます。
+最も典型的なユースケースとしては、種類の違うブラウザーで受け入れテストを実行する場合や、異なるデータベースエンジンを利用してテストを実行する場合です。
 
-Let's demonstrate usage of environments for the browsers case.
+ブラウザーのケースについて、環境をどう使うか、実際にやってみましょう。
 
-We need to add new lines to `acceptance.suite.yml`:
+`acceptance.suite.yml`に新しく行を追加する必要があります。
 
 ``` yaml
 class_name: AcceptanceTester
@@ -505,28 +507,27 @@ env:
         # nothing changed
 ```
 
-At first these config trees may look ugly, but it is the cleanest way of doing this.
-Basically you can define different environments inside the `env` root, name them (`phantom`, `chrome` etc.),
-and then redefine any configuration parameters that were set before.
+最初はこのような設定の構造は汚く見えるかもしれませんが、これがもっともクリーンな方法です。
+基本的に、ルートの`env`配下に異なる環境を定義し、名前を付け（`phantom`とか`chrome`など）、そしてすでに設定されている任意のパラメータを再定義します。
 
-You can easily switch between those configs by running tests with `--env` option. To run tests only for PhantomJS you need to pass `--env phantom` option:
+テスト実行する際に、`--env`オプションによって容易にこれらの設定を切り替えることができます。PhantomJSのみのテストを実行するには、次のように`--env phantom`を渡します。
 
 ```bash
 $ php codecept.phar run acceptance --env phantom
 ```
 
-To run tests in all 3 browsers, just list all the environments:
+3つのブラウザーすべてのテストを実行するには、単にすべての環境を列挙します。
 
 ```bash
 $ php codecept.phar run acceptance --env phantom --env chrome --env firefox
 ```
 
-and tests will be executed 3 times, each time in a different browser.
+異なるブラウザーごとに3回テストが実行されるでしょう。
 
-Depending on environment you may choose which tests are to be executed.
-For example, you might need some tests to be executed only in Firefox, and few tests only in Chrome.
+環境に応じて、実行されるべきテストを選択することができます。
+たとえば、いくつかのテストはFirefoxでのみ実行され、ほかのいくつかはChromeのみで実行されるようにする必要があるかもしれません。
 
-Desired environments can be specified with `@env` annotation for tests in Test and Cest formats:
+Test形式、Cest形式のテストでは、`@env`アノテーションを使って求められる環境を指定することができます。
 
 ```php
 <?php
@@ -546,7 +547,7 @@ class UserCest
 ?>
 ```
 
-For Cept you should use `$scenario->env()`:
+Cept形式では`$scenario->env()`を使ってください。
 
 ```php
 <?php
@@ -557,11 +558,11 @@ $scenario->env(array('phantom', 'firefox'));
 ?>
 ```
 
-This way you can easily control what tests will be executed for which browsers.
+この方法で、どのブラウザーでどのテストを行うか、簡単にコントロールすることができます。
 
 
-## Conclusion
+## まとめ
 
-Codeception is a framework which may look simple at first glance. But it allows you to build powerful tests with single API, refactor them, and write them faster using interactive console. Codeception tests can be easily organized in groups or Cest classes, locators can be stored in PageObjects and common steps can be combined in StepObjects.
+Codeceptionは一見シンプルなフレームワークのように見えますが、強力なテストを、単一のAPIを使って、それらをリファクタリングし、そしてインタラクティブ・コンソールを使ってより速く、構築することができます。CodeceptionのテストはグループやCestクラスを使って容易に整理することができ、ロケーターはページオブジェクトに、そして共通のステップはステップオブジェクトに統合することができます。
 
-Probably it has too much features for one framework. But nevertheless Codeception follows the KISS principle: it's easy to start, easy to learn, and easy to extend.
+おそらく単体のフレームワークとしては機能が多すぎるかもしれません。しかし、それにもかかわらずCodeceptionはKISSの原則に従っています。Codeceptionは簡単に始めることができ、習得が容易で、楽に拡張することができるのです。
