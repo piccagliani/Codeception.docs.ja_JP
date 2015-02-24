@@ -125,7 +125,7 @@ Codeceptionはコアな機能を拡張する限定的な機能を持っていま
 | `test.fail.print`    | When test fails are printed             | [Test, Fail](https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/FailEvent.php)
 | `result.print.after` | After result was printed                | [Result, Printer](https://github.com/Codeception/Codeception/blob/master/src/Codeception/Event/PrintResultEvent.php)
 
-`test.start`と`test.before`、 `test.after`と`test.end`とに混乱するかもしれません。Start/endイベントはPHPUnit自身によって発生されますが、before/afterイベントはCodeceptionによって発生されます。ですので、伝統的な（`PHPUnit_Framework_TestCase`を継承した）PHPUnitのテストではbefore/afterイベントは発生しません。`test.before`イベントでは、`test.start`では不可能な、スキップされたか不完全なテストを追跡することができます。[Codeception internal event listeners](https://github.com/Codeception/Codeception/tree/master/src/Codeception/Subscriber)にてより多くのことを学ぶことができます。
+`test.start`と`test.before`、 `test.after`と`test.end`とに混乱するかもしれません。Start/endイベントはPHPUnit自身によって発生されますが、before/afterイベントはCodeceptionによって発生されます。ですので、従来の（`PHPUnit_Framework_TestCase`を継承した）PHPUnitのテストではbefore/afterイベントは発生しません。`test.before`イベントでは、`test.start`では不可能な、スキップされたか不完全なテストを追跡することができます。[Codeception internal event listeners](https://github.com/Codeception/Codeception/tree/master/src/Codeception/Subscriber)にてより多くのことを学ぶことができます。
 
 拡張クラスは `Codeception\Platform\Extension` クラスを継承します。
 
