@@ -1,17 +1,17 @@
 # 単体テスト
 
-Codeceptionはテストの実行環境としてPHPUnitを使用しています。したがって、PHPUnitのどのテストでもCodeceptionのテストスイートに追加出来ますし、実行出来ます。
-今までにPHPUnitテストを書いていたならば、これまで書いてきたようにするだけです。
+Codeceptionはテストの実行環境としてPHPUnitを使用しています。したがって、PHPUnitのどのテストでもCodeceptionのテストスイートに追加できますし、実行できます。
+いままでにPHPUnitテストを書いていたならば、これまで書いてきたようにするだけです。
 Codeceptionは簡単な共通処理に対して、すばらしいヘルパー機能を追加しています。
 
 単体テストの基礎はここでは割愛する代わりに、単体テストにCodeceptionが追加する特徴の基礎知識をお伝えしましょう。
 
-__もう一度言います: テストを実行するためにPHPUnitをインストールする必要はありません。Codeceptionも実行出来ます。__
+__もう一度言います: テストを実行するためにPHPUnitをインストールする必要はありません。Codeceptionも実行できます。__
 
 ## テストを作成する
 
 Codeceptionは簡単にテストを作成する、すばらしいジェネレーターを持っています。
-`\PHPUnit_Framework_TestCase`クラスを継承している従来のPHPUnitテストを生成するところから始める事が出来ます。
+`\PHPUnit_Framework_TestCase`クラスを継承している従来のPHPUnitテストを生成するところから始める事ができます。
 以下のようなコマンドで生成されます。
 
 ```bash
@@ -53,7 +53,7 @@ class ExampleTest extends \Codeception\TestCase\Test
 ?>
 ```
 
-このクラスは、はじめから`_before`と`_after`のメソッドが定義されています。それらは各テスト前にテスト用のオブジェクトを作成し、終了後に削除するのに使用出来ます。
+このクラスは、はじめから`_before`と`_after`のメソッドが定義されています。それらは各テスト前にテスト用のオブジェクトを作成し、終了後に削除するのに使用できます。
 
 ご覧の通り、PHPUnitとは違い、`setUp`と`tearDown`メソッドがエイリアス: `_before`, `_after`されています。
 
@@ -71,7 +71,7 @@ modules:
 
 ### 従来の単体テスト
 
-Codeceptionの単体テストは、PHPUnitで書かれているのと全く同じように書かれています。：
+Codeceptionの単体テストは、PHPUnitで書かれているのとまったく同じように書かれています。：
 
 ```php
 <?php
@@ -131,7 +131,7 @@ class UserTest extends \Codeception\TestCase\Test
 ?>        
 ```
 
-`specify`のコードブロックを使用する事で、テストを細かい単位で説明することが出来ます。このことはチームの全員にとってテストがとても見やすく、理解しやすい状態にしてくれます。
+`specify`のコードブロックを使用する事で、テストを細かい単位で説明することができます。このことはチームの全員にとってテストがとても見やすく、理解しやすい状態にしてくれます。
 
 `specify`ブロックの内部にあるコードは独立しています。上記の例だと、`$this->user`（他のどんなオブジェクトやプロパティでも）への変更は他のコードブロックに反映されないでしょう。
 
@@ -156,11 +156,11 @@ modules:
     enabled: [Db, UnitHelper]
 ```
 
-UnitTesterのメソッドにアクセスする事で、テストの中で`UnitTester`のプロパティを使用出来ます。
+UnitTesterのメソッドにアクセスする事で、テストの中で`UnitTester`のプロパティを使用できます。
 
 ### データベーステスト
 
-それでは、どのようにデータベースのテストが出来るのか、見て行きましょう：
+それでは、どのようにデータベースのテストができるのか、見て行きましょう：
 
 ```php
 <?php
@@ -183,7 +183,7 @@ function testSavingUser()
 
 Codeceptionはこのスイートにおいて、すべてのモジュールに定義されたプロパティとメソッドにアクセスする事を許可しています。このときはUnitTesterクラスを使うときとは違い、直接モジュールを使用する事で、モジュールのすべてのパブリックなプロパティへのアクセスを得られます。
 
-例えば、もし`Symfony2`を使うなら、このようにSymfonyのコンテナにアクセスします：
+たとえば、もし`Symfony2`を使うなら、このようにSymfonyのコンテナにアクセスします：
 
 ```php
 <?php
@@ -250,10 +250,10 @@ $name = $user->getName(); // 'john'
 ?>
 ```
 
-スタブはPHPUnitのモックフレームワークから生成されます。[Mockery](https://github.com/padraic/mockery)（[Mockery module](https://github.com/Codeception/MockeryModule)とセット）、[AspectMock](https://github.com/Codeception/AspectMock)、など他のものを代わりに使用することも出来ます。
+スタブはPHPUnitのモックフレームワークから生成されます。[Mockery](https://github.com/padraic/mockery)（[Mockery module](https://github.com/Codeception/MockeryModule)とセット）、[AspectMock](https://github.com/Codeception/AspectMock)、など他のものを代わりに使用することもできます。
 
 スタブのユーティリティクラスの全リファレンスは[ここ](/docs/reference/Stub)を見てください。
 
-## 結論
+## まとめ
 
-テストスイートの中で、PHPUnitのテストはfirst-class citizensです。単体テストを書いて実行したいときはいつでも、PHPUnitをインストールする必要はなく、そのままCodeception上で実行することができます。幾分のすばらしい特徴は、Codeceptionモジュールを統合する事で共通の単体テストを追加できることです。単体テストや結合テストのほとんどにおいて、PHPUnitのテストだけで十分です。PHPUnitのテストは速く、維持しやすいからです。
+テストスイートの中で、PHPUnitのテストはfirst-class citizensです。単体テストを書いて実行したいときはいつでも、PHPUnitをインストールする必要はなく、そのままCodeception上で実行することができます。いくつかのすばらしい特徴は、Codeceptionモジュールを統合する事で共通の単体テストを追加できることです。単体テストや結合テストのほとんどにおいて、PHPUnitのテストだけで十分です。PHPUnitのテストは速く、維持しやすいからです。
