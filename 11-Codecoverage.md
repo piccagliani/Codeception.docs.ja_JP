@@ -68,10 +68,10 @@ coverage:
 もし上に書いた設定を行っているのであれば準備完了です。
 必要なことはCodeceptionを `--coverage` オプションとともに実行することです。
 
-CloverのXMLレポートや良い感じのHTMLレポートを生成するためには、`--coverage-xml` と `--coverage-html` のオプションについても追加します。
+CloverのXMLレポートや良い感じのHTMLレポートを生成するためには、`--xml` と `--html` のオプションについても追加します。
 
 ``` yaml
-codecept run --coverage --coverage-xml --coverage-html
+codecept run --coverage --xml --html
 ```
 
 XMLとHTMLレポートは `_output` ディレクトリに格納されます。レポートを確認するための一番の方法は、`tests/_output/coverage` ディレクトリから `index.html` をブラウザで開くことです。
