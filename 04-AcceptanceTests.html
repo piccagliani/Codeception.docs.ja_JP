@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 
@@ -7,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="description" content="Codeception.docs.ja : Codeception docs japanese translation">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="//piccagliani.github.io/Codeception.docs.ja_JP/stylesheets/stylesheet.css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/guides.css">
 
     <title>Codeception.docs.ja</title>
 </head>
@@ -16,10 +16,10 @@
 
 <!-- HEADER -->
 <div id="header_wrap" class="outer">
-    <header class="inner">
+    <header class="container inner">
         <a id="forkme_banner" href="https://github.com/piccagliani/Codeception.docs.ja_JP">View on GitHub</a>
 
-        <h1 id="project_title">Codeception.docs.ja</h1>
+        <h1 id="project_title"><a href="index.html">Codeception.docs.ja</a></h1>
         <h2 id="project_tagline">Codeception docs japanese translation</h2>
 
         <section id="downloads">
@@ -30,9 +30,10 @@
 </div>
 
 <!-- MAIN CONTENT -->
-<div id="main_content_wrap" class="outer">
-    <section id="main_content" class="inner">
-        <h1>受け入れテスト</h1>
+<div id="main_content_wrap" class="container">
+    <div class="row">
+        <section id="main_content" class="col-md-9">
+            <h1>受け入れテスト</h1>
 
 <p>受け入れテストは、技術者ではない人でも実行することができます。技術者ではないテスターやマネージャー、あるいはクライアントでも実行できます。
 あなたがウェブアプリケーションを開発している場合、（おそらくあなた自身である）テスターは、あなたのサイトが正しく動いているかをチェックするのにウェブブラウザ以外に必要なものはありません。
@@ -429,14 +430,33 @@ locatorの種類を配列として渡すことで、指定することもでき�
 
 <p>CodeceptionとPhpBrowserで受け入れテストを書くことは、良いスタートです。フレームワークで作られたサイトと同じように、Joomla, Drupal, WordPressのサイトも簡単にテストできます。受け入れテストを書くことはPHPでのテスターの行動を説明するようなものです。可読性に長け、とても書きやすいです。テストを実行するごとにデータベースの再構築を忘れないように。</p>
 
-    </section>
+        </section>
+        <nav id="nav" class="col-md-3">
+            <div class="well">
+                <ol>
+                    <li><a href="01-Introduction.html">イントロダクション</a></li>
+                    <li><a href="02-GettingStarted.html">はじめに</a></li>
+                    <li><a href="03-ModulesAndHelpers.html">モジュールとヘルパー</a></li>
+                    <li><a href="04-AcceptanceTests.html">受け入れテスト</a></li>
+                    <li><a href="05-FunctionalTests.html">機能テスト</a></li>
+                    <li><a href="06-UnitTests.html">単体テスト</a></li>
+                    <li><a href="07-AdvancedUsage.html">高度な使用法</a></li>
+                    <li><a href="08-Customization.html">カスタマイズ</a></li>
+                    <li><a href="09-Data.html">データを取り扱う</a></li>
+                    <li><a href="10-WebServices.html">Webサービスをテストする</a></li>
+                    <li><a href="11-Codecoverage.html">コードカバレッジ</a></li>
+                    <li><a href="12-ParallelExecution.html">並列実行</a></li>
+                </ol>
+            </div>
+        </nav>
+    </div>
 </div>
 
 <!-- FOOTER  -->
 <div id="footer_wrap" class="outer">
-    <footer class="inner">
-        <p class="copyright">Codeception.docs.ja maintained by <a href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-02-24 17:17:17 +0900, Based on <a href="https://github.com/Codeception/Codeception/releases/tag/2.0.11">Codeception 2.0.11</a></p>
+    <footer class="container inner">
+        <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
+        <p>Last updated: 2015-03-05 18:10:00 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.11">Codeception 2.0.11</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
@@ -452,7 +472,6 @@ locatorの種類を配列として渡すことで、指定することもでき�
     } catch(err) {}
 </script>
 <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
-<script src="//piccagliani.github.io/Codeception.docs.ja_JP/javascripts/contributors.js"></script>
-
+<script src="javascripts/contributors.js"></script>
 </body>
 </html>
