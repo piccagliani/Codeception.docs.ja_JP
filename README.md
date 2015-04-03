@@ -2,7 +2,7 @@
 
 Codeceptionの[公式ドキュメント](https://github.com/Codeception/Codeception/tree/2.0/docs)の日本語化をしています。
 
-絶賛翻訳中です。Pull Requestはお気軽にどうぞ。
+修正、向上など、Pull Requestはお気軽にどうぞ。
 
 日本語版のドキュメントは[GitHub Pages](http://piccagliani.github.io/Codeception.docs.ja_JP/)にて公開しています。
 
@@ -12,3 +12,12 @@ Codeceptionの[公式ドキュメント](https://github.com/Codeception/Codecept
 > We won't get modules translated (too much of work, and modules docs are written inside the comments in PHP cide). But guides should be translated.
 
 ということなので、guidesのみを対象としています。
+
+## ChangeLog
+
+- 2.0.12
+  - 2015-04-03公開
+  - 変更ファイル
+    - 11-Codecoverage.md
+- 2.0.11
+  - 2015-03-05公開
