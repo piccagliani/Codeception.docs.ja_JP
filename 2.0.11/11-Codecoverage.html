@@ -96,8 +96,8 @@ SeleniumやPhpBrowserによるテストはコードカバレッジを収集す�
 もし上に書いた設定を行っているのであれば準備完了です。
 必要なことはCodeceptionを <code>--coverage</code> オプションとともに実行することです。</p>
 
-<p>CloverのXMLレポートや良い感じのHTMLレポートを生成するためには、<code>--coverage-xml</code> と <code>--coverage-html</code> のオプションについても追加します。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">codecept run --coverage --coverage-xml --coverage-html</span>
+<p>CloverのXMLレポートや良い感じのHTMLレポートを生成するためには、<code>--xml</code> と <code>--html</code> のオプションについても追加します。</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">codecept run --coverage --xml --html</span>
 </code></pre></div>
 <p>XMLとHTMLレポートは <code>_output</code> ディレクトリに格納されます。レポートを確認するための一番の方法は、<code>tests/_output/coverage</code> ディレクトリから <code>index.html</code> をブラウザで開くことです。
 CloverのXMLレポートはPHPStormのようなIDEやJenkinsのような継続的インテグレーションサーバーで利用されます。</p>
@@ -187,7 +187,7 @@ c3がウェブサーバー（ローカル、リモートのどちらであろう
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-04-03 10:08:50 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.12">Codeception 2.0.12</a></p>
+        <p>Last updated: 2015-03-05 18:10:00 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.11">Codeception 2.0.11</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
