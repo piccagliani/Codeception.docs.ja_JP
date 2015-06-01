@@ -15,6 +15,10 @@ Codeceptionの[公式ドキュメント](https://github.com/Codeception/Codecept
 
 ## ChangeLog
 
+- 2.0.13
+  - 2015-06-01公開
+  - 変更ファイル
+    - 06-UnitTests.md
 - 2.0.12
   - 2015-04-03公開
   - 変更ファイル
