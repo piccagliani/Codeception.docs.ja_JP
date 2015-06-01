@@ -183,8 +183,7 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 <span class="p">}</span>
 <span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
-<p>単体テストでデータベース機能を有効にするためには、unit.suite.yml設定ファイルにて有効なモジュール一覧に <code>Db</code> モジュールが含まれていることを確認してください。
-受け入れテストや機能テストのように、データベースはテストが終了するごとに、クリーンにされて構築されるでしょう。
+<p>受け入れテストや機能テストのように、データベースはテストが終了するごとに、クリーンにされて構築されるでしょう。
 それが必要のない振る舞いであれば、現在のスイートの<code>Db</code>モジュールの設定を変更してください。</p>
 
 <h3>モジュールにアクセスする</h3>
@@ -251,6 +250,7 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 <p>スタブのユーティリティクラスの全リファレンスは<a href="/docs/reference/Stub">ここ</a>を見てください。</p>
 
 <h2>まとめ</h2>
+
 <p>テストスイートの中で、PHPUnitのテストはfirst-class citizensです。単体テストを書いて実行したいときはいつでも、PHPUnitをインストールする必要はなく、そのままCodeception上で実行することができます。いくつかのすばらしい特徴は、Codeceptionモジュールを統合する事で共通の単体テストを追加できることです。単体テストや結合テストのほとんどにおいて、PHPUnitのテストだけで十分です。PHPUnitのテストは速く、維持しやすいからです。</p>
 
         </section>
@@ -279,7 +279,7 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-06-01 10:28:35 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.13">Codeception 2.0.13</a></p>
+        <p>Last updated: 2015-04-03 10:08:50 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.12">Codeception 2.0.12</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
