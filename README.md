@@ -15,6 +15,13 @@ Codeceptionの[公式ドキュメント](https://github.com/Codeception/Codecept
 
 ## ChangeLog
 
+- 2.0.14
+  - 2015-06-01公開
+  - 変更ファイル（修正点はtypoのみ、日本語訳変更なし）
+    - 05-FunctionalTests.md
+    - 08-Customization.md
+    - 10-WebServices.md
+    - 12-ParallelExecution.md
 - 2.0.13
   - 2015-06-01公開
   - 変更ファイル
