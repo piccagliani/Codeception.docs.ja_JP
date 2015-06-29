@@ -44,14 +44,14 @@
 <p>これらのフレームワークモジュールは同じインターフェイスを持っているので、フレームワークにテストが縛られることはありません。以下は機能テストのサンプルです。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Login'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'Username'</span><span class="p">,</span> <span class="s1">'Miles'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'Password'</span><span class="p">,</span> <span class="s1">'Davis'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Enter'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Hello, Miles'</span><span class="p">,</span> <span class="s1">'h1'</span><span class="p">);</span>
-<span class="c1">// $I-&gt;seeEmailIsSent() - Symfony2特有のメソッドです
-</span><span class="cp">?&gt;</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;Username&#39;</span><span class="p">,</span> <span class="s1">&#39;Miles&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="s1">&#39;Davis&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Enter&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Hello, Miles&#39;</span><span class="p">,</span> <span class="s1">&#39;h1&#39;</span><span class="p">);</span>
+<span class="c1">// $I-&gt;seeEmailIsSent() - Symfony2特有のメソッドです</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>ご覧の通り、機能テストと受け入れテストで同じテストを使うことができます。</p>
 
@@ -83,9 +83,9 @@
 テストスイートに<code>Symfony2</code>モジュールを追加する必要があるだけです。もしDoctrine2も使用するのであれば、忘れずに追加してください。</p>
 
 <p><code>functional.suite.yml</code>の例</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">FunctionalTester</span>
-<span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">Symfony2</span><span class="pi">,</span> <span class="nv">Doctrine2</span><span class="pi">,</span> <span class="nv">TestHelper</span><span class="pi">]</span> 
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Symfony2</span><span class="p-Indicator">,</span> <span class="nv">Doctrine2</span><span class="p-Indicator">,</span> <span class="nv">TestHelper</span><span class="p-Indicator">]</span> 
 </code></pre></div>
 <p>デフォルトでは、このモジュールは<code>app</code>ディレクトリのApp Kernelを検索するでしょう。</p>
 
@@ -96,9 +96,9 @@
 <h3>Laravel 4</h3>
 
 <p><a href="http://codeception.com/docs/modules/Laravel4">Laravel</a> モジュールは設定も必要なく、簡単にセットアップできます。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">FunctionalTester</span>
-<span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">Laravel4</span><span class="pi">,</span> <span class="nv">TestHelper</span><span class="pi">]</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Laravel4</span><span class="p-Indicator">,</span> <span class="nv">TestHelper</span><span class="p-Indicator">]</span>
 </code></pre></div>
 <h3>Yii2</h3>
 
@@ -109,9 +109,9 @@
 <p>Yiiフレームワークは、単体では機能テストを動作させる仕組みを持っていません。
 なので、CodeceptionがYiiフレームワークの最初で唯一の機能テストです。
 Yiiで機能テストを使用するには設定に<code>Yii1</code>モジュールを追加してください。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">FunctionalTester</span>
-<span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">Yii1</span><span class="pi">,</span> <span class="nv">TestHelper</span><span class="pi">]</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Yii1</span><span class="p-Indicator">,</span> <span class="nv">TestHelper</span><span class="p-Indicator">]</span>
 </code></pre></div>
 <p>先ほど議論した落とし穴を避けるために、CodeceptionはYiiエンジン上に基盤となるフックを提供しています。
 それをthe installation steps in module referenceのページに従って設定してください。</p>
@@ -119,9 +119,9 @@ Yiiで機能テストを使用するには設定に<code>Yii1</code>モジュー
 <h3>Zend Framework 2</h3>
 
 <p>Zend Framework 2の内部で機能テストを実行するには<a href="http://codeception.com/docs/modules/ZF2">ZF2</a> モジュールを使用してください。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">FunctionalTester</span>
-<span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">ZF2</span><span class="pi">,</span> <span class="nv">TestHelper</span><span class="pi">]</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">ZF2</span><span class="p-Indicator">,</span> <span class="nv">TestHelper</span><span class="p-Indicator">]</span>
 </code></pre></div>
 <h3>Zend Framework 1.x</h3>
 
@@ -129,21 +129,21 @@ Yiiで機能テストを使用するには設定に<code>Yii1</code>モジュー
 ブートストラップとクリーンアップに同様のアプローチが使われています。機能テストでZend Frameworkを使用する場合は<code>ZF1</code>モジュールを追加してください。</p>
 
 <p><code>functional.suite.yml</code>の例</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">FunctionalTester</span>
-<span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">ZF1</span><span class="pi">,</span> <span class="nv">TestHelper</span><span class="pi">]</span> 
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">ZF1</span><span class="p-Indicator">,</span> <span class="nv">TestHelper</span><span class="p-Indicator">]</span> 
 </code></pre></div>
 <p><a href="http://codeception.com/docs/modules/ZF1">詳しくはリファレンス全文を見てください。</a></p>
 
 <h3>Phalcon 1.x</h3>
 
 <p><code>Phalcon1</code>モジュールは<code>\Phalcon\Mvc\Application</code>のインスタンスを返すブートストラップファイルを作成する必要があります。Phalconで機能テストを始めるには、<code>Phalcon1</code>モジュールを追加し、このブートストラップファイルにパスを通す必要があります。:</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">FunctionalTester</span>
-<span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">Phalcon1</span><span class="pi">,</span> <span class="nv">FunctionalHelper</span><span class="pi">]</span>
-    <span class="s">config</span><span class="pi">:</span>
-        <span class="s">Phalcon1</span>
-            <span class="s">bootstrap</span><span class="pi">:</span> <span class="s1">'</span><span class="s">app/config/bootstrap.php'</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Phalcon1</span><span class="p-Indicator">,</span> <span class="nv">FunctionalHelper</span><span class="p-Indicator">]</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">Phalcon1</span>
+            <span class="l-Scalar-Plain">bootstrap</span><span class="p-Indicator">:</span> <span class="s">&#39;app/config/bootstrap.php&#39;</span>
 </code></pre></div>
 <p><a href="http://codeception.com/docs/modules/Phalcon1">詳しくはリファレンス全文を見てください。</a></p>
 
@@ -154,35 +154,35 @@ Yiiで機能テストを使用するには設定に<code>Yii1</code>モジュー
 <p>したがって、私たちは<code>amOnPage</code>メソッドでウェブページを開くことができます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">;</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/login'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>アプリケーションのページを開くリンクをクリックします。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Logout'</span><span class="p">);</span>
-<span class="c1">// .nav要素のリンクをクリックする
-</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Logout'</span><span class="p">,</span> <span class="s1">'.nav'</span><span class="p">);</span>
-<span class="c1">// CSSセレクタによるクリック
-</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'a.logout'</span><span class="p">);</span>
-<span class="c1">// strict locatorを使用したクリック
-</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">([</span><span class="s1">'class'</span> <span class="o">=&gt;</span> <span class="s1">'logout'</span><span class="p">]);</span>
-<span class="cp">?&gt;</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Logout&#39;</span><span class="p">);</span>
+<span class="c1">// .nav要素のリンクをクリックする</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Logout&#39;</span><span class="p">,</span> <span class="s1">&#39;.nav&#39;</span><span class="p">);</span>
+<span class="c1">// CSSセレクタによるクリック</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;a.logout&#39;</span><span class="p">);</span>
+<span class="c1">// strict locatorを使用したクリック</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">([</span><span class="s1">&#39;class&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;logout&#39;</span><span class="p">]);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>フォームの送信も同様です。：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">'form#login'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'john'</span><span class="p">,</span> <span class="s1">'password'</span> <span class="o">=&gt;</span> <span class="s1">'123456'</span><span class="p">]);</span>
-<span class="c1">// 代替
-</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'#login input[name=name]'</span><span class="p">,</span> <span class="s1">'john'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'#login input[name=password]'</span><span class="p">,</span> <span class="s1">'123456'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Submit'</span><span class="p">,</span> <span class="s1">'#login'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">&#39;form#login&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;john&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;123456&#39;</span><span class="p">]);</span>
+<span class="c1">// 代替</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;#login input[name=name]&#39;</span><span class="p">,</span> <span class="s1">&#39;john&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;#login input[name=password]&#39;</span><span class="p">,</span> <span class="s1">&#39;123456&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Submit&#39;</span><span class="p">,</span> <span class="s1">&#39;#login&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>そしてアサーションをします。：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Welcome, john'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Logged in successfully'</span><span class="p">,</span> <span class="s1">'.notice'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeCurrentUrlEquals</span><span class="p">(</span><span class="s1">'/profile/john'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Welcome, john&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Logged in successfully&#39;</span><span class="p">,</span> <span class="s1">&#39;.notice&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeCurrentUrlEquals</span><span class="p">(</span><span class="s1">&#39;/profile/john&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>フレームワークのモジュールはフレームワーク内部にアクセスするメソッドも含んでいます。たとえば、<code>Laravel4</code>, <code>Phalcon1</code>, そして <code>Yii2</code>モジュールはデータベースにレコードが存在するかチェックするためのActiveRecord layerを使用する<code>seeRecord</code>メソッドを持っています。
 <code>Laravel4</code>モジュールはセッションをチェックするメソッドも含んでいます。フォームのバリデーションをテストするときに<code>seeSessionHasErrors</code>メソッドは役に立つと分かるでしょう。</p>
@@ -195,14 +195,14 @@ Yiiで機能テストを使用するには設定に<code>Yii1</code>モジュー
 <span class="p">{</span>
     <span class="k">function</span> <span class="nf">doSomethingWithMyService</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="nv">$service</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'Symfony2'</span><span class="p">)</span> <span class="c1">// Symfony 2モジュールの検索
-</span>            <span class="o">-&gt;</span><span class="na">container</span> <span class="c1">// 現在のDI containerを取得
-</span>            <span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'my_service'</span><span class="p">);</span> <span class="c1">// サービスにアクセス
-</span>
+        <span class="nv">$service</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">&#39;Symfony2&#39;</span><span class="p">)</span> <span class="c1">// Symfony 2モジュールの検索</span>
+            <span class="o">-&gt;</span><span class="na">container</span> <span class="c1">// 現在のDI containerを取得</span>
+            <span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;my_service&#39;</span><span class="p">);</span> <span class="c1">// サービスにアクセス</span>
+
         <span class="nv">$service</span><span class="o">-&gt;</span><span class="na">doSomething</span><span class="p">();</span>
     <span class="p">}</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>Symfony2内部のカーネルにアクセスし、サービスコンテナを取得しました。私たちはテストで使用できる<code>FunctionalTester</code>クラスのメソッドをカスタマイズして作ることもできます。</p>
 
@@ -213,14 +213,14 @@ Yiiで機能テストを使用するには設定に<code>Yii1</code>モジュー
 <p>Codeceptionはデフォルトで<code>E_ALL &amp; ~E_STRICT &amp; ~E_DEPRECATED</code>のエラー出力レベルを使用しています。
 機能テストの中で、エラーレベルをフレームワークごとの方針に変更したいと思うかもしれません。
 エラー出力レベルはスイートの設定ファイルで設定する事ができます：</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">FunctionalTester</span>
-<span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">Yii1</span><span class="pi">,</span> <span class="nv">TestHelper</span><span class="pi">]</span>
-<span class="s">error_level</span><span class="pi">:</span> <span class="s2">"</span><span class="s">E_ALL</span><span class="nv"> </span><span class="s">&amp;</span><span class="nv"> </span><span class="s">~E_STRICT</span><span class="nv"> </span><span class="s">&amp;</span><span class="nv"> </span><span class="s">~E_DEPRECATED"</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Yii1</span><span class="p-Indicator">,</span> <span class="nv">TestHelper</span><span class="p-Indicator">]</span>
+<span class="l-Scalar-Plain">error_level</span><span class="p-Indicator">:</span> <span class="s">&quot;E_ALL</span><span class="nv"> </span><span class="s">&amp;</span><span class="nv"> </span><span class="s">~E_STRICT</span><span class="nv"> </span><span class="s">&amp;</span><span class="nv"> </span><span class="s">~E_DEPRECATED&quot;</span>
 </code></pre></div>
 <p><code>error_level</code>は<code>codeception.yml</code>ファイルにグローバルに定義することもできます。</p>
 
-<h2>まとめ</h2>
+まとめ</h2>
 
 <p>パワフルなフレームワークを使用しているならば、機能テストはすばらしいです。機能テストを使用する事で、フレームワークの内部状態にアクセスでき、制御する事ができます。
 このことはテストをより短く、より速くしてくれます。フレームワークを使用しない場合ならば、機能テストを書く実用的な理由はないです。
@@ -252,7 +252,7 @@ Yiiで機能テストを使用するには設定に<code>Yii1</code>モジュー
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-06-29 10:23:55 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.15">Codeception 2.0.15</a></p>
+        <p>Last updated: 2015-06-01 10:47:03 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.13">Codeception 2.0.14</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

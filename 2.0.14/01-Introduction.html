@@ -59,11 +59,11 @@
 <h4>受け入れテストのサンプル</h4>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Sign Up'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">'#signup'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'username'</span> <span class="o">=&gt;</span> <span class="s1">'MilesDavis'</span><span class="p">,</span> <span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s1">'miles@davis.com'</span><span class="p">));</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Thank you for Signing Up!'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Sign Up&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">&#39;#signup&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;username&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;MilesDavis&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;miles@davis.com&#39;</span><span class="p">));</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Thank you for Signing Up!&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <h4>長所</h4>
 
@@ -95,13 +95,13 @@ Codeceptionはいくつかの人気なPHPフレームワークとのコネクタ
 <h4>機能テストのサンプル</h4>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Sign Up'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">'#signup'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'username'</span> <span class="o">=&gt;</span> <span class="s1">'MilesDavis'</span><span class="p">,</span> <span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s1">'miles@davis.com'</span><span class="p">));</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Thank you for Signing Up!'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeEmailSent</span><span class="p">(</span><span class="s1">'miles@davis.com'</span><span class="p">,</span> <span class="s1">'Thank you for registration'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s1">'miles@davis.com'</span><span class="p">));</span>
-<span class="cp">?&gt;</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Sign Up&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">&#39;#signup&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;username&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;MilesDavis&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;miles@davis.com&#39;</span><span class="p">));</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Thank you for Signing Up!&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeEmailSent</span><span class="p">(</span><span class="s1">&#39;miles@davis.com&#39;</span><span class="p">,</span> <span class="s1">&#39;Thank you for registration&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;email&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;miles@davis.com&#39;</span><span class="p">));</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <h4>長所</h4>
 
@@ -133,13 +133,13 @@ Codeceptionはいくつかの人気なPHPフレームワークとのコネクタ
 <span class="k">function</span> <span class="nf">testSavingUser</span><span class="p">()</span>
 <span class="p">{</span>
     <span class="nv">$user</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">User</span><span class="p">();</span>
-    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="s1">'Miles'</span><span class="p">);</span>
-    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">setSurname</span><span class="p">(</span><span class="s1">'Davis'</span><span class="p">);</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="s1">&#39;Miles&#39;</span><span class="p">);</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">setSurname</span><span class="p">(</span><span class="s1">&#39;Davis&#39;</span><span class="p">);</span>
     <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">();</span>
-    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">'Miles Davis'</span><span class="p">,</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getFullName</span><span class="p">());</span>
-    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">unitTester</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span><span class="k">array</span><span class="p">(</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Miles'</span><span class="p">,</span> <span class="s1">'surname'</span> <span class="o">=&gt;</span> <span class="s1">'Davis'</span><span class="p">));</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">&#39;Miles Davis&#39;</span><span class="p">,</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getFullName</span><span class="p">());</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">unitTester</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Miles&#39;</span><span class="p">,</span> <span class="s1">&#39;surname&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Davis&#39;</span><span class="p">));</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <h4>長所</h4>
 
@@ -189,7 +189,7 @@ Codeceptionはいくつかの人気なPHPフレームワークとのコネクタ
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-06-29 10:23:55 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.15">Codeception 2.0.15</a></p>
+        <p>Last updated: 2015-06-01 10:47:03 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.13">Codeception 2.0.14</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

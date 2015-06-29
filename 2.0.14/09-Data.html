@@ -45,13 +45,13 @@
 <h2>自動クリーンアップ</h2>
 
 <p>Codeceptionにはデータベースと対話をする際に必要なほとんどのタスクを行ってくれる<code>Db</code>モジュールがあります。デフォルトでは、dumpからデータベースを再構築し、各テストが終了した後にクリーンアップを試みます。このモジュールのデータベースのdumpはSQLフォーマットです。<code>codeception.yml</code>内ですでに設定が準備されています。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
-    <span class="s">config</span><span class="pi">:</span>
-        <span class="s">Db</span><span class="pi">:</span>
-            <span class="s">dsn</span><span class="pi">:</span> <span class="s1">'</span><span class="s">PDO</span><span class="nv"> </span><span class="s">DSN</span><span class="nv"> </span><span class="s">HERE'</span>
-            <span class="s">user</span><span class="pi">:</span> <span class="s1">'</span><span class="s">root'</span>
-            <span class="s">password</span><span class="pi">:</span>
-            <span class="s">dump</span><span class="pi">:</span> <span class="s">tests/_data/your-dump-name.sql</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">Db</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">dsn</span><span class="p-Indicator">:</span> <span class="s">&#39;PDO</span><span class="nv"> </span><span class="s">DSN</span><span class="nv"> </span><span class="s">HERE&#39;</span>
+            <span class="l-Scalar-Plain">user</span><span class="p-Indicator">:</span> <span class="s">&#39;root&#39;</span>
+            <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">dump</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">tests/_data/your-dump-name.sql</span>
 </code></pre></div>
 <p>あなたのテストスイートでこのモジュールを有効化したら、自動的にdumpからデータベースにデータが挿入され、各テストの実行時に再構築されます。これらの設定は<code>populate</code> と <code>cleanup</code>オプションの変更によって<code>false</code>に設定することができます。</p>
 
@@ -72,11 +72,11 @@
 <p>ORMモジュールは<code>Db</code>モジュールと接続できますが、デフォルトでは両方ともクリーンアップを行います。従って、あなたが明示的に使用しているモジュールを設定する必要があります。</p>
 
 <p><code>tests/functional.suite.yml</code>は次のようになります。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">Db</span><span class="pi">,</span> <span class="nv">Doctrine2</span><span class="pi">,</span> <span class="nv">FunctionalHelper</span><span class="pi">]</span>
-    <span class="s">config</span><span class="pi">:</span>
-        <span class="s">Db</span><span class="pi">:</span>
-            <span class="s">cleanup</span><span class="pi">:</span> <span class="s">false</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Db</span><span class="p-Indicator">,</span> <span class="nv">Doctrine2</span><span class="p-Indicator">,</span> <span class="nv">FunctionalHelper</span><span class="p-Indicator">]</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">Db</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">cleanup</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
 </code></pre></div>
 <p><code>Db</code>モジュールは未だテスト後にdumpからデータベースの再構築を行います。<code>populate: false</code>を使って、それを無効にしてください。</p>
 
@@ -85,11 +85,11 @@
 <p>PostgreSQLまたは他のネストされたトランザクションをサポートしているデータベースを使っているのでしたら、<code>Dbh</code>モジュールを使用してください。アプリケーションからPDOインスタンスを取得し、テストの開始でトランザクションを開始して終了後にロールバックします。PDO接続はブートストラップファイルで定義することができます。このモジュールは<code>Db</code>モジュールの<code>seeInDatabase</code>メソッドと<code>dontSeeInDatabase</code>メソッドを上書きします。</p>
 
 <p>再構築に<code>Db</code>モジュールを使用し、クリーンアップに<code>Dhp</code>モジュールを行うには、次のように設定してください。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">Db</span><span class="pi">,</span> <span class="nv">Dbh</span><span class="pi">,</span> <span class="nv">FunctionalHelper</span><span class="pi">]</span>
-    <span class="s">config</span><span class="pi">:</span>
-        <span class="s">Db</span><span class="pi">:</span>
-            <span class="s">cleanup</span><span class="pi">:</span> <span class="s">false</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Db</span><span class="p-Indicator">,</span> <span class="nv">Dbh</span><span class="p-Indicator">,</span> <span class="nv">FunctionalHelper</span><span class="p-Indicator">]</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">Db</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">cleanup</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
 </code></pre></div>
 <p><code>Dbh</code>モジュールは<code>Db</code>モジュールの後に来なければいけないことに注意してください。これによって<code>Dbh</code>モジュールはアクションを上書きできるようになります。</p>
 
@@ -101,19 +101,19 @@
 
 <p><code>tests/functional</code>内に<code>fixtures.php</code>ファイルを作り、テストで使用するデータをデータベースからロードしてみましょう。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="c1">// サンプルデータベースからユーザを取得します
-// Dbモジュールを使用します
-</span><span class="nv">$john</span> <span class="o">=</span> <span class="nx">User</span><span class="o">::</span><span class="na">findOneBy</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'john'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="c1">// サンプルデータベースからユーザを取得します</span>
+<span class="c1">// Dbモジュールを使用します</span>
+<span class="nv">$john</span> <span class="o">=</span> <span class="nx">User</span><span class="o">::</span><span class="na">findOneBy</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;john&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>受け入れテストと機能テストのサンプルでのフィクスチャの使用方法です:</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">require</span> <span class="s1">'fixtures.php'</span><span class="p">;</span>
+<span class="k">require</span> <span class="s1">&#39;fixtures.php&#39;</span><span class="p">;</span>
 
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amLoggedAs</span><span class="p">(</span><span class="nv">$john</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Welcome, John'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Welcome, John&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>また、<a href="https://github.com/fzaninotto/Faker">Faker</a> ライブラリを使ってブートストラップファイル内にテストデータを作成することもできます。</p>
 
@@ -122,10 +122,10 @@
 <p>もしあなたが1つのテストに対して特別なデータベースレコードを作りたいのなら、<code>Db</code>モジュールの<a href="http://codeception.com/docs/modules/Db#haveInDatabase"><code>haveInDatabase</code></a>メソッドを使用できます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveInDatabase</span><span class="p">(</span><span class="s1">'posts'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Top 10 Testing Frameworks'</span><span class="p">,</span> <span class="s1">'body'</span> <span class="o">=&gt;</span> <span class="s1">'1. Codeception'</span><span class="p">));</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/posts'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Top 10 Testing Frameworks'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveInDatabase</span><span class="p">(</span><span class="s1">&#39;posts&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Top 10 Testing Frameworks&#39;</span><span class="p">,</span> <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;1. Codeception&#39;</span><span class="p">));</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/posts&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Top 10 Testing Frameworks&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p><code>haveInDatabase</code>は、与えられた値の行を新しくデータベースに挿入します。追加されたレコードはすべてテスト終了後に削除されます。似たように<code>MongoDB</code>モジュールでは、<a href="http://codeception.com/docs/modules/MongoDb#haveInCollection"><code>haveInCollection</code></a>メソッドが存在します。</p>
 
@@ -159,7 +159,7 @@
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-06-29 10:23:55 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.15">Codeception 2.0.15</a></p>
+        <p>Last updated: 2015-06-01 10:47:03 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.13">Codeception 2.0.14</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

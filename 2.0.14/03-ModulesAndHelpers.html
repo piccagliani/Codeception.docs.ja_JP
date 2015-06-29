@@ -45,18 +45,18 @@
 <p>以下のテストを見てみてください。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Hello'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">));</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeFileFound</span><span class="p">(</span><span class="s1">'running.lock'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Hello&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">));</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeFileFound</span><span class="p">(</span><span class="s1">&#39;running.lock&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>これは異なるエンティティで動作します。ウェブページはPhpBrowserモジュールをロードすることができ、データベースのアサーションはDbモジュールを使用し、ファイルの状態はFilesystemモジュールで確認することができます。</p>
 
 <p>モジュールはスイートの設定でアクタークラスに取り付けられています。たとえば<code>tests/functional.suite.yml</code>では次のようになっています。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">FunctionalTester</span>
-<span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">PhpBrowser</span><span class="pi">,</span> <span class="nv">Db</span><span class="pi">,</span> <span class="nv">Filesystem</span><span class="pi">]</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">FunctionalTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">PhpBrowser</span><span class="p-Indicator">,</span> <span class="nv">Db</span><span class="p-Indicator">,</span> <span class="nv">Filesystem</span><span class="p-Indicator">]</span>
 </code></pre></div>
 <p>FunctionalTesterクラスはモジュールに定義されているメソッドを持っています。しかしメソッドは実際にクラスの中に含まれてるわけではなく、プロキシのように動作しています。Testerクラスはどのモジュールがそのアクションを実行するのか知っており、その中にパラメータを渡すのです。お使いのIDEがFunctionalTesterの持っているすべてのメソッドを見るには<code>build</code>コマンドを使います。対応するモジュールからの署名をコピーしてFunctionalTesterクラスの定義を生成します。</p>
 
@@ -79,12 +79,12 @@ Modulesセクションのメインメニュー下にリストがあるので確�
 <p>たとえば、FunctionalHelperクラスを拡張するとします。これはデフォルトでは、FunctionalTesterクラスと機能テストスイートにリンクされています。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">namespace</span> <span class="nx">Codeception\Module</span><span class="p">;</span>
-<span class="c1">// here you can define custom functions for FunctionalTester
-</span>
+<span class="c1">// here you can define custom functions for FunctionalTester</span>
+
 <span class="k">class</span> <span class="nc">FunctionalHelper</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span>
 <span class="p">{</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>アクションに関して言えば、すべてが非常にシンプルです。あなたが定義するすべてのアクションはpublic functionです。publicメソッドを書き、<code>build</code>コマンドを実行すれば、FunctionalTesterクラスに新しい関数が追加されたことを確認できます。</p>
 
@@ -97,15 +97,15 @@ Modulesセクションのメインメニュー下にリストがあるので確�
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seePageReloaded</span><span class="p">();</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeClassIsLoaded</span><span class="p">(</span><span class="nv">$classname</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSeeUserExist</span><span class="p">(</span><span class="nv">$user</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>これをテストで使用します。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seePageReloaded</span><span class="p">();</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeClassIsLoaded</span><span class="p">(</span><span class="s1">'FunctionalTester'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeClassIsLoaded</span><span class="p">(</span><span class="s1">&#39;FunctionalTester&#39;</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSeeUserExist</span><span class="p">(</span><span class="nv">$user</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>モジュール内のassertXXXメソッドを使ってアサーションを定義することができます。すべてのPHPUnitのアサートメソッドがモジュールに含まれているのではありませんが、<code>PHPUnit_Framework_Assert</code>クラスにあるPHPUnitの静的メソッドを活用することもできます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
@@ -113,25 +113,25 @@ Modulesセクションのメインメニュー下にリストがあるので確�
 <span class="k">function</span> <span class="nf">seeClassExist</span><span class="p">(</span><span class="nv">$class</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nb">class_exists</span><span class="p">(</span><span class="nv">$class</span><span class="p">));</span>
-    <span class="c1">// or
-</span>    <span class="nx">\PHPUnit_Framework_Assert</span><span class="o">::</span><span class="na">assertTrue</span><span class="p">(</span><span class="nb">class_exists</span><span class="p">(</span><span class="nv">$class</span><span class="p">));</span>
+    <span class="c1">// or</span>
+    <span class="nx">\PHPUnit_Framework_Assert</span><span class="o">::</span><span class="na">assertTrue</span><span class="p">(</span><span class="nb">class_exists</span><span class="p">(</span><span class="nv">$class</span><span class="p">));</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>ヘルパー内でこれらのアサーションを使うことができます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 
 <span class="k">function</span> <span class="nf">seeCanCheckEverything</span><span class="p">(</span><span class="nv">$thing</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$thing</span><span class="p">),</span> <span class="s2">"this thing is set"</span><span class="p">);</span>
-    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="k">empty</span><span class="p">(</span><span class="nv">$any</span><span class="p">),</span> <span class="s2">"this thing is not empty"</span><span class="p">);</span>
-    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertNotNull</span><span class="p">(</span><span class="nv">$thing</span><span class="p">,</span> <span class="s2">"this thing is not null"</span><span class="p">);</span>
-    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertContains</span><span class="p">(</span><span class="s2">"world"</span><span class="p">,</span> <span class="nv">$thing</span><span class="p">,</span> <span class="s2">"this thing contains 'world'"</span><span class="p">);</span>
-    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertNotContains</span><span class="p">(</span><span class="s2">"bye"</span><span class="p">,</span> <span class="nv">$thing</span><span class="p">,</span> <span class="s2">"this thing doesn`t contain 'bye'"</span><span class="p">);</span>
-    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s2">"hello world"</span><span class="p">,</span> <span class="nv">$thing</span><span class="p">,</span> <span class="s2">"this thing is 'Hello world'!"</span><span class="p">);</span>
-    <span class="c1">// ...
-</span><span class="p">}</span>
-<span class="cp">?&gt;</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$thing</span><span class="p">),</span> <span class="s2">&quot;this thing is set&quot;</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="k">empty</span><span class="p">(</span><span class="nv">$any</span><span class="p">),</span> <span class="s2">&quot;this thing is not empty&quot;</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertNotNull</span><span class="p">(</span><span class="nv">$thing</span><span class="p">,</span> <span class="s2">&quot;this thing is not null&quot;</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertContains</span><span class="p">(</span><span class="s2">&quot;world&quot;</span><span class="p">,</span> <span class="nv">$thing</span><span class="p">,</span> <span class="s2">&quot;this thing contains &#39;world&#39;&quot;</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertNotContains</span><span class="p">(</span><span class="s2">&quot;bye&quot;</span><span class="p">,</span> <span class="nv">$thing</span><span class="p">,</span> <span class="s2">&quot;this thing doesn`t contain &#39;bye&#39;&quot;</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s2">&quot;hello world&quot;</span><span class="p">,</span> <span class="nv">$thing</span><span class="p">,</span> <span class="s2">&quot;this thing is &#39;Hello world&#39;!&quot;</span><span class="p">);</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p><code>$this-&gt;assert</code>とタイプすればすべて見ることができます。</p>
 
@@ -151,11 +151,11 @@ Modulesセクションのメインメニュー下にリストがあるので確�
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 
 <span class="k">function</span> <span class="nf">reconnectToDatabase</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nv">$dbh</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'Db'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">dbh</span><span class="p">;</span>
+    <span class="nv">$dbh</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">&#39;Db&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">dbh</span><span class="p">;</span>
     <span class="nv">$dbh</span><span class="o">-&gt;</span><span class="na">close</span><span class="p">();</span>
     <span class="nv">$dbh</span><span class="o">-&gt;</span><span class="na">open</span><span class="p">();</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p><code>getModule</code>関数を使うと、リクエストしたモジュール内のすべてのpublicメソッドやプロパティにアクセスできます。dbhプロパティは他のモジュールで利用できるよう、publicとして定義されています。</p>
 
@@ -165,12 +165,12 @@ Modulesセクションのメインメニュー下にリストがあるので確�
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">function</span> <span class="nf">seeConfigFilesCreated</span><span class="p">()</span>
 <span class="p">{</span>
-    <span class="nv">$filesystem</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'Filesystem'</span><span class="p">);</span>
-    <span class="nv">$filesystem</span><span class="o">-&gt;</span><span class="na">seeFileFound</span><span class="p">(</span><span class="s1">'codeception.yml'</span><span class="p">);</span>
-    <span class="nv">$filesystem</span><span class="o">-&gt;</span><span class="na">openFile</span><span class="p">(</span><span class="s1">'codeception.yml'</span><span class="p">);</span>
-    <span class="nv">$filesystem</span><span class="o">-&gt;</span><span class="na">seeInFile</span><span class="p">(</span><span class="s1">'paths'</span><span class="p">);</span>
+    <span class="nv">$filesystem</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">&#39;Filesystem&#39;</span><span class="p">);</span>
+    <span class="nv">$filesystem</span><span class="o">-&gt;</span><span class="na">seeFileFound</span><span class="p">(</span><span class="s1">&#39;codeception.yml&#39;</span><span class="p">);</span>
+    <span class="nv">$filesystem</span><span class="o">-&gt;</span><span class="na">openFile</span><span class="p">(</span><span class="s1">&#39;codeception.yml&#39;</span><span class="p">);</span>
+    <span class="nv">$filesystem</span><span class="o">-&gt;</span><span class="na">seeInFile</span><span class="p">(</span><span class="s1">&#39;paths&#39;</span><span class="p">);</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <h3>フック(Hooks)</h3>
 
@@ -181,42 +181,42 @@ Modulesセクションのメインメニュー下にリストがあるので確�
 <p>すべてのフックは<code>\Codeception\Module</code>で定義されており、ここにリストされています。あなたは自由にそれをあなたのモジュールで再定義することができます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 
-    <span class="c1">// HOOK: used after configuration is loaded
-</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_initialize</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// HOOK: used after configuration is loaded</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_initialize</span><span class="p">()</span> <span class="p">{</span>
     <span class="p">}</span>
 
-    <span class="c1">// HOOK: on every Actor class initialization
-</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_cleanup</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// HOOK: on every Actor class initialization</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_cleanup</span><span class="p">()</span> <span class="p">{</span>
     <span class="p">}</span>
 
-    <span class="c1">// HOOK: before each suite
-</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_beforeSuite</span><span class="p">(</span><span class="nv">$settings</span> <span class="o">=</span> <span class="k">array</span><span class="p">())</span> <span class="p">{</span>
+    <span class="c1">// HOOK: before each suite</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_beforeSuite</span><span class="p">(</span><span class="nv">$settings</span> <span class="o">=</span> <span class="k">array</span><span class="p">())</span> <span class="p">{</span>
     <span class="p">}</span>
 
-    <span class="c1">// HOOK: after suite
-</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_afterSuite</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// HOOK: after suite</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_afterSuite</span><span class="p">()</span> <span class="p">{</span>
     <span class="p">}</span>
 
-    <span class="c1">// HOOK: before each step
-</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_beforeStep</span><span class="p">(</span><span class="nx">\Codeception\Step</span> <span class="nv">$step</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// HOOK: before each step</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_beforeStep</span><span class="p">(</span><span class="nx">\Codeception\Step</span> <span class="nv">$step</span><span class="p">)</span> <span class="p">{</span>
     <span class="p">}</span>
 
-    <span class="c1">// HOOK: after each step
-</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_afterStep</span><span class="p">(</span><span class="nx">\Codeception\Step</span> <span class="nv">$step</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// HOOK: after each step</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_afterStep</span><span class="p">(</span><span class="nx">\Codeception\Step</span> <span class="nv">$step</span><span class="p">)</span> <span class="p">{</span>
     <span class="p">}</span>
 
-    <span class="c1">// HOOK: before test
-</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_before</span><span class="p">(</span><span class="nx">\Codeception\TestCase</span> <span class="nv">$test</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// HOOK: before test</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_before</span><span class="p">(</span><span class="nx">\Codeception\TestCase</span> <span class="nv">$test</span><span class="p">)</span> <span class="p">{</span>
     <span class="p">}</span>
 
-    <span class="c1">// HOOK: after test
-</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_after</span><span class="p">(</span><span class="nx">\Codeception\TestCase</span> <span class="nv">$test</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// HOOK: after test</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_after</span><span class="p">(</span><span class="nx">\Codeception\TestCase</span> <span class="nv">$test</span><span class="p">)</span> <span class="p">{</span>
     <span class="p">}</span>
 
-    <span class="c1">// HOOK: on fail
-</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_failed</span><span class="p">(</span><span class="nx">\Codeception\TestCase</span> <span class="nv">$test</span><span class="p">,</span> <span class="nv">$fail</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// HOOK: on fail</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">_failed</span><span class="p">(</span><span class="nx">\Codeception\TestCase</span> <span class="nv">$test</span><span class="p">,</span> <span class="nv">$fail</span><span class="p">)</span> <span class="p">{</span>
     <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p><code>_</code>から始まるメソッドはアクタークラスに追加されないことに注意してください。
 これらはpublicとして定義されますが、内部的な目的でのみ使用されます。</p>
@@ -232,15 +232,15 @@ Modulesセクションのメインメニュー下にリストがあるので確�
 <p>追加の情報を表示するには、モジュールの<code>debug</code> と <code>debugSection</code>メソッドを使用します。
 PhpBrowserでどのように動作するか、例を見てみましょう。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">debugSection</span><span class="p">(</span><span class="s1">'Request'</span><span class="p">,</span> <span class="nv">$params</span><span class="p">));</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">debugSection</span><span class="p">(</span><span class="s1">&#39;Request&#39;</span><span class="p">,</span> <span class="nv">$params</span><span class="p">));</span>
     <span class="nv">$client</span><span class="o">-&gt;</span><span class="na">request</span><span class="p">(</span><span class="nv">$method</span><span class="p">,</span> <span class="nv">$uri</span><span class="p">,</span> <span class="nv">$params</span><span class="p">);</span>
-    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">debug</span><span class="p">(</span><span class="s1">'Response Code: '</span> <span class="o">.</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">client</span><span class="o">-&gt;</span><span class="na">getStatusCode</span><span class="p">());</span>
-<span class="cp">?&gt;</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">debug</span><span class="p">(</span><span class="s1">&#39;Response Code: &#39;</span> <span class="o">.</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">client</span><span class="o">-&gt;</span><span class="na">getStatusCode</span><span class="p">());</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>PhpBrowserをデバッグモードで実行しているこのテストは、以下のような出力を行います。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">I click <span class="s2">"All pages"</span>
-<span class="k">*</span> Request <span class="o">(</span>GET<span class="o">)</span> http://localhost/pages <span class="o">{}</span>
-<span class="k">*</span> Response code: 200
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">I click <span class="s2">&quot;All pages&quot;</span>
+* Request <span class="o">(</span>GET<span class="o">)</span> http://localhost/pages <span class="o">{}</span>
+* Response code: 200
 </code></pre></div>
 <h3>設定</h3>
 
@@ -248,8 +248,8 @@ PhpBrowserでどのように動作するか、例を見てみましょう。</p>
 必須のパラメータはモジュールクラスの<code>$requiredFields</code>プロパティで定義する必要があります。Dbモジュールでの例を見てみましょう。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">class</span> <span class="nc">Db</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span> <span class="p">{</span>
-    <span class="k">protected</span> <span class="nv">$requiredFields</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">'dsn'</span><span class="p">,</span> <span class="s1">'user'</span><span class="p">,</span> <span class="s1">'password'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+    <span class="k">protected</span> <span class="nv">$requiredFields</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;dsn&#39;</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>次回、あなたがこれらの値を設定せずにスイートを開始した場合、例外が投げられます。</p>
 
@@ -259,33 +259,32 @@ PhpBrowserでどのように動作するか、例を見てみましょう。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">class</span> <span class="nc">WebDriver</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span>
 <span class="p">{</span>
-    <span class="k">protected</span> <span class="nv">$requiredFields</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">'browser'</span><span class="p">,</span> <span class="s1">'url'</span><span class="p">);</span>
-    <span class="k">protected</span> <span class="nv">$config</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">'host'</span> <span class="o">=&gt;</span> <span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="s1">'port'</span> <span class="o">=&gt;</span> <span class="s1">'4444'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+    <span class="k">protected</span> <span class="nv">$requiredFields</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;browser&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">);</span>
+    <span class="k">protected</span> <span class="nv">$config</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;host&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="s1">&#39;port&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;4444&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>ホストとポートのパラメータはスイートの設定で再定義できます。
 それらの値は設定ファイルの<code>modules:config</code>セクションにあります。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="s">WebDriver</span>
-        <span class="pi">-</span> <span class="s">Db</span>
-    <span class="s">config</span><span class="pi">:</span>
-        <span class="s">WebDriver</span><span class="pi">:</span>
-            <span class="s">url</span><span class="pi">:</span> <span class="s1">'</span><span class="s">http://mysite.com/'</span>
-            <span class="s">browser</span><span class="pi">:</span> <span class="s1">'</span><span class="s">firefox'</span>
-        <span class="s">Db</span><span class="pi">:</span>
-            <span class="s">cleanup</span><span class="pi">:</span> <span class="s">false</span>
-            <span class="s">repopulate</span><span class="pi">:</span> <span class="s">false</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span>
+        <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">WebDriver</span>
+        <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">Db</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">WebDriver</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="s">&#39;http://mysite.com/&#39;</span>
+            <span class="l-Scalar-Plain">browser</span><span class="p-Indicator">:</span> <span class="s">&#39;firefox&#39;</span>
+        <span class="l-Scalar-Plain">Db</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">cleanup</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
+            <span class="l-Scalar-Plain">repopulate</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
 </code></pre></div>
 <p>オプションと必須のパラメータは<code>$config</code>プロパティからアクセスすることができます。その値を取得するには、<code>$this-&gt;config[&#39;parameter&#39;]</code>を使ってください。</p>
 
 <h3>ダイナミックな設定(Dynamic Configuration)</h3>
-
 <p>もしあなたが実行時にモジュールを再設定したければ、モジュールの<code>_reconfigure</code>メソッドを使用してください。
 それをヘルパークラスから呼び出し、変更したいすべてのフィールドに渡すことができます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'WebDriver'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">_reconfigure</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">'browser'</span> <span class="o">=&gt;</span> <span class="s1">'chrome'</span><span class="p">));</span>
-<span class="cp">?&gt;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">&#39;WebDriver&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">_reconfigure</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;browser&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;chrome&#39;</span><span class="p">));</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>テスト終了後、設定はオリジナルの値に戻されます。</p>
 
@@ -296,7 +295,7 @@ PhpBrowserでどのように動作するか、例を見てみましょう。</p>
 <span class="k">namespace</span> <span class="nx">Codeception\Module</span><span class="p">;</span>
 <span class="k">class</span> <span class="nc">MySeleniumHelper</span> <span class="k">extends</span> <span class="nx">\Codeception\Module\WebDriver</span>  <span class="p">{</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>継承されたヘルパーでは、あなた自身によって実装されているメソッドを書き換えてください。
 あなたがテストセッションの開始と終了をカスタマイズする際のオプションである<code>_before</code> と <code>_after</code>フックも置き換えることができます。</p>
@@ -306,16 +305,16 @@ PhpBrowserでどのように動作するか、例を見てみましょう。</p>
 <span class="k">namespace</span> <span class="nx">Codeception\Module</span><span class="p">;</span>
 <span class="k">class</span> <span class="nc">MySeleniumHelper</span> <span class="k">extends</span> <span class="nx">\Codeception\Module\WebDriver</span>
 <span class="p">{</span>
-    <span class="c1">// disable all inherited actions
-</span>    <span class="k">public</span> <span class="k">static</span> <span class="nv">$includeInheritedActions</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="c1">// disable all inherited actions</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$includeInheritedActions</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
 
-    <span class="c1">// include only "see" and "click" actions
-</span>    <span class="k">public</span> <span class="k">static</span> <span class="nv">$onlyActions</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">'see'</span><span class="p">,</span><span class="s1">'click'</span><span class="p">);</span>
+    <span class="c1">// include only &quot;see&quot; and &quot;click&quot; actions</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$onlyActions</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;see&#39;</span><span class="p">,</span><span class="s1">&#39;click&#39;</span><span class="p">);</span>
 
-    <span class="c1">// exclude "seeElement" action
-</span>    <span class="k">public</span> <span class="k">static</span> <span class="nv">$excludeActions</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">'seeElement'</span><span class="p">);</span>
+    <span class="c1">// exclude &quot;seeElement&quot; action</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$excludeActions</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;seeElement&#39;</span><span class="p">);</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p><code>$includeInheritedActions</code>をfalseに設定することで、親メソッドのエイリアスを作成する機能を追加します。
 これはモジュール間の衝突を解決します。<code>Db</code>モジュールと、それを継承した私たちの<code>SecondDbHelper</code>モジュールを使うとします。
@@ -323,20 +322,19 @@ PhpBrowserでどのように動作するか、例を見てみましょう。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">namespace</span> <span class="nx">Codeception\Module</span><span class="p">;</span>
 <span class="k">class</span> <span class="nc">SecondDbHelper</span> <span class="k">extends</span> <span class="nx">Db</span> <span class="p">{</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="nv">$includeInheritedActions</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$includeInheritedActions</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
 
     <span class="k">public</span> <span class="k">function</span> <span class="nf">seeInSecondDb</span><span class="p">(</span><span class="nv">$table</span><span class="p">,</span> <span class="nv">$data</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="nv">$table</span><span class="p">,</span> <span class="nv">$data</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p><code>$includeInheritedActions</code>をfalseに設定することで、生成されたアクターに親クラスのメソッドを含まないのです。
 ヘルパークラスでは継承したメソッドを、引き続き使用することが可能です。</p>
 
 <h2>まとめ</h2>
-
 <p>モジュールはCodeceptionの真髄です。これらはアクタークラス（UnitTester、FunctionalTester、AcceptanceTesterなど）への複数の継承をエミュレートするために使用されます。Codeceptionはウェブリクエスト、アクセスデータ、人気PHPライブラリとのインタラクション等をエミュレートするモジュールを提供しています。あなたのアプリケーションは、カスタムされたアクションが必要になるでしょう。これらはヘルパークラスで定義することができます。もしあなたが他の人にも役立ちそうなモジュールを書いたのでしたら、ぜひシェアしてください。Codeceptionリポジトリをフォークし、モジュールを<strong>src/Codeception/Module</strong>ディレクトリ内に設置し、プルリクエストを送信してください。</p>
 
         </section>
@@ -365,7 +363,7 @@ PhpBrowserでどのように動作するか、例を見てみましょう。</p>
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-06-29 10:23:55 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.15">Codeception 2.0.15</a></p>
+        <p>Last updated: 2015-06-01 10:47:03 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.13">Codeception 2.0.14</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

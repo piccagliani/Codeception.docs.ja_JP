@@ -38,7 +38,7 @@
 <p>CodeceptionはWebサイトのテストと同じ方法で、Webサービスをテストすることができます。Webサービスを手動でテストすることはとても大変なので、テストを自動化することはとても良いアイディアです。CodeceptionにはSOAPとRESTに対応したモジュールが標準で備えられています。この章ではそれらのモジュールについて説明します。</p>
 
 <p>新しくテストスイートを作成するところからはじめましょう。これは <code>bootstrap</code> コマンドでは提供されていません。テストスイートの名前は <strong>api</strong> とし、<code>ApiTester</code> クラスを使いましょう。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:suite api
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:suite api
 </code></pre></div>
 <p>ここにAPIのテストを記述していきます。</p>
 
@@ -47,33 +47,33 @@
 <p>REST方式のWebサービスは、HTTPの標準的なメソッドである <code>GET</code>、<code>POST</code>、<code>PUT</code>、<code>DELETE</code> を介してアクセスされます。これにより、Webサービスからエンティティを受け取り、操作することができます。WebサービスへのアクセスにはHTTPクライアントが必要であるため、<code>PhpBrowser</code> やいずれかのフレームワーク用モジュールのセットアップを行う必要があります。Webサーバーを無視し、Webサービスを内部的にテストするために、たとえば、Symfony2 で実装されたアプリケーションであれば、<code>Symfony2</code> モジュールを使用します。</p>
 
 <p><code>api.suite.yml</code> にモジュールの設定を行います。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">ApiTester</span>
-<span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">PhpBrowser</span><span class="pi">,</span> <span class="nv">REST</span><span class="pi">,</span> <span class="nv">ApiHelper</span><span class="pi">]</span>
-    <span class="s">config</span><span class="pi">:</span>
-        <span class="s">PhpBrowser</span><span class="pi">:</span>
-            <span class="s">url</span><span class="pi">:</span> <span class="s">http://serviceapp/</span>
-        <span class="s">REST</span><span class="pi">:</span>
-            <span class="s">url</span><span class="pi">:</span> <span class="s">http://serviceapp/api/v1/</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">ApiTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">PhpBrowser</span><span class="p-Indicator">,</span> <span class="nv">REST</span><span class="p-Indicator">,</span> <span class="nv">ApiHelper</span><span class="p-Indicator">]</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">PhpBrowser</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://serviceapp/</span>
+        <span class="l-Scalar-Plain">REST</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://serviceapp/api/v1/</span>
 </code></pre></div>
 <p>RESTモジュールは自動的に <code>PhpBrowser</code> に接続します。Symfony2、Laravel4、Zendやそのほかのフレームワークモジュールによって提供する場合においても同様に接続します。設定の編集が完了したら、<code>build</code> コマンドを実行するのを忘れないでください。</p>
 
 <p>それでは最初のテストを作成しましょう。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:cept api CreateUser
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:cept api CreateUser
 </code></pre></div>
 <p>これを <code>CreateUserCept.php</code> と呼ぶこととします。Webサービスを介してのユーザーの作成をテストするために使用します。</p>
 
 <p><code>CreateUserCept.php</code></p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ApiTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'create a user via API'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amHttpAuthenticated</span><span class="p">(</span><span class="s1">'service_user'</span><span class="p">,</span> <span class="s1">'123456'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveHttpHeader</span><span class="p">(</span><span class="s1">'Content-Type'</span><span class="p">,</span> <span class="s1">'application/x-www-form-urlencoded'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendPOST</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'davert'</span><span class="p">,</span> <span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s1">'davert@codeception.com'</span><span class="p">]);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;create a user via API&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amHttpAuthenticated</span><span class="p">(</span><span class="s1">&#39;service_user&#39;</span><span class="p">,</span> <span class="s1">&#39;123456&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveHttpHeader</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/x-www-form-urlencoded&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendPOST</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;davert&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;davert@codeception.com&#39;</span><span class="p">]);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseCodeIs</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseIsJson</span><span class="p">();</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseContains</span><span class="p">(</span><span class="s1">'{"result":"ok"}'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseContains</span><span class="p">(</span><span class="s1">&#39;{&quot;result&quot;:&quot;ok&quot;}&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>RESTモジュールはJSON形式をレスポンスするWebサービスを扱えるよう設計されています。たとえば、<code>seeResponseContainsJson</code> メソッドは与えられた配列をJSON形式に変換し、それがレスポンスに含まれているかどうかをチェックします。</p>
 
@@ -83,11 +83,11 @@
 <span class="p">{</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">seeResponseIsHtml</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="nv">$response</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'REST'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">response</span><span class="p">;</span>
-        <span class="nx">\PHPUnit_Framework_Assert</span><span class="o">::</span><span class="na">assertRegex</span><span class="p">(</span><span class="s1">'~^&lt;!DOCTYPE HTML(.*?)&lt;html&gt;.*?&lt;\/html&gt;~m'</span><span class="p">,</span> <span class="nv">$response</span><span class="p">);</span>
+        <span class="nv">$response</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">&#39;REST&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">response</span><span class="p">;</span>
+        <span class="nx">\PHPUnit_Framework_Assert</span><span class="o">::</span><span class="na">assertRegex</span><span class="p">(</span><span class="s1">&#39;~^&lt;!DOCTYPE HTML(.*?)&lt;html&gt;.*?&lt;\/html&gt;~m&#39;</span><span class="p">,</span> <span class="nv">$response</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>同じ方法で、リクエストパラメーターや、ヘッダー情報を取得することができます。</p>
 
@@ -96,19 +96,19 @@
 <p>SOAP方式のWebサービスは通常、より複雑になります。<a href="http://php.net/manual/ja/soap.installation.php">SOAPサポートを有効にする</a>必要があります。XMLに関する十分な知識も必要とされます。<code>SOAP</code> モジュールは、WSDLで表されたWebサービスに接続するために、特別な形式のPOSTリクエストを利用します。Codeceptionは <code>PhpBrowser</code>やいずれかのフレームワーク用モジュールを用いてやり取りを行います。もしフレームワーク用モジュールを選択した場合、SOAPモジュールは自動的に基盤となるフレームワークに接続します。これにより、テスト実行の速度を向上させることができ、詳細なスタックトレースを提供できるようになります。</p>
 
 <p>それでは <code>PhpBrowser</code> とともに使用する <code>SOAP</code> モジュールを設定しましょう。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">ApiTester</span>
-<span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">PhpBrowser</span><span class="pi">,</span> <span class="nv">SOAP</span><span class="pi">,</span> <span class="nv">ApiHelper</span><span class="pi">]</span>
-    <span class="s">config</span><span class="pi">:</span>
-        <span class="s">PhpBrowser</span><span class="pi">:</span>
-            <span class="s">url</span><span class="pi">:</span> <span class="s">http://serviceapp/</span>
-        <span class="s">SOAP</span><span class="pi">:</span>
-            <span class="s">endpoint</span><span class="pi">:</span> <span class="s">http://serviceapp/api/v1/</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">ApiTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">PhpBrowser</span><span class="p-Indicator">,</span> <span class="nv">SOAP</span><span class="p-Indicator">,</span> <span class="nv">ApiHelper</span><span class="p-Indicator">]</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">PhpBrowser</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://serviceapp/</span>
+        <span class="l-Scalar-Plain">SOAP</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">endpoint</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://serviceapp/api/v1/</span>
 </code></pre></div>
 <p>SOAPリクエストには認証や支払いのようなアプリケーション固有の情報を含みます。この情報はXMLリクエストの <code>&lt;soap:Header&gt;</code> 要素に含まれるSOAPヘッダーによって提供されます。もしこのようなヘッダーを送信したい場合、<code>haveSoapHeader</code> メソッドを使用することができます。たとえば次のようになります。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveSoapHeader</span><span class="p">(</span><span class="s1">'Auth'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'username'</span> <span class="o">=&gt;</span> <span class="s1">'Miles'</span><span class="p">,</span> <span class="s1">'password'</span> <span class="o">=&gt;</span> <span class="s1">'123456'</span><span class="p">));</span>
-<span class="cp">?&gt;</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveSoapHeader</span><span class="p">(</span><span class="s1">&#39;Auth&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;username&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Miles&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;123456&#39;</span><span class="p">));</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>このコードは次のXMLヘッダーを生成します。</p>
 <div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;soap:Header&gt;</span>
@@ -120,8 +120,8 @@
 </code></pre></div>
 <p>リクエストのボディを定義するためには <code>sendSoapRequest</code> を使用します。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendSoapRequest</span><span class="p">(</span><span class="s1">'CreateUser'</span><span class="p">,</span> <span class="s1">'&lt;name&gt;Miles Davis&lt;/name&gt;&lt;email&gt;miles@davis.com&lt;/email&gt;'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendSoapRequest</span><span class="p">(</span><span class="s1">&#39;CreateUser&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;name&gt;Miles Davis&lt;/name&gt;&lt;email&gt;miles@davis.com&lt;/email&gt;&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>この呼び出しは次のXMLに変換されます。</p>
 <div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;soap:Body&gt;</span>
@@ -133,11 +133,11 @@
 </code></pre></div>
 <p>そして、SOAPモジュールで使用できるアサーションの一覧がこちらです。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseEquals</span><span class="p">(</span><span class="s1">'&lt;?xml version="1.0"?&gt;&lt;error&gt;500&lt;/error&gt;'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseIncludes</span><span class="p">(</span><span class="s1">'&lt;result&gt;1&lt;/result&gt;'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseContainsStructure</span><span class="p">(</span><span class="s1">'&lt;user&gt;&lt;name&gt;&lt;/name&gt;&lt;email&gt;&lt;/email&gt;'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseContainsXPath</span><span class="p">(</span><span class="s1">'//result/user/name[@id=1]'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseEquals</span><span class="p">(</span><span class="s1">&#39;&lt;?xml version=&quot;1.0&quot;?&gt;&lt;error&gt;500&lt;/error&gt;&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseIncludes</span><span class="p">(</span><span class="s1">&#39;&lt;result&gt;1&lt;/result&gt;&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseContainsStructure</span><span class="p">(</span><span class="s1">&#39;&lt;user&gt;&lt;name&gt;&lt;/name&gt;&lt;email&gt;&lt;/email&gt;&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseContainsXPath</span><span class="p">(</span><span class="s1">&#39;//result/user/name[@id=1]&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>もし長いXMLを記述したくない場合、<a href="http://codeception.com/docs/reference/XmlBuilder">XmlBuilder</a> クラスの利用を考えてみてください。これはjQueryのようなスタイルで複雑なXMLを構築するのに役に立ちます。
 次の例では通常のXMLに替えて、（SoapUtilsファクトリによって作成された）<code>XmlBuilder</code> を使用しています。</p>
@@ -145,15 +145,15 @@
 <span class="k">use</span> <span class="nx">\Codeception\Util\Soap</span><span class="p">;</span>
 
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ApiTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'create user'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveSoapHeader</span><span class="p">(</span><span class="s1">'Session'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'token'</span> <span class="o">=&gt;</span> <span class="s1">'123456'</span><span class="p">));</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendSoapRequest</span><span class="p">(</span><span class="s1">'CreateUser'</span><span class="p">,</span> <span class="nx">Soap</span><span class="o">::</span><span class="na">request</span><span class="p">()</span>
-    <span class="o">-&gt;</span><span class="na">user</span><span class="o">-&gt;</span><span class="na">email</span><span class="o">-&gt;</span><span class="na">val</span><span class="p">(</span><span class="s1">'miles@davis.com'</span><span class="p">));</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;create user&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveSoapHeader</span><span class="p">(</span><span class="s1">&#39;Session&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;token&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;123456&#39;</span><span class="p">));</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendSoapRequest</span><span class="p">(</span><span class="s1">&#39;CreateUser&#39;</span><span class="p">,</span> <span class="nx">Soap</span><span class="o">::</span><span class="na">request</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="na">user</span><span class="o">-&gt;</span><span class="na">email</span><span class="o">-&gt;</span><span class="na">val</span><span class="p">(</span><span class="s1">&#39;miles@davis.com&#39;</span><span class="p">));</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseIncludes</span><span class="p">(</span><span class="nx">Soap</span><span class="o">::</span><span class="na">response</span><span class="p">()</span>
-    <span class="o">-&gt;</span><span class="na">result</span><span class="o">-&gt;</span><span class="na">val</span><span class="p">(</span><span class="s1">'Ok'</span><span class="p">)</span>
-        <span class="o">-&gt;</span><span class="na">user</span><span class="o">-&gt;</span><span class="na">attr</span><span class="p">(</span><span class="s1">'id'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">result</span><span class="o">-&gt;</span><span class="na">val</span><span class="p">(</span><span class="s1">&#39;Ok&#39;</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">user</span><span class="o">-&gt;</span><span class="na">attr</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p><code>XmlBuilder</code> を使うか、プレーンなXMLを利用するかは、どちらでも構いません。<code>XmlBuilder</code> も同様にXML文字列を返します。</p>
 
@@ -163,11 +163,11 @@
 
     <span class="k">public</span> <span class="k">function</span> <span class="nf">seeResponseIsValidOnSchema</span><span class="p">(</span><span class="nv">$schema</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="nv">$response</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'SOAP'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">response</span><span class="p">;</span>
+        <span class="nv">$response</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">&#39;SOAP&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">response</span><span class="p">;</span>
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nv">$response</span><span class="o">-&gt;</span><span class="na">schemaValidate</span><span class="p">(</span><span class="nv">$schema</span><span class="p">));</span>
     <span class="p">}</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <h2>まとめ</h2>
 
@@ -199,7 +199,7 @@
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-06-29 10:23:55 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.15">Codeception 2.0.15</a></p>
+        <p>Last updated: 2015-06-01 10:47:03 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.13">Codeception 2.0.14</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

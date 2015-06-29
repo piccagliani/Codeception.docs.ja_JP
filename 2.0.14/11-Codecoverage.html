@@ -51,22 +51,21 @@ SeleniumやPhpBrowserによるテストはコードカバレッジを収集す�
 <h3>設定</h3>
 
 <p>コードカバレッジを有効にするためには次の内容をグローバル設定ファイル <code>codeception.yml</code> に設定します。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">coverage</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="s">true</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">true</span>
 </code></pre></div>
 <p>いまはこれで大丈夫ですが、最終的なカバレッジレポートにはどのファイルが表示されるべきなのでしょうか？次のように、ブラックリストとホワイトリストのフィルタを提供することで、ファイルをフィルタリングすることができます。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">coverage</span><span class="pi">:</span>
-    <span class="s">whitelist</span><span class="pi">:</span>
-        <span class="s">include</span><span class="pi">:</span>
-            <span class="pi">-</span> <span class="s">app/*</span>
-        <span class="s">exclude</span><span class="pi">:</span>
-            <span class="pi">-</span> <span class="s">app/cache/*</span>
-    <span class="s">blacklist</span><span class="pi">:</span>
-        <span class="s">include</span><span class="pi">:</span>
-            <span class="pi">-</span> <span class="s">app/controllers/*</span>
-        <span class="s">exclude</span><span class="pi">:</span>
-            <span class="pi">-</span> <span class="s">app/cache/CacheProvider.php</span>
-
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">whitelist</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span>
+            <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">app/*</span>
+        <span class="l-Scalar-Plain">exclude</span><span class="p-Indicator">:</span>
+            <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">app/cache/*</span>
+    <span class="l-Scalar-Plain">blacklist</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span>
+            <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">app/controllers/*</span>
+        <span class="l-Scalar-Plain">exclude</span><span class="p-Indicator">:</span>
+            <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">app/cache/CacheProvider.php</span>
 </code></pre></div>
 <p>ホワイトリストとブラックリストはなんでしょうか？</p>
 
@@ -80,12 +79,12 @@ SeleniumやPhpBrowserによるテストはコードカバレッジを収集す�
 
 <p>There is a shortcut if you don&#39;t need that complex filters:
 複雑なフィルタが必要ない場合のショートカットがあります。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">coverage</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="s">true</span>
-    <span class="s">include</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="s">app/*</span>
-    <span class="s">exclude</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="s">app/cache/*</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">true</span>
+    <span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span>
+        <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">app/*</span>
+    <span class="l-Scalar-Plain">exclude</span><span class="p-Indicator">:</span>
+        <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">app/cache/*</span>
 </code></pre></div>
 <p>この <code>include</code> と <code>exclude</code> オプションはホワイトリストにファイルを追加または削除するためのものです。</p>
 
@@ -98,7 +97,7 @@ SeleniumやPhpBrowserによるテストはコードカバレッジを収集す�
 必要なことはCodeceptionを <code>--coverage</code> オプションとともに実行することです。</p>
 
 <p>CloverのXMLレポートや良い感じのHTMLレポートを生成するためには、<code>--coverage-xml</code> と <code>--coverage-html</code> のオプションについても追加します。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">codecept run --coverage --coverage-xml --coverage-html</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">codecept run --coverage --coverage-xml --coverage-html</span>
 </code></pre></div>
 <p>XMLとHTMLレポートは <code>_output</code> ディレクトリに格納されます。レポートを確認するための一番の方法は、<code>tests/_output/coverage</code> ディレクトリから <code>index.html</code> をブラウザで開くことです。
 CloverのXMLレポートはPHPStormのようなIDEやJenkinsのような継続的インテグレーションサーバーで利用されます。</p>
@@ -122,9 +121,9 @@ Codeceptionもまた、アプリケーションとやり取りするためのち
 
 <p><code>c3</code> への接続のために、CodeceptionはPhpBrowserやWebDriverモジュールのURL設定を利用しますが、
 <code>c3.php</code> がインクルードされるインデックスファイルのURLを <code>c3_url</code> パラメータにより明示的に指定することができます。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">coverage</span><span class="pi">:</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
     <span class="c1"># url of file which includes c3 router.</span>
-    <span class="s">c3_url</span><span class="pi">:</span> <span class="s1">'</span><span class="s">http://127.0.0.1:8000/index-test.php/'</span>
+    <span class="l-Scalar-Plain">c3_url</span><span class="p-Indicator">:</span> <span class="s">&#39;http://127.0.0.1:8000/index-test.php/&#39;</span>
 </code></pre></div>
 <p><code>c3.php</code> がアプリケーションにインクルードされたのち、カバレッジの収集を開始することができます。
 ローカルでアプリケーションを実行する場合に変更となる設定はありません。
@@ -135,8 +134,8 @@ Codeceptionもまた、アプリケーションとやり取りするためのち
 
 <p>もしテストを異なるサーバー上で実行している場合（もしくはウェブサーバーがカレントディレクトリのコードを使用していない場合）、設定ファイルに <code>remote</code> オプションを追加してください。
 たとえば、受け入れテストでのリモートカバレッジを <code>acceptance.suite.yml</code> にて有効にしてみます。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">coverage</span><span class="pi">:</span>
-    <span class="s">remote</span><span class="pi">:</span> <span class="s">true</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">remote</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">true</span>
 </code></pre></div>
 <p>このオプションが有効となった場合、リモートコードカバレッジの結果はローカルのものとマージされません。
 リモートとローカルのファイル群が同じパス上に存在する場合のみマージは行われます。
@@ -148,12 +147,12 @@ Codeceptionもまた、アプリケーションとやり取りするためのち
 
 <p>HTMLレポートの生成にはデフォルトのタイムアウト30秒よりも少し時間がかかることがあります。また、SSLの設定を変更したい場合があるかもしれません（たとえばveryfy<em>peerオプション）
 c3がウェブサーバー（ローカル、リモートのどちらであろうとも）に対してサービス要求をする方法を変更するには、<code>coverage</code> 設定の remote</em>context_options` キーを使用します。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">coverage</span><span class="pi">:</span>
-    <span class="s">remote_context_options</span><span class="pi">:</span>
-        <span class="s">http</span><span class="pi">:</span>
-            <span class="s">timeout</span><span class="pi">:</span> <span class="s">60</span>
-        <span class="s">ssl</span><span class="pi">:</span>
-            <span class="s">verify_peer</span><span class="pi">:</span> <span class="s">false</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">coverage</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">remote_context_options</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">http</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">timeout</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">60</span>
+        <span class="l-Scalar-Plain">ssl</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">verify_peer</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
 </code></pre></div>
 <p>コンテキストオプションについては<a href="http://php.net/manual/ja/context.php">php.netのドキュメント</a>に良くまとまっています。</p>
 
@@ -188,7 +187,7 @@ c3がウェブサーバー（ローカル、リモートのどちらであろう
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-06-29 10:23:55 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.15">Codeception 2.0.15</a></p>
+        <p>Last updated: 2015-06-01 10:47:03 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.13">Codeception 2.0.14</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

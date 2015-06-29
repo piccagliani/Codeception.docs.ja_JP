@@ -43,14 +43,14 @@
 ここではプロジェクト全体をカバーする1つのレポートを取得してみます。</p>
 
 <p><code>codeception.yml</code> ファイルをプロジェクトのルートフォルダに配置して、インクルードしたい他の <code>codeception.yml</code> へのパスを指定します。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">include</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="s">frontend</span>
-  <span class="pi">-</span> <span class="s">admin</span>
-  <span class="pi">-</span> <span class="s">api/rest</span>
-<span class="s">paths</span><span class="pi">:</span>
-  <span class="s">log</span><span class="pi">:</span> <span class="s">log</span>
-<span class="s">settings</span><span class="pi">:</span>
-  <span class="s">colors</span><span class="pi">:</span> <span class="s">false</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">include</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">frontend</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">admin</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">api/rest</span>
+<span class="l-Scalar-Plain">paths</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">log</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">log</span>
+<span class="l-Scalar-Plain">settings</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">colors</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
 </code></pre></div>
 <p>レポートやログの出力先となる <code>log</code> ディレクトリへのパスも指定してください。</p>
 
@@ -58,18 +58,18 @@
 
 <p>アクタークラスとヘルパークラスの名前空間が衝突するのを避けるため、それらは名前空間に属すべきです。
 名前空間を持つテストスイートを作成するためには、ブートストラップコマンドに <code>--namespace</code> オプションを付与します。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar bootstrap --namespace frontend
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar bootstrap --namespace frontend
 </code></pre></div>
 <p>これにより、<code>namespace: frontend</code> パラメータを持つ <code>codeception.yml</code> ファイルとともに、新しいプロジェクトが作成されます。
 ヘルパークラスの名前空間は <code>frontend\Codeception\Module</code> に、アクタークラスの名前空間は <code>frontend</code> になります。
 こうして、新しく作成されたテストは次のようになります。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span> <span class="k">use</span> <span class="nx">frontend\AcceptanceTester</span><span class="p">;</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="c1">//...
-</span><span class="cp">?&gt;</span>
+<span class="c1">//...</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>それぞれのアプリケーション（バンドル）が自身の名前空間と異なるヘルパーやアクタークラスを持つようになって、すべてのテストを1ランナーで実行できるようになります。先ほど作成したメタ設定を使って、通常どおりCodeceptionを実行します。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run
 </code></pre></div>
 <p>これにより、3つのすべてのアプリケーションのテストスイートが起動し、すべてのテストレポートがマージされます。これはつまり、継続的インテグレーションサーバー上でテストを実行し、1つのJUnitとHTML形式のレポートを取得したい場合に大変役に立ちます。コードカバレッジレポートについても同じくマージされます。</p>
 
@@ -79,19 +79,19 @@
 
 <p>グローバルな <code>_bootstrap.php</code> ファイルがあります。このファイルはテスト実行の冒頭でインクルードされます。このファイルをオートローダーや定数の初期化に利用することをおすすめします。特に、<code>tests/_helpers</code> ディレクトリに格納されていないモジュールやヘルパークラスをインクルードしたい場合に役に立ちます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">require_once</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">'/../lib/tests/helpers/MyHelper.php'</span><span class="p">;</span>
-<span class="cp">?&gt;</span>
+<span class="k">require_once</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../lib/tests/helpers/MyHelper.php&#39;</span><span class="p">;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>代替として、Composerのオートローダーを使用することができます。Codeceptionも独自のオートローダーを持っています。
 これは（まだ）PSR-0の互換性はありませんが、ヘルパークラスへの代替パスを宣言する場合に非常に便利です。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">registerSuffix</span><span class="p">(</span><span class="s1">'Helper'</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">'/../lib/tests/helpers'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">registerSuffix</span><span class="p">(</span><span class="s1">&#39;Helper&#39;</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../lib/tests/helpers&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>これで、<code>__DIR__.&#39;/../lib/tests/helpers&#39;</code> から検索された、名前が<code>Helper</code>で終わるすべてのクラスが追加されます。特定の名前空間に属すヘルパーをロードするよう宣言することもできます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">'MyApp\\Test'</span><span class="p">,</span> <span class="s1">'Helper'</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">'/../lib/tests/helpers'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">&#39;MyApp\\Test&#39;</span><span class="p">,</span> <span class="s1">&#39;Helper&#39;</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../lib/tests/helpers&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>これは <code>__DIR__.&#39;/../lib/tests/helpers&#39;</code> 内の <code>MyApp\Test\MyHelper</code> のようなクラスを探すようオートローダーに示します。</p>
 
@@ -99,10 +99,10 @@
 
 <p><code>tests/_bootstrap.php</code> ファイルの例:</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">'MyApp\\Test'</span><span class="p">,</span> <span class="s1">'Helper'</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">'/../lib/tests/helpers'</span><span class="p">);</span>
-<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">'MyApp\\Test'</span><span class="p">,</span> <span class="s1">'Page'</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">'/pageobjects'</span><span class="p">);</span>
-<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">'MyApp\\Test'</span><span class="p">,</span> <span class="s1">'Controller'</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">'/controller'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">&#39;MyApp\\Test&#39;</span><span class="p">,</span> <span class="s1">&#39;Helper&#39;</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../lib/tests/helpers&#39;</span><span class="p">);</span>
+<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">&#39;MyApp\\Test&#39;</span><span class="p">,</span> <span class="s1">&#39;Page&#39;</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">&#39;/pageobjects&#39;</span><span class="p">);</span>
+<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">&#39;MyApp\\Test&#39;</span><span class="p">,</span> <span class="s1">&#39;Controller&#39;</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">&#39;/controller&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <h2>拡張クラス</h2>
 
@@ -212,17 +212,17 @@
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">class</span> <span class="nc">MyCustomExtension</span> <span class="k">extends</span> <span class="nx">\Codeception\Platform\Extension</span>
 <span class="p">{</span>
-    <span class="c1">// list events to listen to
-</span>    <span class="k">public</span> <span class="k">static</span> <span class="nv">$events</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
-        <span class="s1">'suite.after'</span> <span class="o">=&gt;</span> <span class="s1">'afterSuite'</span><span class="p">,</span>
-        <span class="s1">'test.before'</span> <span class="o">=&gt;</span> <span class="s1">'beforeTest'</span><span class="p">,</span>
-        <span class="s1">'step.before'</span> <span class="o">=&gt;</span> <span class="s1">'beforeStep'</span><span class="p">,</span>
-        <span class="s1">'test.fail'</span> <span class="o">=&gt;</span> <span class="s1">'testFailed'</span><span class="p">,</span>
-        <span class="s1">'result.print.after'</span> <span class="o">=&gt;</span> <span class="s1">'print'</span><span class="p">,</span>
+    <span class="c1">// list events to listen to</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$events</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+        <span class="s1">&#39;suite.after&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;afterSuite&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;test.before&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;beforeTest&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;step.before&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;beforeStep&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;test.fail&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;testFailed&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;result.print.after&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;print&#39;</span><span class="p">,</span>
     <span class="p">);</span>
 
-    <span class="c1">// methods that handle events
-</span>
+    <span class="c1">// methods that handle events</span>
+
     <span class="k">public</span> <span class="k">function</span> <span class="nf">afterSuite</span><span class="p">(</span><span class="nx">\Codeception\Event\SuiteEvent</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{}</span>
 
     <span class="k">public</span> <span class="k">function</span> <span class="nf">beforeTest</span><span class="p">(</span><span class="nx">\Codeception\Event\TestEvent</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{}</span>
@@ -233,7 +233,7 @@
 
     <span class="k">public</span> <span class="k">function</span> <span class="nf">print</span><span class="p">(</span><span class="nx">\Codeception\Event\PrintResultEvent</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>イベントハンドラーメソッドを実行することにより、渡されたオブジェクトを更新してもイベントをリッスンすることができます。
 拡張クラスはいくつかの基本的なメソッドを持っています。</p>
@@ -249,25 +249,23 @@
 
 <p>単純な拡張クラスを実装したら、<code>tests/_bootstrap.php</code>ファイルにインクルードしてください。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">include_once</span> <span class="s1">'/path/to/my/MyCustomExtension.php'</span><span class="p">;</span>
-<span class="cp">?&gt;</span>
+<span class="k">include_once</span> <span class="s1">&#39;/path/to/my/MyCustomExtension.php&#39;</span><span class="p">;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p><code>codeception.yml</code> で拡張機能を有効にします。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">extensions</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">MyCustomExtension</span><span class="pi">]</span>
-
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">extensions</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">MyCustomExtension</span><span class="p-Indicator">]</span>
 </code></pre></div>
 <h3>拡張機能の設定</h3>
 
 <p>拡張クラスでは <code>options</code> プロパティを介して現状渡されたオプションにアクセスすることができます。
 また、<code>\Codeception\Configuration::config()</code> を利用してグローバル設定にアクセスすることもできます。
 もし拡張クラスにカスタムなオプションを持たせたい場合、<code>codeception.yml</code> ファイルからそれを渡すことができます。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">extensions</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">MyCustomExtension</span><span class="pi">]</span>
-    <span class="s">config</span><span class="pi">:</span>
-        <span class="s">MyCustomExtension</span><span class="pi">:</span>
-            <span class="s">param</span><span class="pi">:</span> <span class="s">value</span>
-
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">extensions</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">MyCustomExtension</span><span class="p-Indicator">]</span>
+    <span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">MyCustomExtension</span><span class="p-Indicator">:</span>
+            <span class="l-Scalar-Plain">param</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">value</span>
 </code></pre></div>
 <p>渡された設定には次のように <code>config</code> プロパティを介してアクセスすることができます。 <code>$this-&gt;config[&#39;param&#39;]</code></p>
 
@@ -278,9 +276,9 @@
 <p>グループクラスは特定のグループに属すテストのイベントをリッスンするための拡張機能です。
 テストが次のグループに追加されたとき、</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span> 
-<span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">group</span><span class="p">(</span><span class="s1">'admin'</span><span class="p">);</span>
+<span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">group</span><span class="p">(</span><span class="s1">&#39;admin&#39;</span><span class="p">);</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>このテストは次のイベントを発生させます。</p>
 
@@ -297,32 +295,32 @@
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">class</span> <span class="nc">AdminGroup</span> <span class="k">extends</span> <span class="nx">\Codeception\Platform\Group</span>
 <span class="p">{</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="nv">$group</span> <span class="o">=</span> <span class="s1">'admin'</span><span class="p">;</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$group</span> <span class="o">=</span> <span class="s1">&#39;admin&#39;</span><span class="p">;</span>
 
     <span class="k">public</span> <span class="k">function</span> <span class="nf">_before</span><span class="p">(</span><span class="nx">\Codeception\Event\TestEvent</span> <span class="nv">$e</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">'inserting additional admin users...'</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;inserting additional admin users...&#39;</span><span class="p">);</span>
 
-        <span class="nv">$db</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'Db'</span><span class="p">);</span>
-        <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">haveInDatabase</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'bill'</span><span class="p">,</span> <span class="s1">'role'</span> <span class="o">=&gt;</span> <span class="s1">'admin'</span><span class="p">));</span>
-        <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">haveInDatabase</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'john'</span><span class="p">,</span> <span class="s1">'role'</span> <span class="o">=&gt;</span> <span class="s1">'admin'</span><span class="p">));</span>
-        <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">haveInDatabase</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'mark'</span><span class="p">,</span> <span class="s1">'role'</span> <span class="o">=&gt;</span> <span class="s1">'banned'</span><span class="p">));</span>
+        <span class="nv">$db</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">&#39;Db&#39;</span><span class="p">);</span>
+        <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">haveInDatabase</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;bill&#39;</span><span class="p">,</span> <span class="s1">&#39;role&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;admin&#39;</span><span class="p">));</span>
+        <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">haveInDatabase</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;john&#39;</span><span class="p">,</span> <span class="s1">&#39;role&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;admin&#39;</span><span class="p">));</span>
+        <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">haveInDatabase</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;mark&#39;</span><span class="p">,</span> <span class="s1">&#39;role&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;banned&#39;</span><span class="p">));</span>
     <span class="p">}</span>
 
     <span class="k">public</span> <span class="k">function</span> <span class="nf">_after</span><span class="p">(</span><span class="nx">\Codeception\Event\TestEvent</span> <span class="nv">$e</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">'cleaning up admin users...'</span><span class="p">);</span>
-        <span class="c1">// ...
-</span>    <span class="p">}</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;cleaning up admin users...&#39;</span><span class="p">);</span>
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>グループクラスは <code>php codecept.phar generate:group groupname</code> コマンドによって作成することができます。
 グループクラスは <code>tests/_groups</code> ディレクトリに格納されます。</p>
 
 <p>拡張クラスと同様、<code>codeception.yml</code> にてグループクラスを有効にすることができます。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">extensions</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">AdminGroup</span><span class="pi">]</span>    
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">extensions</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">AdminGroup</span><span class="p-Indicator">]</span>    
 </code></pre></div>
 <p>これで Adminグループクラスは <code>admin</code>グループに属すテストのすべてのイベントをリッスンするようになります。</p>
 
@@ -356,7 +354,7 @@
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-06-29 10:23:55 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.15">Codeception 2.0.15</a></p>
+        <p>Last updated: 2015-06-01 10:47:03 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.13">Codeception 2.0.14</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

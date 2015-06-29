@@ -48,11 +48,11 @@ Codeceptionは簡単な共通処理に対して、すばらしいヘルパー機
 <p>Codeceptionは簡単にテストを作成する、すばらしいジェネレーターを持っています。
 <code>\PHPUnit_Framework_TestCase</code>クラスを継承している従来のPHPUnitテストを生成するところから始める事ができます。
 以下のようなコマンドで生成されます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:phpunit unit Example
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:phpunit unit Example
 </code></pre></div>
 <p>Codeceptionは一般的な単体テストのアドオンを備えています、それでは試してみましょう。
 Codeceptionの単体テストを作成するには別のコマンドが必要です。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:test unit Example
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:test unit Example
 </code></pre></div>
 <p>どちらのテストも<code>tests/unit</code>ディレクトリに新しく<code>ExampleTest</code>ファイルを作成します。</p>
 
@@ -62,22 +62,22 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 
 <span class="k">class</span> <span class="nc">ExampleTest</span> <span class="k">extends</span> <span class="nx">\Codeception\TestCase\Test</span>
 <span class="p">{</span>
-   <span class="sd">/**
-    * @var UnitTester
-    */</span>
+   <span class="sd">/**</span>
+<span class="sd">    * @var UnitTester</span>
+<span class="sd">    */</span>
     <span class="k">protected</span> <span class="nv">$tester</span><span class="p">;</span>
 
-    <span class="c1">// 各テスト前に実行される
-</span>    <span class="k">protected</span> <span class="k">function</span> <span class="nf">_before</span><span class="p">()</span>
+    <span class="c1">// 各テスト前に実行される</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">_before</span><span class="p">()</span>
     <span class="p">{</span>
     <span class="p">}</span>
 
-    <span class="c1">// 各テスト後に実行される
-</span>    <span class="k">protected</span> <span class="k">function</span> <span class="nf">_after</span><span class="p">()</span>
+    <span class="c1">// 各テスト後に実行される</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">_after</span><span class="p">()</span>
     <span class="p">{</span>
     <span class="p">}</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>このクラスは、はじめから<code>_before</code>と<code>_after</code>のメソッドが定義されています。それらは各テスト前にテスト用のオブジェクトを作成し、終了後に削除するのに使用できます。</p>
 
@@ -87,9 +87,9 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># Codeception Test Suite Configuration</span>
 
 <span class="c1"># suite for unit (internal) tests.</span>
-<span class="s">class_name</span><span class="pi">:</span> <span class="s">UnitTester</span>
-<span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">UnitHelper</span><span class="pi">,</span> <span class="nv">Asserts</span><span class="pi">]</span>
+<span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">UnitTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">UnitHelper</span><span class="p-Indicator">,</span> <span class="nv">Asserts</span><span class="p-Indicator">]</span>
 </code></pre></div>
 <h3>従来の単体テスト</h3>
 
@@ -101,17 +101,17 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
     <span class="p">{</span>
         <span class="nv">$user</span> <span class="o">=</span> <span class="nx">User</span><span class="o">::</span><span class="na">create</span><span class="p">();</span>
 
-        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]));</span>
+        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">&#39;username&#39;</span><span class="p">]));</span>
 
-        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">'toolooooongnaaaaaaameeee'</span><span class="p">;</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]));</span>
+        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">&#39;toolooooongnaaaaaaameeee&#39;</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">&#39;username&#39;</span><span class="p">]));</span>
 
-        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">'davert'</span><span class="p">;</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]));</span>           
+        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">&#39;davert&#39;</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">&#39;username&#39;</span><span class="p">]));</span>           
     <span class="p">}</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <h3>BDD Spec テスト</h3>
 
@@ -129,23 +129,23 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
     <span class="p">{</span>
         <span class="nv">$user</span> <span class="o">=</span> <span class="nx">User</span><span class="o">::</span><span class="na">create</span><span class="p">();</span>
 
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">specify</span><span class="p">(</span><span class="s2">"username is required"</span><span class="p">,</span> <span class="k">function</span><span class="p">()</span> <span class="p">{</span>
-            <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]));</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">specify</span><span class="p">(</span><span class="s2">&quot;username is required&quot;</span><span class="p">,</span> <span class="k">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">&#39;username&#39;</span><span class="p">]));</span>
         <span class="p">});</span>
 
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">specify</span><span class="p">(</span><span class="s2">"username is too long"</span><span class="p">,</span> <span class="k">function</span><span class="p">()</span> <span class="p">{</span>
-            <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">'toolooooongnaaaaaaameeee'</span><span class="p">;</span>
-            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]));</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">specify</span><span class="p">(</span><span class="s2">&quot;username is too long&quot;</span><span class="p">,</span> <span class="k">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">&#39;toolooooongnaaaaaaameeee&#39;</span><span class="p">;</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">&#39;username&#39;</span><span class="p">]));</span>
         <span class="p">});</span>
 
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">specify</span><span class="p">(</span><span class="s2">"username is ok"</span><span class="p">,</span> <span class="k">function</span><span class="p">()</span> <span class="p">{</span>
-            <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">'davert'</span><span class="p">;</span>
-            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]));</span>           
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">specify</span><span class="p">(</span><span class="s2">&quot;username is ok&quot;</span><span class="p">,</span> <span class="k">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">&#39;davert&#39;</span><span class="p">;</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">&#39;username&#39;</span><span class="p">]));</span>           
         <span class="p">});</span>     
     <span class="p">}</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>        
+<span class="cp">?&gt;</span><span class="x">        </span>
 </code></pre></div>
 <p><code>specify</code>のコードブロックを使用する事で、テストを細かい単位で説明することができます。このことはチームの全員にとってテストがとても見やすく、理解しやすい状態にしてくれます。</p>
 
@@ -153,8 +153,8 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 
 <p>あなたはBDD-styleのアサーションをするために、<a href="https://github.com/Codeception/Verify">Codeception\Verify</a>も追加するかもしれません。もし、あなたが<code>assert</code>の呼び出しの中で、引数のどちらが期待している値で、どちらが実際の値なのかをよく混同してしまうなら、この小さなライブラリはとてもすばらしく可読性に長けたアサーションを追加します。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nx">verify</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">equals</span><span class="p">(</span><span class="s1">'john'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="nx">verify</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">equals</span><span class="p">(</span><span class="s1">&#39;john&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <h2>モジュールを使う</h2>
 
@@ -162,9 +162,9 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># Codeception Test Suite Configuration</span>
 
 <span class="c1"># suite for unit (internal) tests.</span>
-<span class="s">class_name</span><span class="pi">:</span> <span class="s">UnitTester</span>
-<span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">Db</span><span class="pi">,</span> <span class="nv">UnitHelper</span><span class="pi">]</span>
+<span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">UnitTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Db</span><span class="p-Indicator">,</span> <span class="nv">UnitHelper</span><span class="p-Indicator">]</span>
 </code></pre></div>
 <p>UnitTesterのメソッドにアクセスする事で、テストの中で<code>UnitTester</code>のプロパティを使用できます。</p>
 
@@ -175,13 +175,13 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 <span class="k">function</span> <span class="nf">testSavingUser</span><span class="p">()</span>
 <span class="p">{</span>
     <span class="nv">$user</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">User</span><span class="p">();</span>
-    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="s1">'Miles'</span><span class="p">);</span>
-    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">setSurname</span><span class="p">(</span><span class="s1">'Davis'</span><span class="p">);</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="s1">&#39;Miles&#39;</span><span class="p">);</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">setSurname</span><span class="p">(</span><span class="s1">&#39;Davis&#39;</span><span class="p">);</span>
     <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">();</span>
-    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">'Miles Davis'</span><span class="p">,</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getFullName</span><span class="p">());</span>
-    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tester</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Miles'</span><span class="p">,</span> <span class="s1">'surname'</span> <span class="o">=&gt;</span> <span class="s1">'Davis'</span><span class="p">));</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">&#39;Miles Davis&#39;</span><span class="p">,</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getFullName</span><span class="p">());</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tester</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Miles&#39;</span><span class="p">,</span> <span class="s1">&#39;surname&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Davis&#39;</span><span class="p">));</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>単体テストでデータベース機能を有効にするためには、unit.suite.yml設定ファイルにて有効なモジュール一覧に <code>Db</code> モジュールが含まれていることを確認してください。
 受け入れテストや機能テストのように、データベースはテストが終了するごとに、クリーンにされて構築されるでしょう。
@@ -193,11 +193,11 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 
 <p>たとえば、もし<code>Symfony2</code>を使うなら、このようにSymfonyのコンテナにアクセスします：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="sd">/**
- * @var Symfony\Component\DependencyInjection\Container
- */</span>
-<span class="nv">$container</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'Symfony2'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">container</span><span class="p">;</span>
-<span class="cp">?&gt;</span>
+<span class="sd">/**</span>
+<span class="sd"> * @var Symfony\Component\DependencyInjection\Container</span>
+<span class="sd"> */</span>
+<span class="nv">$container</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">&#39;Symfony2&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">container</span><span class="p">;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>すべてのパブリックな変数は、そのモジュールに対応するリファレンスにリストされています。</p>
 
@@ -212,27 +212,27 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
     <span class="k">public</span> <span class="k">function</span> <span class="nf">validateUser</span><span class="p">(</span><span class="nx">UnitTester</span> <span class="nv">$t</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nv">$user</span> <span class="o">=</span> <span class="nv">$t</span><span class="o">-&gt;</span><span class="na">createUser</span><span class="p">();</span>
-        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-        <span class="nv">$t</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]);</span> 
+        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+        <span class="nv">$t</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">&#39;username&#39;</span><span class="p">]);</span> 
 
-        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">'toolooooongnaaaaaaameeee'</span><span class="p">;</span>
-        <span class="nv">$t</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]));</span>
+        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">&#39;toolooooongnaaaaaaameeee&#39;</span><span class="p">;</span>
+        <span class="nv">$t</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">&#39;username&#39;</span><span class="p">]));</span>
 
-        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">'davert'</span><span class="p">;</span>
-        <span class="nv">$t</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]));</span>
+        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">&#39;davert&#39;</span><span class="p">;</span>
+        <span class="nv">$t</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">&#39;username&#39;</span><span class="p">]));</span>
 
-        <span class="nv">$t</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Miles'</span><span class="p">,</span> <span class="s1">'surname'</span> <span class="o">=&gt;</span> <span class="s1">'Davis'</span><span class="p">]);</span>
+        <span class="nv">$t</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Miles&#39;</span><span class="p">,</span> <span class="s1">&#39;surname&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Davis&#39;</span><span class="p">]);</span>
     <span class="p">}</span>
 <span class="p">}</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p><code>$t</code>変数でアクセスしているであろう、UnitTesterクラスのいつものアサーションを追加する<code>Asserts</code>モジュールを単体テストのために追加するかもしれません。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># Codeception Test Suite Configuration</span>
 
 <span class="c1"># suite for unit (internal) tests.</span>
-<span class="s">class_name</span><span class="pi">:</span> <span class="s">UnitTester</span>
-<span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">Asserts</span><span class="pi">,</span> <span class="nv">Db</span><span class="pi">,</span> <span class="nv">UnitHelper</span><span class="pi">]</span>
+<span class="l-Scalar-Plain">class_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">UnitTester</span>
+<span class="l-Scalar-Plain">modules</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">enabled</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Asserts</span><span class="p-Indicator">,</span> <span class="nv">Db</span><span class="p-Indicator">,</span> <span class="nv">UnitHelper</span><span class="p-Indicator">]</span>
 </code></pre></div>
 <p><a href="http://codeception.com/docs/07-AdvancedUsage#Cest-Classes">Cest形式について もっと知る</a>.</p>
 
@@ -242,16 +242,15 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 
 <p>この例では、コンストラクタを呼び出さずにオブジェクトを初期化し、<code>getName</code>メソッドが<em>john</em>という値を返すように置き換えています。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$user</span> <span class="o">=</span> <span class="nx">Stub</span><span class="o">::</span><span class="na">make</span><span class="p">(</span><span class="s1">'User'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'getName'</span> <span class="o">=&gt;</span> <span class="s1">'john'</span><span class="p">]);</span>
-<span class="nv">$name</span> <span class="o">=</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">();</span> <span class="c1">// 'john'
-</span><span class="cp">?&gt;</span>
+<span class="nv">$user</span> <span class="o">=</span> <span class="nx">Stub</span><span class="o">::</span><span class="na">make</span><span class="p">(</span><span class="s1">&#39;User&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;getName&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;john&#39;</span><span class="p">]);</span>
+<span class="nv">$name</span> <span class="o">=</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">();</span> <span class="c1">// &#39;john&#39;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>スタブはPHPUnitのモックフレームワークから生成されます。<a href="https://github.com/padraic/mockery">Mockery</a>（<a href="https://github.com/Codeception/MockeryModule">Mockery module</a>とセット）、<a href="https://github.com/Codeception/AspectMock">AspectMock</a>、など他のものを代わりに使用することもできます。</p>
 
 <p>スタブのユーティリティクラスの全リファレンスは<a href="/docs/reference/Stub">ここ</a>を見てください。</p>
 
 <h2>まとめ</h2>
-
 <p>テストスイートの中で、PHPUnitのテストはfirst-class citizensです。単体テストを書いて実行したいときはいつでも、PHPUnitをインストールする必要はなく、そのままCodeception上で実行することができます。いくつかのすばらしい特徴は、Codeceptionモジュールを統合する事で共通の単体テストを追加できることです。単体テストや結合テストのほとんどにおいて、PHPUnitのテストだけで十分です。PHPUnitのテストは速く、維持しやすいからです。</p>
 
         </section>
@@ -280,7 +279,7 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-06-29 10:23:55 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.15">Codeception 2.0.15</a></p>
+        <p>Last updated: 2015-06-01 10:47:03 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.13">Codeception 2.0.14</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

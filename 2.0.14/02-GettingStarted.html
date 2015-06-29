@@ -48,7 +48,7 @@ Codeceptionは単体テスト、機能テスト、受け入れテストの3つ�
 <p>アクターのクラスは書かれるのではなく、設定ファイルによって生成されます。あなたが設定を変更すれば、アクタークラスは<strong>自動的にリビルド</strong>されます。</p>
 
 <p>もしアクターのクラスがうまく生成もしくはアップデートされなかった場合、以下のような<code>build</code> コマンドによる手動での生成を試みてください。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar build
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar build
 </code></pre></div>
 <h2>シナリオのサンプルを書いてみましょう</h2>
 
@@ -56,36 +56,36 @@ Codeceptionは単体テスト、機能テスト、受け入れテストの3つ�
 
 <p>ではたとえば、<code>tests/acceptance/SigninCept.php</code>というファイルを作ってみたとしましょう。
 以下のコマンドを実行することでそれができ上がります。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:cept acceptance Signin
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar generate:cept acceptance Signin
 </code></pre></div>
 <p>シナリオはいつも、アクタークラスの初期化とともに開始します。その後、シナリオを書き進めていくには<code>$I-&gt;</code>と書き込み、自動補完機能で現れたリストの中からふさわしいアクションを選びます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>それではウェブサイトにログインしてみましょう。
 ユーザ名とパスワードの入力によって認証を行う&quot;ログインページ&quot;があります。ログイン後はユーザページに飛ばされ、<code>Hello, %username%</code>というテキストが表示されます。このシナリオがCodeceptionでどのように記述されるか見てみましょう。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'log in as regular user'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/login'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'Username'</span><span class="p">,</span><span class="s1">'davert'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'Password'</span><span class="p">,</span><span class="s1">'qwerty'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Login'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Hello, davert'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">&#39;log in as regular user&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;Username&#39;</span><span class="p">,</span><span class="s1">&#39;davert&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">&#39;Password&#39;</span><span class="p">,</span><span class="s1">&#39;qwerty&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">&#39;Hello, davert&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
 </code></pre></div>
 <p>テストを実行する前に、ローカル上のウェブサーバでウェブサイトがしっかりと動いていることを確認してください。<code>tests/acceptance.suite.yml</code>ファイルを開き、URLをあなたのウェブアプリケーションのURLに置き換えてください。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">config</span><span class="pi">:</span>
-    <span class="s">PhpBrowser</span><span class="pi">:</span>
-        <span class="s">url</span><span class="pi">:</span> <span class="s1">'</span><span class="s">http://myappurl.local'</span>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">config</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">PhpBrowser</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="s">&#39;http://myappurl.local&#39;</span>
 </code></pre></div>
 <p>URLの設定後、<code>run</code> コマンドによってテストを走らせることができます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run
 </code></pre></div>
 <p>このようなアウトプットが表示されるはずです。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">Acceptance Tests <span class="o">(</span>1<span class="o">)</span> -------------------------------
-Trying log <span class="k">in </span>as regular user <span class="o">(</span>SigninCept.php<span class="o">)</span>   Ok
+Trying log in as regular user <span class="o">(</span>SigninCept.php<span class="o">)</span>   Ok
 ----------------------------------------------------
 
 Functional Tests <span class="o">(</span>0<span class="o">)</span> -------------------------------
@@ -94,28 +94,28 @@ Functional Tests <span class="o">(</span>0<span class="o">)</span> -------------
 Unit Tests <span class="o">(</span>0<span class="o">)</span> -------------------------------------
 ----------------------------------------------------
 
-Time: 1 second, Memory: 21.00Mb
+Time: <span class="m">1</span> second, Memory: 21.00Mb
 
-OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span class="o">)</span>
+OK <span class="o">(</span><span class="m">1</span> <span class="nb">test</span>, <span class="m">1</span> assertions<span class="o">)</span>
 </code></pre></div>
 <p>アウトプットの詳細を確認してみましょう。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run acceptance --steps
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run acceptance --steps
 </code></pre></div>
 <p>実行されたアクションのステップごとのレポートが表示されるはずです。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">Acceptance Tests <span class="o">(</span>1<span class="o">)</span> -------------------------------
-Trying to log <span class="k">in </span>as regular user <span class="o">(</span>SigninCept.php<span class="o">)</span>
+Trying to log in as regular user <span class="o">(</span>SigninCept.php<span class="o">)</span>
 Scenario:
-<span class="k">*</span> I am on page <span class="s2">"/login"</span>
-<span class="k">*</span> I fill field <span class="s2">"Username"</span> <span class="s2">"davert"</span>
-<span class="k">*</span> I fill field <span class="s2">"Password"</span> <span class="s2">"qwerty"</span>
-<span class="k">*</span> I click <span class="s2">"Login"</span>
-<span class="k">*</span> I see <span class="s2">"Hello, davert"</span>
+* I am on page <span class="s2">&quot;/login&quot;</span>
+* I fill field <span class="s2">&quot;Username&quot;</span> <span class="s2">&quot;davert&quot;</span>
+* I fill field <span class="s2">&quot;Password&quot;</span> <span class="s2">&quot;qwerty&quot;</span>
+* I click <span class="s2">&quot;Login&quot;</span>
+* I see <span class="s2">&quot;Hello, davert&quot;</span>
   OK
 ----------------------------------------------------  
 
-Time: 0 seconds, Memory: 21.00Mb
+Time: <span class="m">0</span> seconds, Memory: 21.00Mb
 
-OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span class="o">)</span>
+OK <span class="o">(</span><span class="m">1</span> <span class="nb">test</span>, <span class="m">1</span> assertions<span class="o">)</span>
 </code></pre></div>
 <p>これは皆さん自身のウェブサイトで再現可能なとてもシンプルなテストでした。ユーザのアクションをエミレートすることで、あなたのウェブサイトをすべて同様にテストすることができるのです。</p>
 
@@ -140,22 +140,22 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
 <h2>テストの実行</h2>
 
 <p>テストは<code>run</code>コマンドによって開始されます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run
 </code></pre></div>
 <p>最初の引数を使用すれば、1つのスイートからテストを実行することができます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run acceptance
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run acceptance
 </code></pre></div>
 <p>本当に1つだけのテストを行いたいのなら、2つ目の引数を使用します。スイートのディレクトリから、テストファイルへのローカルパスを指定します。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run acceptance SigninCept.php
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run acceptance SigninCept.php
 </code></pre></div>
 <p>または、テストファイルへのフルパスを指定することも可能です。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run tests/acceptance/SigninCept.php
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run tests/acceptance/SigninCept.php
 </code></pre></div>
 <p>テストクラスから1つのテストを実行することもできます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run tests/acceptance/SignInCest.php:anonymousLogin
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run tests/acceptance/SignInCest.php:anonymousLogin
 </code></pre></div>
 <p>ディレクトリパスを指定することも可能です。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run tests/acceptance/backend
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run tests/acceptance/backend
 </code></pre></div>
 <p>これはバックエンドのディレクトリからすべてのテストを実行します。</p>
 
@@ -164,12 +164,12 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
 <h3>レポート</h3>
 
 <p><code>--xml</code>オプションを付与すればJUnit XMLのアウトプットが生成され、<code>--html</code>オプションを付与すればHTMLのレポートが生成されます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run --steps --xml --html
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar run --steps --xml --html
 </code></pre></div>
 <p>このコマンドはすべてのスイートのすべてのテストをステップごとに表示しながら実行し、HTMLとXMLのレポートを作成します。レポートは<code>tests/_output/</code>ディレクトリ内に保存されます。</p>
 
 <p>以下のコマンドを実行することで、使用できるすべてのオプションを確認することができます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar <span class="nb">help </span>run
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>php codecept.phar <span class="nb">help </span>run
 </code></pre></div>
 <h2>デバッグ</h2>
 
@@ -219,7 +219,7 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-06-29 10:23:55 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.15">Codeception 2.0.15</a></p>
+        <p>Last updated: 2015-06-01 10:47:03 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.13">Codeception 2.0.14</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
