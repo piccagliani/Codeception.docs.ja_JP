@@ -6,13 +6,21 @@ Codeceptionは単体テスト、機能テスト、受け入れテストの3つ�
 
 ## アクター(Actors)
 
-Codeceptionの主な概念の1つは、人間の行動のように動作することです。UnitTesterは関数を実行し、コードのテストを行います。FunctionalTesterは内部の知識を持ち、アプリケーション全体をテストする有能なテスターです。そしてAcceptanceTesterは、私たちが提供するインターフェイスを使ってアプリケーションを操作するユーザです。
+Codeceptionの主な概念の1つは人間の行動のように動作することです。UnitTesterは関数を実行し、コードのテストを行います。FunctionalTesterは内部の知識を持ち、アプリケーション全体をテストする有能なテスターです。そしてAcceptanceTesterは、私たちが提供するインターフェイスを使ってアプリケーションを操作するユーザです。
 
-これらのアクターはそれぞれ、許可されたアクションを行うPHPのクラスなのです。彼らが異なる能力を持っていることにもうお気づきでしょう。これらのアクターは一定ではなく、あなたの手によって拡張することができます。各アクターはそれぞれのテストに対応しているのです。
+アクタークラスは記述するものではなく、スイート設定によってい生成されます。**一般的にアクタークラスの各メソッドはCodeceptionのモジュールから取得されます**。各モジュールは、異なるテストの目的のため事前に定義されたアクションを提供し、テスト環境に合わせて組み合わせることができます。Codeceptionはそのモジュールにより、テストで直面する可能性のある問題の90%を解決しようとしているため、車輪を再発明する必要はありません。私たちは、テストの記述により多くの時間を、それらテストを実行可能とするためのサポートコードの記述にはより少ない時間を費やすことができると考えています。デフォルトではAcceptanceTesterはPhpBrowserモジュールに依存しており、それは`tests/acceptance.suite.yml`ファイルで設定されます:
 
-アクターのクラスは書かれるのではなく、設定ファイルによって生成されます。あなたが設定を変更すれば、アクタークラスは**自動的にリビルド**されます。
+```yaml
+class_name: AcceptanceTester
+modules:
+    enabled:
+        - PhpBrowser:
+            url: http://localhost/myapp/
+        - \Helper\Acceptance
+```
 
-もしアクターのクラスがうまく生成もしくはアップデートされなかった場合、以下のような`build` コマンドによる手動での生成を試みてください。
+この設定ファイルで、モジュールの有効化/無効化、必要に応じた再設定を行うことができます。
+設定ファイルを変更した場合、アクタークラスは自動的に再ビルドされます。もし、アクタークラスが期待通りに作成または更新されない場合、`build`コマンドを使い手動で生成してみてください。
 
 ```bash
 $ php codecept.phar build
@@ -54,9 +62,12 @@ $I->see('Hello, davert');
 テストを実行する前に、ローカル上のウェブサーバでウェブサイトがしっかりと動いていることを確認してください。`tests/acceptance.suite.yml`ファイルを開き、URLをあなたのウェブアプリケーションのURLに置き換えてください。
 
 ``` yaml
-config:
-    PhpBrowser:
-        url: 'http://myappurl.local'
+class_name: AcceptanceTester
+modules:
+    enabled:
+        - PhpBrowser:
+            url: 'http://myappurl.local'
+        - \Helper\Acceptance
 ```
 
 URLの設定後、`run` コマンドによってテストを走らせることができます。
@@ -108,23 +119,61 @@ Time: 0 seconds, Memory: 21.00Mb
 OK (1 test, 1 assertions)
 ```
 
-これは皆さん自身のウェブサイトで再現可能なとてもシンプルなテストでした。ユーザのアクションをエミレートすることで、あなたのウェブサイトをすべて同様にテストすることができるのです。
+このシンプルなテストは完全なウェブサイトの利用シナリオへと拡張することができます。
+したがって、ユーザのアクションをエミュレートすることであたなはどのようなウェブサイトでもテストすることができます。
 
 ぜひトライしてみましょう！
-
-
-## モジュールとヘルパー
-
-アクタークラスのアクションはモジュールから取得されます。生成されたアクタークラスは多重継承をエミュレートします。モジュールは1つのメソッドで1つのアクションを実行するよう設計されています。[DRY原則](http://ja.wikipedia.org/wiki/Don't_repeat_yourself)によると、あなたが異なるモジュールで同じシナリオコンポーネントを使用する場合は、それらを組み合わせて、カスタムモジュールにそれらを移動させることができます。デフォルトでは、各スイートはアクタークラスを拡張するために使用できるの空のモジュールを持っています。それらは __support__ ディレクトリに保存されています。
-
 
 ## ブートストラップ
 
 各スイートは自分自身のブートストラップファイルを所有しています。それらは各スイートのディレクトリ内部にあり、`_bootstrap.php`という名前で保存されています。これはテストの前に実行されます。他にも、`tests`ディレクトリ内にはグローバルブートストラップファイルがあります。これは追加ファイルをインクルードする際に使用することができます。
 
-## テストフォーマット
+## Cept、Cest、テスト形式
 
-Codeceptionは3つのテストフォーマットをサポートしています。先述したシナリオベースのCeptフォーマットだけでなく、[PHPUnit test files for unit testing](http://codeception.com/docs/06-UnitTests) と [class-based Cest](http://codeception.com/docs/07-AdvancedUsage#Cest-Classes) フォーマットに対応しています。これらについては後の章で解説します。どちらの形式のテストスイートでも実行される方法に違いはありません。
+Codeceptionは3つのテスト形式をサポートしています。先述したシナリオベースのCept形式だけでなく、Codeceptionは [単体テスト向けのPHPUnit形式](http://codeception.com/docs/06-UnitTests) およびCest形式についても実行することができます。
+
+Cest形式はシナリオ駆動型テストのアプローチとオブジェクト指向設計を組み合わせています。いくつかのテストシナリオをグループにまとめたい場合、Cest形式を利用することを検討すべきです。下の例では、CRUDのアクションをいくつかのテスト（それぞれがCRUDの各操作に対応）から成る単一のファイルでテストしています:
+
+```php
+<?php
+class PageCrudCest
+{
+    function _before(AcceptanceTester $I)
+    {
+        // will be executed at the beginning of each test
+        $I->amOnPage('/');
+    }
+
+    function createPage(AcceptanceTester $I)
+    {
+       // todo: write test
+    }
+
+    function viewPage(AcceptanceTester $I)
+    {
+       // todo: write test
+    }
+
+    function updatePage(AcceptanceTester $I)
+    {
+        // todo: write test
+    }
+
+    function deletePage(AcceptanceTester $I)
+    {
+       // todo: write test
+    }
+}
+?>
+```
+
+このようなCest形式のファイルはジェネレータを実行することにより作成することができます。
+
+```bash
+$ php codecept.phar generate:cest acceptance PageCrud
+```
+
+高度な使用法に[Cest形式](http://codeception.com/docs/07-AdvancedUsage#Cest-Classes)の詳細があります。
 
 ## 設定
 
