@@ -66,7 +66,9 @@ class ExampleTest extends \Codeception\TestCase\Test
 # suite for unit (internal) tests.
 class_name: UnitTester
 modules:
-    enabled: [UnitHelper, Asserts]
+    enabled:
+        - Asserts
+        - \Helper\Unit
 ```
 
 ### 従来の単体テスト
@@ -153,12 +155,15 @@ verify($user->getName())->equals('john');
 # suite for unit (internal) tests.
 class_name: UnitTester
 modules:
-    enabled: [Db, UnitHelper]
+    enabled:
+        - Asserts
+        - Db
+        - \Helper\Unit
 ```
 
 UnitTesterのメソッドにアクセスする事で、テストの中で`UnitTester`のプロパティを使用できます。
 
-### データベーステスト
+### データベースをテストする
 
 それでは、どのようにデータベースのテストができるのか、見て行きましょう：
 
@@ -180,22 +185,107 @@ function testSavingUser()
 受け入れテストや機能テストのように、データベースはテストが終了するごとに、クリーンにされて構築されるでしょう。
 それが必要のない振る舞いであれば、現在のスイートの`Db`モジュールの設定を変更してください。
 
+### フレームワークとやりとりする
+
+もしプロジェクトがすでにデータベースとのやりとりのためにORMを利用しているのであれば、データベースに直接アクセスすべきではないはずです。
+テストの中で直接ORMを使ってみませんか？LaravelのORMであるEloquentを使ってテストを書いてみましょう。そのためにはLaravel5モジュールを設定する必要があります。`amOnPage`や`see`といったWebに対する振る舞いは必要ないため、ORMのみ有効化しましょう：
+
+```yaml
+class_name: UnitTester
+modules:
+    enabled:
+        - Asserts
+        - Laravel5:
+            part: ORM
+        - \Helper\Unit
+```
+
+機能テストと同じように、Laravel5モジュールをインクルードしました。実際のテストでの使い方を見てみましょう：
+
+```php
+<?php
+function testUserNameCanBeChanged()
+{
+    // フレームワークからユーザーを作成、このユーザーはテスト後に削除される
+    $id = $this->tester->haveRecord('users', ['name' => 'miles']);
+    // モジュールにアクセスする
+    $user = User::find($id);
+    $user->setName('bill');
+    $user->save();
+    $this->assertEquals('bill', $user->getName());
+    // フレームワークの関数を使ってデータが保存されたことを検証する
+    $this->tester->seeRecord('users', ['name' => 'bill']);
+    $this->tester->dontSeeRecord('users', ['name' => 'miles']);
+}
+?>
+```
+
+ActiveRecordパターンで実装されたORMを持つすべてのフレームワークにおいて、とても良く似たアプローチをとることができます。
+それらはYii2やPhalconで、同じように動作する`haveRecord`、`seeRecord`、`dontSeeRecord`を持っています。機能テスト用のアクションを利用しないよう、`part: ORM`を指定してインクルードしてください。
+
+In case you are using Symfony2 with Doctrine you may not enable Symfony2 itself but use only Doctrine2 only:
+DoctrineとともにSymfony2を利用するケースでは、Symfony2そのものは有効とせず、Doctrine2のみを利用するようにしてください。：
+
+```yaml
+class_name: UnitTester
+modules:
+    enabled:
+        - Asserts
+        - Doctrine2:
+            depends: Symfony2
+        - \Helper\Unit
+```
+
+このようにすることで、Doctrineはデータベースへの接続確立のためにSymfony2を使いながら、Doctrine2モジュールのメソッドを利用することができます。このケースではテストは次のようになります。：
+
+```php
+<?php
+function testUserNameCanBeChanged()
+{
+    // フレームワークからユーザーを作成、このユーザーはテスト後に削除される
+    $id = $this->tester->haveInRepository('Acme\DemoBundle\Entity\User', ['name' => 'miles']);
+    // モジュールにアクセスしてEntity Managerを取得する
+    $em = $this->getModule('Doctrine2')->em;
+    // 実際のユーザーを取得する
+    $user = $em->find('Acme\DemoBundle\Entity\User', $id);
+    $user->setName('bill');
+    $em->persist($user);
+    $em->flush();
+    $this->assertEquals('bill', $user->getName());
+    // フレームワークの関数を使ってデータが保存されたことを検証する
+    $this->tester->seeInRepository('Acme\DemoBundle\Entity\User', ['name' => 'bill']);
+    $this->tester->dontSeeInRepository('Acme\DemoBundle\Entity\User', ['name' => 'miles']);
+}
+?>
+```
+
+どちらの例においても、テスト間におけるデータの永続化について心配する必要はありません。
+Doctrine2、Laravel4、どちらのモジュールにおいてもテストの終了時に作成されたデータはクリーンアップされます。
+これは、トランザクションでテストをラッピングし、その後、それをロールバックすることによって行われます。
+
 ### モジュールにアクセスする
 
 Codeceptionはこのスイートにおいて、すべてのモジュールに定義されたプロパティとメソッドにアクセスする事を許可しています。このときはUnitTesterクラスを使うときとは違い、直接モジュールを使用する事で、モジュールのすべてのパブリックなプロパティへのアクセスを得られます。
 
-たとえば、もし`Symfony2`を使うなら、このようにSymfonyのコンテナにアクセスします：
+この話は、先ほどのコードでDoctrine2モジュールからEntity Managerへのアクセスを行ったように、すでに検証しました。
 
 ```php
 <?php
-/**
- * @var Symfony\Component\DependencyInjection\Container
- */
+/** @var Doctrine\ORM\EntityManager */
+$em = $this->getModule('Doctrine2')->em;
+?>
+```
+
+もし`Symfony2`を使うなら、このようにSymfonyのコンテナにアクセスします：
+
+```php
+<?php
+/** @var Symfony\Component\DependencyInjection\Container */
 $container = $this->getModule('Symfony2')->container;
 ?>
 ```
 
-すべてのパブリックな変数は、そのモジュールに対応するリファレンスにリストされています。
+有効化されているモジュールのすべてのPublicプロパティについても同じようにアクセスすることができます。アクセス可能なプロパティはモジュールリファレンスに列挙されています。
 
 ### Cest
 
@@ -233,10 +323,19 @@ class UserCest
 # suite for unit (internal) tests.
 class_name: UnitTester
 modules:
-    enabled: [Asserts, Db, UnitHelper]
+    enabled:
+        - Asserts
+        - Db
+        - \Helper\Unit
 ```
 
 [Cest形式について もっと知る](http://codeception.com/docs/07-AdvancedUsage#Cest-Classes).
+
+<div class="alert alert-info">
+Cest形式は、テストを記述するにはシンプルすぎるように思えるかもしれません。
+Cestはアサーション用の関数、モックやスタブを作成する関数、さらにはこれまで見てきた例にあったモジュールにアクセスするための`getModule`でさえも提供しません。
+しかしながらCest形式は関心を分離するという点で優れています。テストコードは`UnitTester`オブジェクトによって提供されるサポートコードと干渉しません。単体/結合テストに必要となる、すべての追加アクションは`Helper\Unit`クラスに実装するようにしてください。これは推奨されたアプローチであり、テストをムダなく綺麗な状態に保つことができます。
+</div>
 
 ### スタブ
 
