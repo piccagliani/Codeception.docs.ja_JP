@@ -42,7 +42,7 @@ I see 'Welcome, Davert!'
 $ php codecept.phar generate:scenarios
 ```
 
-作成されたシナリオは __tests/_data__ディレクトリにテキストファイルとして格納されます。
+作成されたシナリオは___output__ディレクトリにテキストファイルとして格納されます。
 
 **このシナリオテストはシンプルなPHP BrowserでもSelenium WebDriverを使ったブラウザでも実行することができます。**まずはPHP Browserで受け入れテストを書いて行きましょう。
 
@@ -61,21 +61,18 @@ PHP Browserの利点は、PHPとcURLだけでどんな環境でも実行でき�
 * JavaScriptによる動作は機能しないこと：モーダルを表示させたり、datepickersの使用など
 
 テストを書き始める前に、アプリケーションが動作しているホストをローカルコピーしてください。
-受け入れテストスイートの設定ファイル (tests/acceptance.suite.yml) に、`url`パラメータを指定する必要があるからです。
+受け入れテストスイートの設定ファイル (`tests/acceptance.suite.yml`) に、`url`パラメータを指定する必要があるからです。
 
 ``` yaml
 class_name: AcceptanceTester
 modules:
     enabled:
-        - PhpBrowser
-        - AcceptanceHelper
-        - Db
-    config:
-        PhpBrowser:
-            url: [your site's url]
+        - PhpBrowser:
+            url: {{your site url}}
+        - \Helper\Acceptance
 ```
 
-それでは、__tests/acceptance__ディレクトリに'Cept'ファイルを作成してください。ファイル名は __SigninCept.php__とします。
+それでは、__tests/acceptance__ディレクトリに'Cept'ファイルを作成してください。ファイル名は__SigninCept.php__とします。
 最初の行に以下のように書きます。
 
 ```php
@@ -107,7 +104,7 @@ $I->lookForwardTo('get money when the bank is closed');
 
 ストーリーの前提を説明した上で、シナリオを書き始めましょう。
 
-この `$I`オブジェクトは、すべての動作を記述するために使われます。`$I`オブジェクトのメソッドは`PhpBrowser`モジュールや`Db`モジュールから取得されています。
+この `$I`オブジェクトは、すべての動作を記述するために使われます。`$I`オブジェクトのメソッドは`PhpBrowser`モジュールから取得されています。
 簡単にそれを説明します：
 
 ```php
@@ -116,7 +113,7 @@ $I->amOnPage('/login');
 ?>
 ```
 
-常に`am`は、最初の状態を記述するように想定しています。`amOnPage`メソッドは__/login__ページが最初の状態だと設定しています。
+常に`am`アクションは、最初の状態を記述するように想定しています。`amOnPage`アクションは__/login__ページが最初の状態だと設定しています。
 
 `PhpBrowser`では、リンクのクリックとフォームを埋めることができます。これらは、おそらく最も多い動作だと思います。
 
@@ -238,20 +235,6 @@ $I->submitForm('#update_form', array('user' => array(
      'gender' => 'm',
 	 'submitButton' => 'Update'
 )));
-?>
-```
-
-#### Ajaxエミュレーター
-
-ご存知のように、PHP browserではjavascriptは機能しません。
-しかし、すべてのajax呼び出しは、適切なリクエストをサーバーに送信することで簡単にエミュレートできます。
-
-ajax通信には以下のメソッドが使えることを覚えておいてください。
-
-```php
-<?php
-$I->sendAjaxGetRequest('/refresh');
-$I->sendAjaxPostRequest('/update', array('name' => 'Miles', 'email' => 'Davis'));
 ?>
 ```
 
@@ -385,7 +368,7 @@ $user_id = $I->grabFromCurrentUrl('~$/user/(\d+)/~');
 ## Selenium WebDriver
 
 Codeceptionのすばらしい特徴は、ほとんどのシナリオが異なるテスト動作環境に容易に移植できることです。
-これまでに書いてきたPhpBrowserテストはSelenium WebDriverを使って、実際のブラウザの中で（あるいはPhantomJSでさえ）実行できます。
+これまでに書いてきたPhpBrowserテストはSelenium WebDriverを使って、実際のブラウザの中で（あるいはPhantomJSで）実行できます。
 
 ただ1つだけ変更しなければならない事は、AcceptanceTesterクラスがPhpBrowserの代わりに**WebDriver**を使用するように設定してビルドし直すことです。
 
@@ -395,12 +378,10 @@ Codeceptionのすばらしい特徴は、ほとんどのシナリオが異なる
 class_name: AcceptanceTester
 modules:
     enabled:
-        - WebDriver
-        - AcceptanceHelper
-    config:
-        WebDriver:
-            url: 'http://localhost/myapp/'
+        - WebDriver:
+            url: {{your site url}}
             browser: firefox
+        - \Helper\Acceptance
 ```
 
 Seleniumでテストを実行するために、[Selenium Server](http://seleniumhq.org/download/)をダウンロードして、起動しておく必要があります。（替わりに`ghostdriver`モードで動くヘッドレスブラウザの[PhantomJS](http://phantomjs.org/)を使うこともできます。）
@@ -433,6 +414,37 @@ $I->click('#agree_button');
 この場合には、agree buttonが表示されるまで待機し、表示されたらクリックします。30秒経過しても表示されなかったときは、テストは失敗します。他にも使える`wait`メソッドがあります。
 
 詳細なリファレンスはCodeception's [WebDriver module documentation](http://codeception.com/docs/modules/WebDriver)を参照してください。
+
+### セッションのスナップショット
+
+ユーザーセッションを複数のテストに渡って保持したい、ということはよくあることです。
+もしテスト用ユーザーを認証する必要がある場合、それぞれのテストの開始時にログインフォームを埋めることでそれを行うことができます。
+これらのステップにかかる時間、特に（それ自体が遅い）Seleniumを使ったテストにおいては、この時間は問題になるかもしれません。
+Codeceptionは複数のテスト間でCookieを共有することができるため、一度ログインしたユーザーはほかのテストでも認証状態を保つことができます。
+
+デモのため、`test_login`関数を記述してテストの中で使ってみましょう：
+
+``` php
+<?php
+function test_login($I)
+{
+     // もしスナップショットが存在した場合、ログインをスキップする
+     if ($I->loadSessionSnapshot('login')) return;
+     // ログインする
+     $I->amOnPage('/login');
+     $I->fillField('name', 'jon');
+     $I->fillField('password', '123345');
+     $I->click('Login');
+     // スナップショットを保存する
+     $I->saveSessionSnapshot('login');
+}
+// テストで使う:
+$I = new AcceptanceTester($scenario);
+test_login($I);
+?>
+```
+
+上で示した`test_login`関数は、`AcceptanceTester`クラス内に実装することを推奨します。
 
 ### 複数セッションのテスト
 
@@ -472,6 +484,8 @@ modules:
             dump: tests/_data/dump.sql
 ```
 
+Dbモジュールを設定した後は、`acceptance.suite.yml`設定ファイルにてモジュールを有効化してください。
+
 ### デバッグ
 
 Codeceptionモジュールは実行中に価値のある情報を出力できます。実行中の詳細を見るために`--debug`オプションをテスト起動時に付けるだけです。出力をカスタマイズするには`codecept_debug`ファンクションを使います。
@@ -483,7 +497,9 @@ codecept_debug($I->grabTextFrom('#name'));
 ```
 
 
-テストの失敗ごとに、最後に表示されていたページのスナップショットを__tests/_log__ディレクトリに保存します。PhpBrowserはHTMLのコードを保存し、WebDriverはページのスクリーンショットを保存します。
+テストの失敗ごとに、最後に表示されていたページのスナップショットを__tests/_output__ディレクトリに保存します。PhpBrowserはHTMLのコードを保存し、WebDriverはページのスクリーンショットを保存します。
+
+テストによって開かれたウェブページを調査したくなるときがあると思います。そのような場合にはWebDriverモジュールの[pauseExecution](http://codeception.com/docs/modules/WebDriver#pauseExecution)メソッドを利用することができます。
 
 ## まとめ
 
