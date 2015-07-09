@@ -44,10 +44,12 @@ ORMモジュールは`Db`モジュールと接続できますが、デフォル�
 
 ```yaml
 modules:
-	enabled: [Db, Doctrine2, FunctionalHelper]
-	config:
-		Db:
-			cleanup: false
+	  enabled:
+        - Db:
+          cleanup: false
+        - Doctrine2:
+            depends: Symfony2
+        - \Helper\Functional
 ```
 
 `Db`モジュールは未だテスト後にdumpからデータベースの再構築を行います。`populate: false`を使って、それを無効にしてください。
@@ -60,10 +62,11 @@ PostgreSQLまたは他のネストされたトランザクションをサポー�
 
 ```yaml
 modules:
-	enabled: [Db, Dbh, FunctionalHelper]
-	config:
-		Db:
-			cleanup: false
+  	enabled:
+        - Db:
+            cleanup: false
+        - Dbh
+        - \Helper\Functional
 ```
 
 `Dbh`モジュールは`Db`モジュールの後に来なければいけないことに注意してください。これによって`Dbh`モジュールはアクションを上書きできるようになります。
@@ -106,7 +109,10 @@ $I->see('Welcome, John');
 ```php
 <?php
 $I = new FunctionalTester($scenario);
-$I->haveInDatabase('posts', array('title' => 'Top 10 Testing Frameworks', 'body' => '1. Codeception'));
+$I->haveInDatabase('posts', [
+  'title' => 'Top 10 Testing Frameworks',
+  'body' => '1. Codeception'
+]);
 $I->amOnPage('/posts');
 $I->see('Top 10 Testing Frameworks');
 ?>
