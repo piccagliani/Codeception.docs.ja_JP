@@ -65,6 +65,101 @@ class BasicCest
 
 また、テストが`error`となったり失敗した時に呼ばれる`_failed`メソッドについてもCestクラスに定義することができます。
 
+## 依存性の注入
+
+CodeceptionはCest形式と`\Codeception\TestCase\Test`クラスについて、簡単なDIをサポートしています。これはつまり、あなたは`_inject()`という特別なメソッドのパラメータに必要とするクラスを指定することができ、Codeceptionは自動的にそれぞれのオブジェクトを作成し、すべての依存関係を引数としてそのメソッドを呼び出す、ということです。この仕組みはヘルパーを利用する際に便利です。例：
+
+```php
+<?php
+class SignUpCest
+{
+    /**
+     * @var Helper\SignUp
+     */
+    protected $signUp;
+
+    /**
+     * @var Helper\NavBarHelper
+     */
+    protected $navBar;
+
+    protected function _inject(\Helper\SignUp $signUp, \Helper\NavBar $navBar)
+    {
+        $this->signUp = $signUp;
+        $this->navBar = $navBar;
+    }
+
+    public function signUp(\AcceptanceTester $I)
+    {
+        $I->wantTo('sign up');
+
+        $this->navBar->click('Sign up');
+        $this->signUp->register([
+            'first_name'            => 'Joe',
+            'last_name'             => 'Jones',
+            'email'                 => 'joe@jones.com',
+            'password'              => '1234',
+            'password_confirmation' => '1234'
+        ]);
+    }
+}
+?>
+```
+
+テストクラスの例：
+
+```php
+<?php
+class MathTest extends \Codeception\TestCase\Test
+{
+   /**
+    * @var \UnitTester
+    */
+    protected $tester;
+
+    /**
+     * @var Helper\Math
+     */
+    protected $math;
+
+    protected function _inject(\Helper\Math $math)
+    {
+        $this->math = $math;
+    }
+
+    public function testAll()
+    {
+        $this->assertEquals(3, $this->math->add(1, 2));
+        $this->assertEquals(1, $this->math->subtract(3, 2));
+    }
+}
+?>
+```
+
+とはいえ、DIはこれに限定されるものではありません。Codeceptionが把握している引数とともに作成できる、**どのようなクラスでも注入** することができます。
+
+この作業を自動化するためには、必要な引数とともに`_inject()`メソッドを実装する必要があります。Codeceptionがどのオブジェクトを渡せばよいか推測するために、引数の型を指定することが重要でとなります。`_inject()`メソッドはテストケースオブジェクト（CestまたはTest）の作成後に1度のみ呼ばれます。同じ方法でヘルパークラスとアクタークラスについてもDIは働きます。
+
+Cest形式のそれぞれのテストメソッドは固有の依存関係を定義し、引数からそれらを受け取ることができます：
+
+```php
+<?php
+class UserCest
+{
+    function updateUser(\Helper\User $u, \AcceptanceTester $I, \Page\User $userPage)
+    {
+        $user = $u->createDummyUser();
+        $userPage->login($user->getName(), $user->getPassword());
+        $userPage->updateProfile(['name' => 'Bill']);
+        $I->see('Profile was saved');
+        $I->see('Profile of Bill','h1');
+    }
+}
+?>
+```
+
+さらに、Codeceptionは、再帰的な依存関係（`A`が`B`に、そして`B`が`C`に依存する等）の解決や、デフォルト値を伴うプリミティブ型のパラメータ（`$param = 'default'`のような）を扱うことができます。もちろん、*依存関係のループ*は禁止です。
+
 ### Before/Afterアノテーション
 
 `@before`と`@after`アノテーションを使ってテストの実行フローをコントロールすることができます。共通のアクションをprotectedな（テストでない）メソッドに移動し、アノテーションを記述することによってテストの前後でそれらを呼び出すことができます。`@before`や`@after`アノテーションを複数利用することによって、複数のメソッドを呼び出すことが可能です。メソッドは上から下の順で呼び出されます。
@@ -108,6 +203,157 @@ class ModeratorCest {
 ```
 
 `@before`と`@after`アノテーションはインクルードされた関数に対しても使えます。ただし、1つのメソッドに対して同じ種類のアノテーションを複数記述することはできません。1つのメソッドに対して、1つの`@before`と1つの`@after`アノテーションのみですd - one method can have only one `@before` and only one `@after` annotation.
+
+## 環境
+
+別の設定を使ってテストを実行する必要がある場合、別の設定環境を定義することができます。
+最も典型的なユースケースとしては、種類の違うブラウザーで受け入れテストを実行する場合や、異なるデータベースエンジンを利用してテストを実行する場合です。
+
+ブラウザーのケースについて、環境をどう使うか、実際にやってみましょう。
+
+`acceptance.suite.yml`に新しく行を追加する必要があります。
+
+``` yaml
+class_name: AcceptanceTester
+modules:
+    enabled:
+        - WebDriver
+        - \Helper\Acceptance
+    config:
+        WebDriver:
+            url: 'http://127.0.0.1:8000/'
+            browser: 'firefox'
+
+env:
+    phantom:
+         modules:
+            config:
+                WebDriver:
+                    browser: 'phantomjs'
+
+    chrome:
+         modules:
+            config:
+                WebDriver:
+                    browser: 'chrome'
+
+    firefox:
+        # nothing changed
+```
+
+Basically you can define different environments inside the `env` root, name them (`phantom`, `chrome` etc.),
+and then redefine any configuration parameters that were set before.
+別環境は基本的にルートの`env`配下に定義し、名前（`phantom`、`chrome`など）をつけ、そして前で設定された任意の設定パラメータを再定義することができます。
+
+`paths`設定の`envs`パラメータで指定されたディレクトリに配置された設定ファイルに環境を定義することもできます：
+
+```yaml
+paths:
+    envs: tests/_envs
+```
+
+設定ファイルの名前は環境名として利用されます（たとえば、`chrome.yml`や`chrome.dist.yml`は`chrome`という環境名となります）。
+環境設定ファイルは`generate:environment`コマンドによって生成することができます：
+
+```bash
+$ php codecept.phar g:env chrome
+```
+
+そしてその中でオーバーライドしたいオプションを指定してください：
+
+```yaml
+modules:
+    config:
+        WebDriver:
+            browser: 'chrome'
+```
+
+環境設定ファイルはスイート設定がマージされる前に、メインの設定ファイルにマージされます。
+
+設定ファイルは`--env`オプションを指定して実行することで簡単に切り替えることができます。PhantomJSのみテストを実行したい場合は、`--env phantom`を指定します：
+
+```bash
+$ php codecept.phar run acceptance --env phantom
+```
+
+3ブラウザ全てのテストを実行するには、ただすべての環境を列挙します：
+
+```bash
+$ php codecept.phar run acceptance --env phantom --env chrome --env firefox
+```
+
+テストはそれぞれのブラウザ毎に3回実行されるでしょう。
+
+セパレータとしてカンマを使うことで、複数の環境を一つにマージすることもできます：
+
+```bash
+$ php codecept.phar run acceptance --env dev,phantom --env dev,chrome --env dev,firefox
+```
+
+設定は与えられた順番でマージされます。この方法で環境設定の複数の組み合わせを簡単に作ることができます。
+
+環境に応じて、実行すべきテストを選択することができます。
+たとえば、いくつかはFirefoxのみで、少しだけChromeのみで、テストを実行する必要があるかもしれません。
+
+TestとCest形式のテストでは、`@env`アノテーションを用いて実行を求められる環境を指定することができます：
+
+```php
+<?php
+class UserCest
+{
+    /**
+     * このテストは'firefox'と'phantom'環境でのみ実行されます
+     *
+     * @env firefox
+     * @env phantom
+     */
+    public function webkitOnlyTest(AcceptanceTester $I)
+    {
+        // I do something
+    }
+}
+?>
+```
+
+Cept形式では`$scenario->env()`を使ってください：
+
+```php
+<?php
+$scenario->env('firefox');
+$scenario->env('phantom');
+// or
+$scenario->env(['phantom', 'firefox']);
+?>
+```
+
+もしマージされた環境を使っている場合は複数の必要な環境を指定してください（指定順序は気にしません）：
+
+```php
+<?php
+$scenario->env('firefox,dev');
+$scenario->env('dev,phantom');
+?>
+```
+
+この方法によりそれぞれの環境でどのテストを実行するのか、容易にコントロールすることができます。
+
+### 現在の値
+
+時としてリアルタイムにテストの振る舞いを変更する必要があるかもしれません。たとえば、同じテストの振る舞いがFirefoxとChromeとで異なるかもしれません。
+`$scenario->current()`メソッドを呼べば、現在の環境名、テスト名、有効化されているモジュールの一覧をリアルタイムに知ることができます。
+
+```php
+<?php
+// 現在の環境を受け取る
+$scenario->current('env');
+
+// 有効化されたモジュールを一覧する
+$scenario->current('modules');
+
+// テスト名
+$scenario->current('name');
+?>
+```
 
 ### Dependsアノテーション
 
@@ -192,9 +438,9 @@ $ php codecept.phar run -g admin -g editor
 $scenario->group('admin');
 $scenario->group('editor');
 // or
-$scenario->group(array('admin', 'editor'))
+$scenario->group(['admin', 'editor'])
 // or
-$scenario->groups(array('admin', 'editor'))
+$scenario->groups(['admin', 'editor'])
 
 $I = new AcceptanceTester($scenario);
 $I->wantToTest('admin area');
@@ -252,317 +498,26 @@ groups:
 
 これは、`tests/_data`内の`p*`パターンに一致するすべてのファイルをグループとしてロードします。
 
-## リファクタリング
+## カスタムレポーター
 
-テストが成長していくにつれ、共通の変数や振る舞いを共有するためのリファクタリングが必要になります。古典的な例は、テストスイートのあらゆる箇所で呼び出される`login`アクションです。これは、1度だけ記述しすべてのテストで使用するようにするのが賢明です。
+出力をカスタマイズするため、[SimpleOutput Extension](https://github.com/Codeception/Codeception/blob/master/ext%2FSimpleOutput.php)のように、エクステンションを使うことができます。
+では、`--xml`や`--json`オプションによって出力されるXMLやJSONの結果出力を変更するためには何が必要になるのでしょうか？
 
-このようなケースにおいてPHPクラスの中にそれらのメソッドを定義するというのは明白です。
+CodeceptionはPHPUnitの出力機能を利用しており、そのいくつかをオーバーライドしています。もし標準のレポーターのいずれかをカスタマイズしたい場合はそれらをオーバーライドすることができます。
+もし独自のレポーターを実装する場合は、`codeception.yml`に`reporters`セクションを追加して、標準レポーターをあなたのものでオーバーライドしてください。
 
-```php
-<?php
-class TestCommons
-{
-    public static $username = 'john';
-    public static $password = 'coltrane';
-
-    public static function logMeIn($I)
-    {
-        $I->amOnPage('/login');
-        $I->fillField('username', self::$username);
-        $I->fillField('password', self::$password);
-        $I->click('Enter');
-    }
-}
-?>
+```yaml
+reporters:
+    xml: Codeception\PHPUnit\Log\JUnit
+    html: Codeception\PHPUnit\ResultPrinter\HTML
+    tap: PHPUnit_Util_Log_TAP
+    json: PHPUnit_Util_Log_JSON
+    report: Codeception\PHPUnit\ResultPrinter\Report
 ```
 
-そして、このファイルを`_bootstrap.php`ファイルから読み込みます。
-
-```php
-<?php
-// bootstrap
-require_once '/path/to/test/commons/TestCommons.php';
-?>
-```
-
-シナリオの中で使います。
-
-```php
-<?php
-$I = new AcceptanceTester($scenario);
-TestCommons::logMeIn($I);
-?>
-```
-
-もしアイディアを得られたら、テストコードを構造化するためのいくつかのビルトイン機能について学びましょう。Codeceptionにおける`PageObject`と`StepObject`パターンの実装について学びます。
-
-## ページオブジェクト
-
-[ページオブジェクトパターン](http://code.google.com/p/selenium/wiki/PageObjects)はテスト自動化エンジニアの間では広く使われています。ページオブジェクトパターンでは、ウェブページをクラスとして、ページ上のDOM要素をプロパティとして表現し、いくつかの基本的なインタラクションをメソッドして持ちます。
-ページオブジェクトはテストの柔軟なアーキテクチャを作りこむ際にとても重要です。複雑なCSSやXPathロケーターをテストにハードコードするのではなく、ページオブジェクトクラスに移動してください。
-
-Codeceptionは次のコマンドでページオブジェクトクラスを生成することができます。
-
-```bash
-$ php codecept.phar generate:pageobject Login
-```
-
-これにより、`tests/_pages`内に`LoginPage`クラスが作成されます。基本のページオブジェクトはいくつかのスタブを持った空クラス以上の何ものでもありません。
-空クラスであることは、ページオブジェクトがページを表現するUIロケーターとともに準備されることを期待しており、それらのロケーターはページで利用されるでしょう。
-ロケーターはpublicでstaticなプロパティとして定義されます。
-
-```php
-<?php
-class LoginPage
-{
-    public static $URL = '/login';
-
-    public static $usernameField = '#mainForm #username';
-    public static $passwordField = '#mainForm input[name=password]';
-    public static $loginButton = '#mainForm input[type=submit]';
-}
-?>
-```
-
-そして、ページオブジェクトはテストの中で次のように使用されます。
-
-```php
-<?php
-$I = new AcceptanceTester($scenario);
-$I->wantTo('login to site');
-$I->amOnPage(LoginPage::$URL);
-$I->fillField(LoginPage::$usernameField, 'bill evans');
-$I->fillField(LoginPage::$passwordField, 'debby');
-$I->click(LoginPage::$loginButton);
-$I->see('Welcome, bill');
-?>
-```
-
-このとおり、あなたはログインページのマークアップを気兼ねなく変更することができ、このページを対象とするすべてのテストに含まれるロケーターはLoginPageクラスのプロパティに従って更新されるでしょう。
-
-しかし、ここでさらに先に進みましょう。ページオブジェクトの概念は、ページのインタラクションを行うメソッドについてもページオブジェクトクラスに含まれるべき、と規定しています。
-先ほど作成した`LoginPage`クラスではこれを行うことはできません。なぜなら、このクラスはすべてのテストスイートからアクセス可能なので、どのアクタークラスをインタラクションに使用するのかわからないためです。そのため、別のページオブジェクトを作成する必要があります。この例では、ページオブジェクトを使用するテストスイートを明示します。
-
-```bash
-$ php codecept.phar generate:pageobject acceptance UserLogin
-```
-
-*先ほど作成したLoginクラスと名前が衝突しないよう、UserLoginクラスとします*
-
-作成された`UserLoginPage`クラスは1つの違いをのぞき、ほぼ先ほどのLoginPageクラスと同じように見えます。今度は渡されたアクタークラスのインスタンスを保持しています。AcceptanceTesterに`AcceptanceTester`プロパティを介してアクセスできます。では、このクラスに`login`メソッドを定義しましょう。
-
-```php
-<?php
-class UserLoginPage
-{
-    // include url of current page
-    public static $URL = '/login';
-
-    /**
-     * @var AcceptanceTester
-     */
-    protected $AcceptanceTester;
-
-    public function __construct(AcceptanceTester $I)
-    {
-        $this->AcceptanceTester = $I;
-    }
-
-    public static function of(AcceptanceTester $I)
-    {
-        return new static($I);
-    }
-
-    public function login($name, $password)
-    {
-        $I = $this->AcceptanceTester;
-
-        $I->amOnPage(self::$URL);
-        $I->fillField(LoginPage::$usernameField, $name);
-        $I->fillField(LoginPage::$passwordField, $password);
-        $I->click(LoginPage::$loginButton);
-
-        return $this;
-    }    
-}
-?>
-```
-
-そして、これがテストの中でページオブジェクトを使用する方法の例です。
-
-```php
-<?php
-$I = new AcceptanceTester($scenario);
-UserLoginPage::of($I)->login('bill evans', 'debby');
-?>
-```
-
-おそらく、`UserLoginPage`と`LoginPage`とは同じ役割を担っているようなので、マージすべきかもしれません。しかし、`LoginPage`が機能テストと受け入れテストの両方で使える一方、`UserLoginPage`は`AcceptanceTester`でのみ使うことができます。ですので、グローバルなページオブジェクトを利用するかテストスイート単位のページオブジェクトを使用するかはあなた次第です。もし機能テストと受け入れテストとに多くの共通点がある場合は、グローバルなページオブジェクトにロケーターを格納し、ページオブジェクトの振る舞いの部分については代替としてステップオブジェクトを使ってください。
-
-## ステップオブジェクト
-
-ステップオブジェクトパターンはBDDフレームワークに由来します。ステップオブジェクトは異なるテストで広く使われるであろう共通のアクション群を含みます。
-前述の`login`メソッドはそのような共通アクションの良い例です。似たようなアクションであるリソースの作成・更新・削除についてもステップオブジェくトに移動するべきです。ステップオブジェクトを作成し、どのようなものか見てみましょう。
-
-`Member`ステップクラスを作成しましょう。ジェネレーターが含まれるメソッドを聞いてくるので、`login`を追加しましょう。
-
-```bash
-$ php codecept.phar generate:stepobject acceptance Member
-```
-
-アクション名を入力するよう求められますが、これはオプションです。はじめに「login」を入力し、エンターキーを押します。すべての必要なアクションを指定した後、ステップオブジェクトの作成に進むには空行のままにしておきます。
-
-```bash
-$ php codecept.phar generate:stepobject acceptance Member
-Add action to StepObject class (ENTER to exit): login
-Add action to StepObject class (ENTER to exit):
-StepObject was created in <you path>/tests/acceptance/_steps/MemberSteps.php
-```
-
-これで次のような`tests/acceptance/_steps/MemberSteps.php`クラスが作成されます。
-
-```php
-<?php
-namespace AcceptanceTester;
-
-class MemberSteps extends \AcceptanceTester
-{
-    public function login()
-    {
-        $I = $this;
-
-    }
-}
-?>
-```
-
-ご覧のようにとてもシンプルなクラスです。`AcceptanceTester`クラスを継承しているので、`AcceptanceTester`のすべてのメソッドとプロパティがこのクラス内で利用可能です。
-
-`login`メソッドは次のように実装できるでしょう。
-
-```php
-<?php
-namespace AcceptanceTester;
-
-class MemberSteps extends \AcceptanceTester
-{
-    public function login($name, $password)
-    {
-        $I = $this;
-        $I->amOnPage(\LoginPage::$URL);
-        $I->fillField(\LoginPage::$usernameField, $name);
-        $I->fillField(\LoginPage::$passwordField, $password);
-        $I->click(\LoginPage::$loginButton);
-    }
-}
-?>
-```
-
-テストでは`AcceptanceTester`の代わりに`MemberSteps`クラスをインスタンス化することでステップオブジェクトを使用することができます。
-
-```php
-<?php
-$I = new AcceptanceTester\MemberSteps($scenario);
-$I->login('bill evans', 'debby');
-?>
-```
-
-このように、ステップオブジェクトクラスは従来のページオブジェクトと比較してより単純で可読性に優れています。
-ステップオブジェクトの代替として`AcceptanceHelper`クラスを利用することができます。ヘルパーの内部では`$I`オブジェクトそのものにアクセスできないため、ヘルパーは新しいアクションを実装するために使い、ステップオブジェクトは共通のシナリオを統合するために使うのが良いでしょう。
-
-## 環境
-
-別の設定を使ってテストを実行する必要がある場合、別の設定環境を定義することができます。
-最も典型的なユースケースとしては、種類の違うブラウザーで受け入れテストを実行する場合や、異なるデータベースエンジンを利用してテストを実行する場合です。
-
-ブラウザーのケースについて、環境をどう使うか、実際にやってみましょう。
-
-`acceptance.suite.yml`に新しく行を追加する必要があります。
-
-``` yaml
-class_name: AcceptanceTester
-modules:
-    enabled:
-        - WebDriver
-        - AcceptanceHelper
-    config:
-        WebDriver:
-            url: 'http://127.0.0.1:8000/'
-            browser: 'firefox'
-
-env:
-    phantom:
-         modules:
-            config:
-                WebDriver:
-                    browser: 'phantomjs'
-
-    chrome:
-         modules:
-            config:
-                WebDriver:
-                    browser: 'chrome'
-
-    firefox:
-        # nothing changed
-```
-
-最初はこのような設定の構造は汚く見えるかもしれませんが、これが最もクリーンな方法です。
-基本的に、ルートの`env`配下に異なる環境を定義し、名前を付け（`phantom`とか`chrome`など）、そしてすでに設定されている任意のパラメータを再定義します。
-
-テスト実行する際に、`--env`オプションによって容易にこれらの設定を切り替えることができます。PhantomJSのみのテストを実行するには、次のように`--env phantom`を渡します。
-
-```bash
-$ php codecept.phar run acceptance --env phantom
-```
-
-3つのブラウザーすべてのテストを実行するには、単にすべての環境を列挙します。
-
-```bash
-$ php codecept.phar run acceptance --env phantom --env chrome --env firefox
-```
-
-異なるブラウザーごとに3回テストが実行されるでしょう。
-
-環境に応じて、実行されるべきテストを選択することができます。
-たとえば、いくつかのテストはFirefoxでのみ実行され、他のいくつかはChromeのみで実行されるようにする必要があるかもしれません。
-
-Test形式、Cest形式のテストでは、`@env`アノテーションを使って求められる環境を指定することができます。
-
-```php
-<?php
-class UserCest
-{
-    /**
-     * This test will be executed only in 'firefox' and 'phantom' environments
-     *
-     * @env firefox
-     * @env phantom
-     */
-    public function webkitOnlyTest(AcceptanceTester $I)
-    {
-        // I do something
-    }
-}
-?>
-```
-
-Cept形式では`$scenario->env()`を使ってください。
-
-```php
-<?php
-$scenario->env('firefox');
-$scenario->env('phantom');
-// or
-$scenario->env(array('phantom', 'firefox'));
-?>
-```
-
-この方法で、どのブラウザーでどのテストを行うか、簡単にコントロールすることができます。
-
+すべてのレポーターは[PHPUnit_Framework_TestListener](https://phpunit.de/manual/current/en/extending-phpunit.html#extending-phpunit.PHPUnit_Framework_TestListener)インタフェースを実装します。
+オーバーライドする前にオリジナルのレポーターのコードを読むことをおすすめます。
 
 ## まとめ
 
-Codeceptionは一見シンプルなフレームワークのように見えますが、強力なテストを、単一のAPIを使って、それらをリファクタリングし、そしてインタラクティブ・コンソールを使ってより速く、構築することができます。CodeceptionのテストはグループやCestクラスを使って容易に整理することができ、ロケーターはページオブジェクトに、そして共通のステップはステップオブジェクトに統合することができます。
-
-おそらく単体のフレームワークとしては機能が多すぎるかもしれません。しかし、それにもかかわらずCodeceptionはKISSの原則に従っています。Codeceptionは簡単に始めることができ、習得が容易で、楽に拡張することができるのです。
+Codeceptionは一見シンプルなフレームワークのように見えますが、強力なテストを、単一のAPIを使って、それらをリファクタリングし、そしてインタラクティブ・コンソールを使ってより速く、構築することができます。CodeceptionのテストはグループやCestクラスを使って容易に整理することができます。
