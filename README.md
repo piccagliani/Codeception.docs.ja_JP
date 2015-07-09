@@ -15,6 +15,14 @@ Codeceptionの[公式ドキュメント](https://github.com/Codeception/Codecept
 
 ## ChangeLog
 
+- 2.1.0
+  - 2015-07-10公開
+  - 変更ファイル
+    - [全体的に](https://github.com/piccagliani/Codeception.docs.ja_JP/pull/24/files)
+- 2.0.15
+  - 2015-06-29公開
+  - 変更ファイル
+    - なし
 - 2.0.14
   - 2015-06-01公開
   - 変更ファイル（修正点はtypoのみ、日本語訳変更なし）
