@@ -12,7 +12,12 @@ Codeceptionは `run-parallel` のようなコマンドを提供していませ�
 * プロセス毎に異なるホストを使用するか？
 * どのように並列プロセス間でテストを分割すべきか？
 
-これらのどの疑問に対しても、適切な1つの答えというのはありません。その代わりに、私たちはあなたのニーズに沿うように構成することができ、簡単にカスタマイズ可能なソリューションを提供します。また、参考となるいくつかのアイディアについても共有します。
+並列化を実現するためのアプローチは2つあります。[Docker](http://docker.com)を使って、それぞれのプロセスを独立したコンテナ内で実行するか、それらコンテナを同時に実行するか、することができます。
+
+<div class="alert alert-warning">
+Dockerは独立したテスト環境のため、本当に良く機能します。
+この章を記述している時点では、Dockerのような素晴らしいツールはありませんでした。この章では、手動による並列実行の管理方法について説明します。見てわかるように、Dockerが簡単にやってのけるのに対して、この章ではテストを分離するためにとても多くの労力を割いています。現在では、テストの並列実行には**Dockerを使うことをおすすめします**。
+</div>
 
 ## なにをすればいい？
 
@@ -90,13 +95,12 @@ $ robo
 Robo version 0.4.4
 ---
 Available commands:
-  help                     Displays help for a command
+  help                     Displays help
   list                     Lists commands
 parallel
   parallel:merge-results   
   parallel:run             
   parallel:split-tests     
-
 ```
 
 ## サンプルプロジェクト
