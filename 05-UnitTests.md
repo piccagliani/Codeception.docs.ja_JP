@@ -25,7 +25,7 @@ Codeceptionの単体テストを作成するには別のコマンドが必要で
 $ php codecept.phar generate:test unit Example
 ```
 
-どちらのテストも`tests/unit`ディレクトリに新しく`ExampleTest`ファイルを作成します。
+どちらのテストも`tests/unit`ディレクトリーに新しく`ExampleTest`ファイルを作成します。
 
 `generate:test`によって作成されたテストは、このようになります。
 
@@ -96,13 +96,13 @@ class UserTest extends \Codeception\TestCase\Test
 ?>
 ```
 
-### BDD Spec テスト
+### BDD Specテスト
 
 テストを書くときは、アプリケーションにおける一定の変化のためにテストを準備する必要があります。テストは読みやすく維持されやすくするべきです。あなたのアプリケーションの仕様が変わったら、同じようにテストもアップデートされるべきです。ドキュメントのテストにおいてチーム内部で話し合いが持たれなかったのならば、新しい機能の導入によってテストが影響を受けるということを理解していくのに壁があるでしょう。
 
 そのため、アプリケーションを単体テストで網羅するだけでなく、テスト自体を説明的に保っておくことはとても重要な事です。私たちは、シナリオ駆動の受け入れテストと機能テストでこれを実践しています。そして、単体テストや結合テストにおいても同様にこれを実践するべきです。
 
-この場合において、単体テスト内部の仕様を書いている[Specify](https://github.com/Codeception/Specify) (pharパッケージしている)というスタンドアロンのプロジェクトを用意しています。
+この場合において、単体テスト内部の仕様を書いている[Specify](https://github.com/Codeception/Specify)（pharパッケージに含まれている）というスタンドアロンのプロジェクトを用意しています。
 
 ```php
 <?php
@@ -137,7 +137,7 @@ class UserTest extends \Codeception\TestCase\Test
 
 `specify`ブロックの内部にあるコードは独立しています。上記の例だと、`$this->user`（他のどんなオブジェクトやプロパティでも）への変更は他のコードブロックに反映されないでしょう。
 
-あなたはBDD-styleのアサーションをするために、[Codeception\Verify](https://github.com/Codeception/Verify)も追加するかもしれません。もし、あなたが`assert`の呼び出しの中で、引数のどちらが期待している値で、どちらが実際の値なのかをよく混同してしまうなら、この小さなライブラリはとてもすばらしく可読性に長けたアサーションを追加します。
+あなたはBDD-styleのアサーションをするために、[Codeception\Verify](https://github.com/Codeception/Verify)も追加するかもしれません。もし、あなたが`assert`の呼び出しの中で、引数のどちらが期待している値で、どちらが実際の値なのかをよく混同してしまうなら、この小さなライブラリーはとてもすばらしく可読性に長けたアサーションを追加します。
 
 ```php
 <?php
@@ -181,7 +181,7 @@ function testSavingUser()
 ?>
 ```
 
-単体テストでデータベース機能を有効にするためには、unit.suite.yml設定ファイルにて有効なモジュール一覧に `Db` モジュールが含まれていることを確認してください。
+単体テストでデータベース機能を有効にするためには、unit.suite.yml設定ファイルにて有効なモジュール一覧に`Db`モジュールが含まれていることを確認してください。
 受け入れテストや機能テストのように、データベースはテストが終了するごとに、クリーンにされて構築されるでしょう。
 それが必要のない振る舞いであれば、現在のスイートの`Db`モジュールの設定を変更してください。
 
@@ -352,7 +352,7 @@ $name = $user->getName(); // 'john'
 
 スタブはPHPUnitのモックフレームワークから生成されます。[Mockery](https://github.com/padraic/mockery)（[Mockery module](https://github.com/Codeception/MockeryModule)とセット）、[AspectMock](https://github.com/Codeception/AspectMock)、など他のものを代わりに使用することもできます。
 
-スタブのユーティリティクラスの全リファレンスは[ここ](/docs/reference/Stub)を見てください。
+スタブのユーティリティークラスの全リファレンスは[ここ](/docs/reference/Stub)を見てください。
 
 ## まとめ
 

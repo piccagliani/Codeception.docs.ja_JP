@@ -7,7 +7,7 @@
 プロジェクトが複数のアプリケーション（frontend, admin, api）で構成されていたり、バンドルとともにSymfony2を使っている場合、すべてのアプリケーション（バンドル）に対するすべてのテストを1ランナーで実行することに興味があるのではないでしょうか。
 ここではプロジェクト全体をカバーする1つのレポートを取得してみます。
 
-`codeception.yml` ファイルをプロジェクトのルートフォルダに配置して、インクルードしたい他の `codeception.yml` へのパスを指定します。
+`codeception.yml`ファイルをプロジェクトのルートフォルダーに配置して、インクルードしたい他の`codeception.yml`へのパスを指定します。
 
 ``` yaml
 include:
@@ -20,19 +20,19 @@ settings:
   colors: false
 ```
 
-レポートやログの出力先となる `log` ディレクトリへのパスも指定してください。
+レポートやログの出力先となる`log`ディレクトリーへのパスも指定してください。
 
 ### 名前空間
 
 アクタークラスとヘルパークラスの名前空間が衝突するのを避けるため、それらは名前空間に属すべきです。
-名前空間を持つテストスイートを作成するためには、ブートストラップコマンドに `--namespace` オプションを付与します。
+名前空間を持つテストスイートを作成するためには、ブートストラップコマンドに`--namespace`オプションを付与します。
 
 ``` bash
 $ php codecept.phar bootstrap --namespace frontend
 ```
 
-これにより、`namespace: frontend` パラメータを持つ `codeception.yml` ファイルとともに、新しいプロジェクトが作成されます。
-ヘルパークラスの名前空間は `frontend\Codeception\Module` に、アクタークラスの名前空間は `frontend` になります。
+これにより、`namespace: frontend`パラメーターを持つ`codeception.yml`ファイルとともに、新しいプロジェクトが作成されます。
+ヘルパークラスの名前空間は`frontend\Codeception\Module`に、アクタークラスの名前空間は`frontend`になります。
 こうして、新しく作成されたテストは次のようになります。
 
 ```php
@@ -64,7 +64,7 @@ Codeceptionはコアな機能を拡張する限定的な機能を持っていま
 php codecept.phar run -g failed
 ```
 
-Codeceptionには`ext`ディレクトリに配置された拡張機能が付属しています。たとえば、Monologを使ってテスト実行のログを記録するLogger拡張を有効にすることができます。
+Codeceptionには`ext`ディレクトリーに配置された拡張機能が付属しています。たとえば、Monologを使ってテスト実行のログを記録するLogger拡張を有効にすることができます。
 
 ```yaml
 extensions:
@@ -103,7 +103,7 @@ extensions:
 
 `test.start`と`test.before`、 `test.after`と`test.end`とに混乱するかもしれません。Start/endイベントはPHPUnit自身によって発生されますが、before/afterイベントはCodeceptionによって発生されます。ですので、従来の（`PHPUnit_Framework_TestCase`を継承した）PHPUnitのテストではbefore/afterイベントは発生しません。`test.before`イベントでは、`test.start`では不可能な、スキップされたか不完全なテストを追跡することができます。[Codeception internal event listeners](https://github.com/Codeception/Codeception/tree/master/src/Codeception/Subscriber)にてより多くのことを学ぶことができます。
 
-拡張クラスは `Codeception\Platform\Extension` クラスを継承します。
+拡張クラスは`Codeception\Platform\Extension`クラスを継承します。
 
 ``` php
 <?php
@@ -146,9 +146,9 @@ class MyCustomExtension extends \Codeception\Platform\Extension
 ### 拡張機能の有効化
 
 単純な拡張クラスを実装したら、`tests/_bootstrap.php`ファイルにインクルードするか、
-`composer.json`に定義されたComposerのオートローダーでロードするか、もしくは`tests/_support`ディレクトリにクラスを格納します。
+`composer.json`に定義されたComposerのオートローダーでロードするか、もしくは`tests/_support`ディレクトリーにクラスを格納します。
 
-`codeception.yml` で拡張機能を有効にします。
+`codeception.yml`で拡張機能を有効にします。
 
 ```yaml
 extensions:
@@ -157,9 +157,9 @@ extensions:
 
 ### 拡張機能の設定
 
-拡張クラスでは `options` プロパティを介して現状渡されたオプションにアクセスすることができます。
-また、`\Codeception\Configuration::config()` を利用してグローバル設定にアクセスすることもできます。
-もし拡張クラスにカスタムなオプションを持たせたい場合、`codeception.yml` ファイルからそれを渡すことができます。
+拡張クラスでは`options`プロパティを介して現状渡されたオプションにアクセスすることができます。
+また、`\Codeception\Configuration::config()`を利用してグローバル設定にアクセスすることもできます。
+もし拡張クラスにカスタムなオプションを持たせたい場合、`codeception.yml`ファイルからそれを渡すことができます。
 
 ```yaml
 extensions:
@@ -170,9 +170,9 @@ extensions:
 
 ```
 
-渡された設定には次のように `config` プロパティを介してアクセスすることができます。 `$this->config['param']`
+渡された設定には次のように`config`プロパティを介してアクセスすることができます。`$this->config['param']`
 
-とても基本的な拡張機能である [Notifier](https://github.com/Codeception/Notifier) を確認してください。
+とても基本的な拡張機能である[Notifier](https://github.com/Codeception/Notifier)を確認してください。
 
 ## グループオブジェクト
 
@@ -195,7 +195,7 @@ $I = new AcceptanceTester($scenario);
 * `test.fail.admin`
 * `test.after.admin`
 
-グループオブジェクトはこれらのイベントをリッスンするために構築されています。これは、テストに追加の設定が必要になった場合にとても便利です。`admin` グループに属すテストのためにフィクスチャをロードしたいとしましょう。
+グループオブジェクトはこれらのイベントをリッスンするために構築されています。これは、テストに追加の設定が必要になった場合にとても便利です。`admin`グループに属すテストのためにフィクスチャをロードしたいとしましょう。
 
 ```php
 <?php
@@ -224,17 +224,17 @@ class Admin extends \Codeception\GroupObject
 ?>
 ```
 
-グループクラスは `php codecept.phar generate:group groupname` コマンドによって作成することができます。
-グループクラスは `tests/_support/Group` ディレクトリに格納されます。
+グループクラスは`php codecept.phar generate:group groupname`コマンドによって作成することができます。
+グループクラスは`tests/_support/Group`ディレクトリーに格納されます。
 
-拡張クラスと同様、`codeception.yml` にてグループクラスを有効にすることができます。
+拡張クラスと同様、`codeception.yml`にてグループクラスを有効にすることができます。
 
 ``` yaml
 extensions:
     enabled: [Group\AdminGroup]
 ```
 
-これで Adminグループクラスは `admin`グループに属すテストのすべてのイベントをリッスンするようになります。
+これでAdminグループクラスは`admin`グループに属すテストのすべてのイベントをリッスンするようになります。
 
 ## まとめ
 

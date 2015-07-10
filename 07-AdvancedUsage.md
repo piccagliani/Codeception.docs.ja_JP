@@ -67,7 +67,7 @@ class BasicCest
 
 ## 依存性の注入
 
-CodeceptionはCest形式と`\Codeception\TestCase\Test`クラスについて、簡単なDIをサポートしています。これはつまり、あなたは`_inject()`という特別なメソッドのパラメータに必要とするクラスを指定することができ、Codeceptionは自動的にそれぞれのオブジェクトを作成し、すべての依存関係を引数としてそのメソッドを呼び出す、ということです。この仕組みはヘルパーを利用する際に便利です。例：
+CodeceptionはCest形式と`\Codeception\TestCase\Test`クラスについて、簡単なDIをサポートしています。これはつまり、あなたは`_inject()`という特別なメソッドのパラメーターに必要とするクラスを指定することができ、Codeceptionは自動的にそれぞれのオブジェクトを作成し、すべての依存関係を引数としてそのメソッドを呼び出す、ということです。この仕組みはヘルパーを利用する際に便利です。例：
 
 ```php
 <?php
@@ -136,9 +136,9 @@ class MathTest extends \Codeception\TestCase\Test
 ?>
 ```
 
-とはいえ、DIはこれに限定されるものではありません。Codeceptionが把握している引数とともに作成できる、**どのようなクラスでも注入** することができます。
+とはいえ、DIはこれに限定されるものではありません。Codeceptionが把握している引数とともに作成できる、**どのようなクラスでも注入**することができます。
 
-この作業を自動化するためには、必要な引数とともに`_inject()`メソッドを実装する必要があります。Codeceptionがどのオブジェクトを渡せばよいか推測するために、引数の型を指定することが重要でとなります。`_inject()`メソッドはテストケースオブジェクト（CestまたはTest）の作成後に1度のみ呼ばれます。同じ方法でヘルパークラスとアクタークラスについてもDIは働きます。
+この作業を自動化するためには、必要な引数とともに`_inject()`メソッドを実装する必要があります。Codeceptionがどのオブジェクトを渡せばよいか推測するために、引数の型を指定することが重要となります。`_inject()`メソッドはテストケースオブジェクト（CestまたはTest）の作成後に1度のみ呼ばれます。同じ方法でヘルパークラスとアクタークラスについてもDIは働きます。
 
 Cest形式のそれぞれのテストメソッドは固有の依存関係を定義し、引数からそれらを受け取ることができます：
 
@@ -158,7 +158,7 @@ class UserCest
 ?>
 ```
 
-さらに、Codeceptionは、再帰的な依存関係（`A`が`B`に、そして`B`が`C`に依存する等）の解決や、デフォルト値を伴うプリミティブ型のパラメータ（`$param = 'default'`のような）を扱うことができます。もちろん、*依存関係のループ*は禁止です。
+さらに、Codeceptionは、再帰的な依存関係（`A`が`B`に、そして`B`が`C`に依存する等）の解決や、デフォルト値を伴うプリミティブ型のパラメーター（`$param = 'default'`のような）を扱うことができます。もちろん、*依存関係のループ*は禁止です。
 
 ### Before/Afterアノテーション
 
@@ -241,11 +241,9 @@ env:
         # nothing changed
 ```
 
-Basically you can define different environments inside the `env` root, name them (`phantom`, `chrome` etc.),
-and then redefine any configuration parameters that were set before.
-別環境は基本的にルートの`env`配下に定義し、名前（`phantom`、`chrome`など）をつけ、そして前で設定された任意の設定パラメータを再定義することができます。
+別環境は基本的にルートの`env`配下に定義し、名前（`phantom`、`chrome`など）をつけ、そして前で設定された任意の設定パラメーターを再定義することができます。
 
-`paths`設定の`envs`パラメータで指定されたディレクトリに配置された設定ファイルに環境を定義することもできます：
+`paths`設定の`envs`パラメーターで指定されたディレクトリーに配置された設定ファイルに環境を定義することもできます：
 
 ```yaml
 paths:
@@ -262,7 +260,6 @@ $ php codecept.phar g:env chrome
 そしてその中でオーバーライドしたいオプションを指定してください：
 
 ```yaml
-modules:
     config:
         WebDriver:
             browser: 'chrome'
@@ -276,15 +273,15 @@ modules:
 $ php codecept.phar run acceptance --env phantom
 ```
 
-3ブラウザ全てのテストを実行するには、ただすべての環境を列挙します：
+3ブラウザーすべてのテストを実行するには、ただすべての環境を列挙します：
 
 ```bash
 $ php codecept.phar run acceptance --env phantom --env chrome --env firefox
 ```
 
-テストはそれぞれのブラウザ毎に3回実行されるでしょう。
+テストはそれぞれのブラウザーごとに3回実行されるでしょう。
 
-セパレータとしてカンマを使うことで、複数の環境を一つにマージすることもできます：
+セパレーターとしてカンマを使うことで、複数の環境を1つにマージすることもできます：
 
 ```bash
 $ php codecept.phar run acceptance --env dev,phantom --env dev,chrome --env dev,firefox
@@ -394,7 +391,7 @@ class ModeratorCest {
 $ php codecept.phar console suitename
 ```
 
-これで、アクタークラスに対応したすべてのコマンドを実行することができ、結果をすぐに確認できます。特に、`WebDriver`モジュールと使用する場合に便利です。Selenuimとブラウザーの起動にはいつも長い時間がかかります。ところが、コンソールを使って別のセレクタ、異なるコマンドを試すことで、実行された際に確実にパスするテストを書くことができます。
+これで、アクタークラスに対応したすべてのコマンドを実行することができ、結果をすぐに確認できます。特に、`WebDriver`モジュールと使用する場合に便利です。Selenuimとブラウザーの起動にはいつも長い時間がかかります。ところが、コンソールを使って別のセレクター、異なるコマンドを試すことで、実行された際に確実にパスするテストを書くことができます。
 
 特別なヒント：コンソールとSeleniumを使ってあなたがウェブページを上手に操作できるか上司に見せましょう。この手順を自動化し、プロジェクトに受け入れテストを導入することを説得しやすくなるでしょう。
 
@@ -409,7 +406,7 @@ $ php codecept.phar run -c ~/projects/drupal/
 $ php codecept.phar generate:cept acceptance CreateArticle -c ~/projects/drupal/
 ```
 
-現在の場所と異なるディレクトリー内にプロジェクトを作成するには、パラメータとしてパスを指定するだけです。
+現在の場所と異なるディレクトリー内にプロジェクトを作成するには、パラメーターとしてパスを指定するだけです。
 
 ```bash
 $ php codecept.phar bootstrap ~/projects/drupal/
@@ -419,7 +416,7 @@ $ php codecept.phar bootstrap ~/projects/drupal/
 
 ## グループ
 
-テストをグルーピングして実行する方法はいくつかあります。特定のディレクトリを指定して実行することもできます。
+テストをグルーピングして実行する方法はいくつかあります。特定のディレクトリーを指定して実行することもできます。
 
 ```bash
 $ php codecept.phar run tests/acceptance/admin
@@ -486,7 +483,7 @@ tests/unit/UserTest.php:create
 tests/unit/UserTest.php:update
 ```
 
-グループファイルは手動で作成することもできますし、サードパーティ製のアプリケーションによって生成することもできます。
+グループファイルは手動で作成することもできますし、サードパーティー製のアプリケーションによって生成することもできます。
 たとえば、XMLレポートから遅いテストを抽出してグループファイルを更新するスクリプトを記述することができるでしょう。
 
 1つの定義で複数のグループファイルをロードするような、パターンについても指定することもできます。
@@ -515,7 +512,7 @@ reporters:
     report: Codeception\PHPUnit\ResultPrinter\Report
 ```
 
-すべてのレポーターは[PHPUnit_Framework_TestListener](https://phpunit.de/manual/current/en/extending-phpunit.html#extending-phpunit.PHPUnit_Framework_TestListener)インタフェースを実装します。
+すべてのレポーターは[PHPUnit_Framework_TestListener](https://phpunit.de/manual/current/en/extending-phpunit.html#extending-phpunit.PHPUnit_Framework_TestListener)インターフェイスを実装します。
 オーバーライドする前にオリジナルのレポーターのコードを読むことをおすすめます。
 
 ## まとめ
