@@ -2,4 +2,5 @@ exclude: ["en", "build.sh"]
 markdown: redcarpet
 redcarpet:
   extensions: ["tables"]
-highlighter: pygments
+highlighter: rouge
+version: 2.1.0
