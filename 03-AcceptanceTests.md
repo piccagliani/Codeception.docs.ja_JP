@@ -1,8 +1,8 @@
 # 受け入れテスト
 
 受け入れテストは、技術者ではない人でも実行することができます。技術者ではないテスターやマネージャー、あるいはクライアントでも実行できます。
-あなたがウェブアプリケーションを開発している場合、（おそらくあなた自身である）テスターは、あなたのサイトが正しく動いているかをチェックするのにウェブブラウザ以外に必要なものはありません。
-シナリオでAcceptanceTesterクラスの行動を再現することによって、サイトを変更する毎にそれらを自動的に実行することができます。
+あなたがウェブアプリケーションを開発している場合、（おそらくあなた自身である）テスターは、あなたのサイトが正しく動いているかをチェックするのにウェブブラウザー以外に必要なものはありません。
+シナリオでAcceptanceTesterクラスの行動を再現することによって、サイトを変更する度にそれらを自動的に実行することができます。
 AcceptanceTesterの言葉から記録されたかのようCodeceptionは、テストを簡潔に保ってくれます。
 
 CMSやフレームワークをアプリケーションに取り入れていても違いはありません。Java、.NETなど異なるプラットフォームでさえ同じようにテストできます。
@@ -42,14 +42,14 @@ I see 'Welcome, Davert!'
 $ php codecept.phar generate:scenarios
 ```
 
-作成されたシナリオは __tests/_data__ディレクトリにテキストファイルとして格納されます。
+作成されたシナリオは___output__ディレクトリーにテキストファイルとして格納されます。
 
-**このシナリオテストはシンプルなPHP BrowserでもSelenium WebDriverを使ったブラウザでも実行することができます。**まずはPHP Browserで受け入れテストを書いて行きましょう。
+**このシナリオテストはシンプルなPHP BrowserでもSelenium WebDriverを使ったブラウザーでも実行することができます。**まずはPHP Browserで受け入れテストを書いて行きましょう。
 
 ## PHP Browser
 
-実際に動くブラウザが必要となるまでは、これは最も速く受け入れテストを実行する方法です。
-リクエストを送り、それからレスポンスを受け取って解析する、というようなブラウザのような動きをするPHP web scraperを使用しています。
+実際に動くブラウザーが必要となるまでは、これは最も速く受け入れテストを実行する方法です。
+リクエストを送り、それからレスポンスを受け取って解析する、というようなブラウザーのような動きをするPHP web scraperを使用しています。
 Codeceptionは[Guzzle](http://guzzlephp.org)とSymfony BrowserKitをHTMLページを操作するのに使用しています。
 HTMLのある要素の実際の可視性や、javascriptの動作をテストできないことに注意してください。
 PHP Browserの利点は、PHPとcURLだけでどんな環境でも実行できることです。
@@ -61,21 +61,18 @@ PHP Browserの利点は、PHPとcURLだけでどんな環境でも実行でき�
 * JavaScriptによる動作は機能しないこと：モーダルを表示させたり、datepickersの使用など
 
 テストを書き始める前に、アプリケーションが動作しているホストをローカルコピーしてください。
-受け入れテストスイートの設定ファイル (tests/acceptance.suite.yml) に、`url`パラメータを指定する必要があるからです。
+受け入れテストスイートの設定ファイル（`tests/acceptance.suite.yml`）に、`url`パラメーターを指定する必要があるからです。
 
 ``` yaml
 class_name: AcceptanceTester
 modules:
     enabled:
-        - PhpBrowser
-        - AcceptanceHelper
-        - Db
-    config:
-        PhpBrowser:
-            url: [your site's url]
+        - PhpBrowser:
+            url: {{your site url}}
+        - \Helper\Acceptance
 ```
 
-それでは、__tests/acceptance__ディレクトリに'Cept'ファイルを作成してください。ファイル名は __SigninCept.php__とします。
+それでは、__tests/acceptance__ディレクトリーに'Cept'ファイルを作成してください。ファイル名は__SigninCept.php__とします。
 最初の行に以下のように書きます。
 
 ```php
@@ -107,7 +104,7 @@ $I->lookForwardTo('get money when the bank is closed');
 
 ストーリーの前提を説明した上で、シナリオを書き始めましょう。
 
-この `$I`オブジェクトは、すべての動作を記述するために使われます。`$I`オブジェクトのメソッドは`PhpBrowser`モジュールや`Db`モジュールから取得されています。
+この `$I`オブジェクトは、すべての動作を記述するために使われます。`$I`オブジェクトのメソッドは`PhpBrowser`モジュールから取得されています。
 簡単にそれを説明します：
 
 ```php
@@ -116,7 +113,7 @@ $I->amOnPage('/login');
 ?>
 ```
 
-常に`am`は、最初の状態を記述するように想定しています。`amOnPage`メソッドは__/login__ページが最初の状態だと設定しています。
+常に`am`アクションは、最初の状態を記述するように想定しています。`amOnPage`アクションは__/login__ページが最初の状態だと設定しています。
 
 `PhpBrowser`では、リンクのクリックとフォームを埋めることができます。これらは、おそらく最も多い動作だと思います。
 
@@ -137,8 +134,8 @@ $I->click('Login', '.nav');
 ?>
 ```
 
-Codeceptionは、テキストやname属性、CSSセレクタ、XPathのどれかで要素を検索しようとします。
-locatorの種類を配列として渡すことで、指定することもできます。私たちは **strict locator**呼んでいます。
+Codeceptionは、テキストやname属性、CSSセレクター、XPathのどれかで要素を検索しようとします。
+locatorの種類を配列として渡すことで、指定することもできます。私たちは**strict locator**と呼んでいます。
 利用できるstrict locatorの種類は以下です：
 
 * id
@@ -238,20 +235,6 @@ $I->submitForm('#update_form', array('user' => array(
      'gender' => 'm',
 	 'submitButton' => 'Update'
 )));
-?>
-```
-
-#### Ajaxエミュレーター
-
-ご存知のように、PHP browserではjavascriptは機能しません。
-しかし、すべてのajax呼び出しは、適切なリクエストをサーバーに送信することで簡単にエミュレートできます。
-
-ajax通信には以下のメソッドが使えることを覚えておいてください。
-
-```php
-<?php
-$I->sendAjaxGetRequest('/refresh');
-$I->sendAjaxPostRequest('/update', array('name' => 'Miles', 'email' => 'Davis'));
 ?>
 ```
 
@@ -385,7 +368,7 @@ $user_id = $I->grabFromCurrentUrl('~$/user/(\d+)/~');
 ## Selenium WebDriver
 
 Codeceptionのすばらしい特徴は、ほとんどのシナリオが異なるテスト動作環境に容易に移植できることです。
-これまでに書いてきたPhpBrowserテストはSelenium WebDriverを使って、実際のブラウザの中で（あるいはPhantomJSでさえ）実行できます。
+これまでに書いてきたPhpBrowserテストはSelenium WebDriverを使って、実際のブラウザーの中で（あるいはPhantomJSで）実行できます。
 
 ただ1つだけ変更しなければならない事は、AcceptanceTesterクラスがPhpBrowserの代わりに**WebDriver**を使用するように設定してビルドし直すことです。
 
@@ -395,17 +378,15 @@ Codeceptionのすばらしい特徴は、ほとんどのシナリオが異なる
 class_name: AcceptanceTester
 modules:
     enabled:
-        - WebDriver
-        - AcceptanceHelper
-    config:
-        WebDriver:
-            url: 'http://localhost/myapp/'
+        - WebDriver:
+            url: {{your site url}}
             browser: firefox
+        - \Helper\Acceptance
 ```
 
-Seleniumでテストを実行するために、[Selenium Server](http://seleniumhq.org/download/)をダウンロードして、起動しておく必要があります。（替わりに`ghostdriver`モードで動くヘッドレスブラウザの[PhantomJS](http://phantomjs.org/)を使うこともできます。）
+Seleniumでテストを実行するために、[Selenium Server](http://seleniumhq.org/download/)をダウンロードして、起動しておく必要があります。（替わりに`ghostdriver`モードで動くヘッドレスブラウザーの[PhantomJS](http://phantomjs.org/)を使うこともできます。）
 
-Seleniumを使用して受け入れテストを実行するならば、Firefoxから始められます。ブラウザエンジンを使用する事ですべての処理がステップ実行されます。
+Seleniumを使用して受け入れテストを実行するならば、Firefoxから始められます。ブラウザーエンジンを使用する事ですべての処理がステップ実行されます。
 
 この場合、`seeElement`メソッドはページにその要素が存在する事だけをチェックするのではなく、実際のユーザーからの可視性もチェックします。
 
@@ -434,9 +415,40 @@ $I->click('#agree_button');
 
 詳細なリファレンスはCodeception's [WebDriver module documentation](http://codeception.com/docs/modules/WebDriver)を参照してください。
 
+### セッションのスナップショット
+
+ユーザーセッションを複数のテストに渡って保持したい、ということはよくあることです。
+もしテスト用ユーザーを認証する必要がある場合、それぞれのテストの開始時にログインフォームを埋めることでそれを行うことができます。
+これらのステップにかかる時間、特に（それ自体が遅い）Seleniumを使ったテストにおいては、この時間は問題になるかもしれません。
+Codeceptionは複数のテスト間でCookieを共有することができるため、一度ログインしたユーザーは他のテストでも認証状態を保つことができます。
+
+デモのため、`test_login`関数を記述してテストの中で使ってみましょう：
+
+``` php
+<?php
+function test_login($I)
+{
+     // もしスナップショットが存在した場合、ログインをスキップする
+     if ($I->loadSessionSnapshot('login')) return;
+     // ログインする
+     $I->amOnPage('/login');
+     $I->fillField('name', 'jon');
+     $I->fillField('password', '123345');
+     $I->click('Login');
+     // スナップショットを保存する
+     $I->saveSessionSnapshot('login');
+}
+// テストで使う:
+$I = new AcceptanceTester($scenario);
+test_login($I);
+?>
+```
+
+上で示した`test_login`関数は、`AcceptanceTester`クラス内に実装することを推奨します。
+
 ### 複数セッションのテスト
 
-Codeceptionは同時に複数のセッションを実行できます。サイト上でユーザ同士がリアルタイムにメッセージをやり取りする場合が最もわかりやすいです。そのためには2つのブラウザウィンドウを同じテスト中に同時に立ち上げる必要があるでしょう。Codeceptionはこのための**Friends**と呼ばれるとってもスマートな方法が用意されています。
+Codeceptionは同時に複数のセッションを実行できます。サイト上でユーザー同士がリアルタイムにメッセージをやり取りする場合が最もわかりやすいです。そのためには2つのブラウザーウィンドウを同じテスト中に同時に立ち上げる必要があるでしょう。Codeceptionはこのための**Friends**と呼ばれるとってもスマートな方法が用意されています。
 
 ```php
 <?php
@@ -459,7 +471,7 @@ $I->see('Hello all!', '.message');
 
 ### クリーンアップ
 
-テストをしている中で、あなたの行動はサイト上のデータを変えてしまうかもしれません。2度同じデータを生成したり、アップデートしようとしてテストは失敗する事になるでしょう。この問題を避けるために、データベースはそれぞれのテストごとに再構築する必要があります。Codeceptionはそのために`Db`モジュールを提供しています。テストを通過した後にデータベースのdumpをロードします。データベースの再構築を機能させるためには、データベースをdumpしてsqlファイルを作成し、__/tests/_data__ディレクトリに配置してください。Codeceptionのglobalの設定にデータベースへの接続情報とパスをセットしてください。
+テストをしている中で、あなたの行動はサイト上のデータを変えてしまうかもしれません。2度同じデータを生成したり、アップデートしようとしてテストは失敗する事になるでしょう。この問題を避けるために、データベースはそれぞれのテストごとに再構築する必要があります。Codeceptionはそのために`Db`モジュールを提供しています。テストを通過した後にデータベースのdumpをロードします。データベースの再構築を機能させるためには、データベースをdumpしてsqlファイルを作成し、__/tests/_data__ディレクトリーに配置してください。Codeceptionのglobalの設定にデータベースへの接続情報とパスをセットしてください。
 
 ```yaml
 # in codeception.yml:
@@ -472,6 +484,8 @@ modules:
             dump: tests/_data/dump.sql
 ```
 
+Dbモジュールを設定した後は、`acceptance.suite.yml`設定ファイルにてモジュールを有効化してください。
+
 ### デバッグ
 
 Codeceptionモジュールは実行中に価値のある情報を出力できます。実行中の詳細を見るために`--debug`オプションをテスト起動時に付けるだけです。出力をカスタマイズするには`codecept_debug`ファンクションを使います。
@@ -483,8 +497,10 @@ codecept_debug($I->grabTextFrom('#name'));
 ```
 
 
-テストの失敗ごとに、最後に表示されていたページのスナップショットを__tests/_log__ディレクトリに保存します。PhpBrowserはHTMLのコードを保存し、WebDriverはページのスクリーンショットを保存します。
+テストの失敗ごとに、最後に表示されていたページのスナップショットを__tests/_output__ディレクトリーに保存します。PhpBrowserはHTMLのコードを保存し、WebDriverはページのスクリーンショットを保存します。
+
+テストによって開かれたウェブページを調査したくなるときがあると思います。そのような場合にはWebDriverモジュールの[pauseExecution](http://codeception.com/docs/modules/WebDriver#pauseExecution)メソッドを利用することができます。
 
 ## まとめ
 
-CodeceptionとPhpBrowserで受け入れテストを書くことは、良いスタートです。フレームワークで作られたサイトと同じように、Joomla, Drupal, WordPressのサイトも簡単にテストできます。受け入れテストを書くことはPHPでのテスターの行動を説明するようなものです。可読性に長け、とても書きやすいです。テストを実行するごとにデータベースの再構築を忘れないように。
+CodeceptionとPhpBrowserで受け入れテストを書くことは、良いスタートです。フレームワークで作られたサイトと同じように、Joomla、Drupal、WordPressのサイトも簡単にテストできます。受け入れテストを書くことはPHPでのテスターの行動を説明するようなものです。可読性に長け、とても書きやすいです。テストを実行するごとにデータベースの再構築を忘れないように。

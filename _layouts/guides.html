@@ -36,14 +36,15 @@
             {{ content }}
         </section>
         <nav id="nav" class="col-md-3">
+            <h1>ガイド</h1>
             <div class="well">
                 <ol>
                     <li><a href="01-Introduction.html">イントロダクション</a></li>
                     <li><a href="02-GettingStarted.html">はじめに</a></li>
-                    <li><a href="03-ModulesAndHelpers.html">モジュールとヘルパー</a></li>
-                    <li><a href="04-AcceptanceTests.html">受け入れテスト</a></li>
-                    <li><a href="05-FunctionalTests.html">機能テスト</a></li>
-                    <li><a href="06-UnitTests.html">単体テスト</a></li>
+                    <li><a href="03-AcceptanceTests.html">受け入れテスト</a></li>
+                    <li><a href="04-FunctionalTests.html">機能テスト</a></li>
+                    <li><a href="05-UnitTests.html">単体テスト</a></li>
+                    <li><a href="06-ReusingTestCode.html">テストコードの再利用</a></li>
                     <li><a href="07-AdvancedUsage.html">高度な使用法</a></li>
                     <li><a href="08-Customization.html">カスタマイズ</a></li>
                     <li><a href="09-Data.html">データを取り扱う</a></li>
@@ -51,6 +52,10 @@
                     <li><a href="11-Codecoverage.html">コードカバレッジ</a></li>
                     <li><a href="12-ParallelExecution.html">並列実行</a></li>
                 </ol>
+            </div>
+            <h1>目次</h1>
+            <div id="toc" class="well">
+                <h1>TOC</h1>
             </div>
         </nav>
     </div>
@@ -60,7 +65,7 @@
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: {{ site.time }}, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.15">Codeception 2.0.15</a></p>
+        <p>Last updated: {{ site.time }}, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/{{ site.version }}">Codeception {{ site.version }}</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
@@ -76,6 +81,15 @@
     } catch(err) {}
 </script>
 <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="javascripts/toc.min.js"></script>
 <script src="javascripts/contributors.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#toc').toc({
+            'selectors': 'h2,h3,h4',
+            'container': '#main_content'
+        });
+    });
+</script>
 </body>
 </html>
