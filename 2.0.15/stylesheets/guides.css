@@ -57,6 +57,10 @@ p {
     margin: 10px 0 15px 0;
 }
 
+footer p {
+    color: #f2f2f2;
+}
+
 pre, code {
     width: 100%;
     color: #fff;
@@ -90,7 +94,7 @@ pre code {
 
 footer a,
 footer a:hover {
-    color: #45414B;
+    color: #F2F2F2;
     text-decoration: underline;
 }
 
@@ -99,7 +103,13 @@ img {
     margin: 0 auto;
     padding: 5px;
     margin: 10px 0 10px 0;
-    border: 1px solid #45414B;
+    border: 1px solid #ebebeb;
+
+    box-shadow: 0 0 5px #ebebeb;
+    -webkit-box-shadow: 0 0 5px #ebebeb;
+    -moz-box-shadow: 0 0 5px #ebebeb;
+    -o-box-shadow: 0 0 5px #ebebeb;
+    -ms-box-shadow: 0 0 5px #ebebeb;
 }
 
 /*******************************************************************************
@@ -132,12 +142,12 @@ Full-Width Styles
 }
 
 #header_wrap {
-    background: #042943;
-    background: -moz-linear-gradient(top, #042943, #002742);
-    background: -webkit-linear-gradient(top, #042943, #002742);
-    background: -ms-linear-gradient(top, #042943, #002742);
-    background: -o-linear-gradient(top, #042943, #002742);
-    background: linear-gradient(top, #042943, #002742);
+    background: #212121;
+    background: -moz-linear-gradient(top, #373737, #212121);
+    background: -webkit-linear-gradient(top, #373737, #212121);
+    background: -ms-linear-gradient(top, #373737, #212121);
+    background: -o-linear-gradient(top, #373737, #212121);
+    background: linear-gradient(top, #373737, #212121);
 }
 
 #header_wrap .inner {
@@ -213,33 +223,12 @@ Full-Width Styles
     padding-top: 60px;
 }
 
-#nav h1 {
-    font-size: 20px;
-    border-left: solid 10px #f0ad4e;
-    padding-left: 5px;
-}
-
 #nav .well{
     padding: 10px 0 0 0;
 }
 
-#toc ul {
-    list-style-type: none;
-    padding: 0 10px;
-    margin: 0;
-}
-
-#toc .toc-h3 {
-    padding-left: 15px;
-}
-
-#toc .toc-h4 {
-    padding-left: 30px;
-}
-
 #footer_wrap {
-    background: #bdc3c7;
-    color: #45414B;
+    background: #212121;
 }
 
 #main_content img {

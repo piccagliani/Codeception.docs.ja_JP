@@ -91,6 +91,92 @@ Cest形式はとても単純でCept形式のシナリオと完全な互換性が
 
 <p>また、テストが<code>error</code>となったり失敗した時に呼ばれる<code>_failed</code>メソッドについてもCestクラスに定義することができます。</p>
 
+<h2>依存性の注入</h2>
+
+<p>CodeceptionはCest形式と<code>\Codeception\TestCase\Test</code>クラスについて、簡単なDIをサポートしています。これはつまり、あなたは<code>_inject()</code>という特別なメソッドのパラメーターに必要とするクラスを指定することができ、Codeceptionは自動的にそれぞれのオブジェクトを作成し、すべての依存関係を引数としてそのメソッドを呼び出す、ということです。この仕組みはヘルパーを利用する際に便利です。例：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">SignUpCest</span>
+<span class="p">{</span>
+    <span class="sd">/**
+     * @var Helper\SignUp
+     */</span>
+    <span class="k">protected</span> <span class="nv">$signUp</span><span class="p">;</span>
+
+    <span class="sd">/**
+     * @var Helper\NavBarHelper
+     */</span>
+    <span class="k">protected</span> <span class="nv">$navBar</span><span class="p">;</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">_inject</span><span class="p">(</span><span class="nx">\Helper\SignUp</span> <span class="nv">$signUp</span><span class="p">,</span> <span class="nx">\Helper\NavBar</span> <span class="nv">$navBar</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">signUp</span> <span class="o">=</span> <span class="nv">$signUp</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">navBar</span> <span class="o">=</span> <span class="nv">$navBar</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">signUp</span><span class="p">(</span><span class="nx">\AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'sign up'</span><span class="p">);</span>
+
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">navBar</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Sign up'</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">signUp</span><span class="o">-&gt;</span><span class="na">register</span><span class="p">([</span>
+            <span class="s1">'first_name'</span>            <span class="o">=&gt;</span> <span class="s1">'Joe'</span><span class="p">,</span>
+            <span class="s1">'last_name'</span>             <span class="o">=&gt;</span> <span class="s1">'Jones'</span><span class="p">,</span>
+            <span class="s1">'email'</span>                 <span class="o">=&gt;</span> <span class="s1">'joe@jones.com'</span><span class="p">,</span>
+            <span class="s1">'password'</span>              <span class="o">=&gt;</span> <span class="s1">'1234'</span><span class="p">,</span>
+            <span class="s1">'password_confirmation'</span> <span class="o">=&gt;</span> <span class="s1">'1234'</span>
+        <span class="p">]);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>テストクラスの例：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">MathTest</span> <span class="k">extends</span> <span class="nx">\Codeception\TestCase\Test</span>
+<span class="p">{</span>
+   <span class="sd">/**
+    * @var \UnitTester
+    */</span>
+    <span class="k">protected</span> <span class="nv">$tester</span><span class="p">;</span>
+
+    <span class="sd">/**
+     * @var Helper\Math
+     */</span>
+    <span class="k">protected</span> <span class="nv">$math</span><span class="p">;</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">_inject</span><span class="p">(</span><span class="nx">\Helper\Math</span> <span class="nv">$math</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">math</span> <span class="o">=</span> <span class="nv">$math</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testAll</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">math</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">math</span><span class="o">-&gt;</span><span class="na">subtract</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>とはいえ、DIはこれに限定されるものではありません。Codeceptionが把握している引数とともに作成できる、<strong>どのようなクラスでも注入</strong>することができます。</p>
+
+<p>この作業を自動化するためには、必要な引数とともに<code>_inject()</code>メソッドを実装する必要があります。Codeceptionがどのオブジェクトを渡せばよいか推測するために、引数の型を指定することが重要となります。<code>_inject()</code>メソッドはテストケースオブジェクト（CestまたはTest）の作成後に1度のみ呼ばれます。同じ方法でヘルパークラスとアクタークラスについてもDIは働きます。</p>
+
+<p>Cest形式のそれぞれのテストメソッドは固有の依存関係を定義し、引数からそれらを受け取ることができます：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">UserCest</span>
+<span class="p">{</span>
+    <span class="k">function</span> <span class="nf">updateUser</span><span class="p">(</span><span class="nx">\Helper\User</span> <span class="nv">$u</span><span class="p">,</span> <span class="nx">\AcceptanceTester</span> <span class="nv">$I</span><span class="p">,</span> <span class="nx">\Page\User</span> <span class="nv">$userPage</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$user</span> <span class="o">=</span> <span class="nv">$u</span><span class="o">-&gt;</span><span class="na">createDummyUser</span><span class="p">();</span>
+        <span class="nv">$userPage</span><span class="o">-&gt;</span><span class="na">login</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">(),</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getPassword</span><span class="p">());</span>
+        <span class="nv">$userPage</span><span class="o">-&gt;</span><span class="na">updateProfile</span><span class="p">([</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Bill'</span><span class="p">]);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Profile was saved'</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Profile of Bill'</span><span class="p">,</span><span class="s1">'h1'</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>さらに、Codeceptionは、再帰的な依存関係（<code>A</code>が<code>B</code>に、そして<code>B</code>が<code>C</code>に依存する等）の解決や、デフォルト値を伴うプリミティブ型のパラメーター（<code>$param = &#39;default&#39;</code>のような）を扱うことができます。もちろん、<em>依存関係のループ</em>は禁止です。</p>
+
 <h3>Before/Afterアノテーション</h3>
 
 <p><code>@before</code>と<code>@after</code>アノテーションを使ってテストの実行フローをコントロールすることができます。共通のアクションをprotectedな（テストでない）メソッドに移動し、アノテーションを記述することによってテストの前後でそれらを呼び出すことができます。<code>@before</code>や<code>@after</code>アノテーションを複数利用することによって、複数のメソッドを呼び出すことが可能です。メソッドは上から下の順で呼び出されます。</p>
@@ -132,6 +218,121 @@ Cest形式はとても単純でCept形式のシナリオと完全な互換性が
 </code></pre></div>
 <p><code>@before</code>と<code>@after</code>アノテーションはインクルードされた関数に対しても使えます。ただし、1つのメソッドに対して同じ種類のアノテーションを複数記述することはできません。1つのメソッドに対して、1つの<code>@before</code>と1つの<code>@after</code>アノテーションのみですd - one method can have only one <code>@before</code> and only one <code>@after</code> annotation.</p>
 
+<h2>環境</h2>
+
+<p>別の設定を使ってテストを実行する必要がある場合、別の設定環境を定義することができます。
+最も典型的なユースケースとしては、種類の違うブラウザーで受け入れテストを実行する場合や、異なるデータベースエンジンを利用してテストを実行する場合です。</p>
+
+<p>ブラウザーのケースについて、環境をどう使うか、実際にやってみましょう。</p>
+
+<p><code>acceptance.suite.yml</code>に新しく行を追加する必要があります。</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">AcceptanceTester</span>
+<span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">WebDriver</span>
+        <span class="pi">-</span> <span class="s">\Helper\Acceptance</span>
+    <span class="s">config</span><span class="pi">:</span>
+        <span class="s">WebDriver</span><span class="pi">:</span>
+            <span class="s">url</span><span class="pi">:</span> <span class="s1">'</span><span class="s">http://127.0.0.1:8000/'</span>
+            <span class="s">browser</span><span class="pi">:</span> <span class="s1">'</span><span class="s">firefox'</span>
+
+<span class="s">env</span><span class="pi">:</span>
+    <span class="s">phantom</span><span class="pi">:</span>
+         <span class="s">modules</span><span class="pi">:</span>
+            <span class="s">config</span><span class="pi">:</span>
+                <span class="s">WebDriver</span><span class="pi">:</span>
+                    <span class="s">browser</span><span class="pi">:</span> <span class="s1">'</span><span class="s">phantomjs'</span>
+
+    <span class="s">chrome</span><span class="pi">:</span>
+         <span class="s">modules</span><span class="pi">:</span>
+            <span class="s">config</span><span class="pi">:</span>
+                <span class="s">WebDriver</span><span class="pi">:</span>
+                    <span class="s">browser</span><span class="pi">:</span> <span class="s1">'</span><span class="s">chrome'</span>
+
+    <span class="s">firefox</span><span class="pi">:</span>
+        <span class="c1"># nothing changed</span>
+</code></pre></div>
+<p>別環境は基本的にルートの<code>env</code>配下に定義し、名前（<code>phantom</code>、<code>chrome</code>など）をつけ、そして前で設定された任意の設定パラメーターを再定義することができます。</p>
+
+<p><code>paths</code>設定の<code>envs</code>パラメーターで指定されたディレクトリーに配置された設定ファイルに環境を定義することもできます：</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">paths</span><span class="pi">:</span>
+    <span class="s">envs</span><span class="pi">:</span> <span class="s">tests/_envs</span>
+</code></pre></div>
+<p>設定ファイルの名前は環境名として利用されます（たとえば、<code>chrome.yml</code>や<code>chrome.dist.yml</code>は<code>chrome</code>という環境名となります）。
+環境設定ファイルは<code>generate:environment</code>コマンドによって生成することができます：</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar g:env chrome
+</code></pre></div>
+<p>そしてその中でオーバーライドしたいオプションを指定してください：</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml">    <span class="s">config</span><span class="pi">:</span>
+        <span class="s">WebDriver</span><span class="pi">:</span>
+            <span class="s">browser</span><span class="pi">:</span> <span class="s1">'</span><span class="s">chrome'</span>
+</code></pre></div>
+<p>環境設定ファイルはスイート設定がマージされる前に、メインの設定ファイルにマージされます。</p>
+
+<p>設定ファイルは<code>--env</code>オプションを指定して実行することで簡単に切り替えることができます。PhantomJSのみテストを実行したい場合は、<code>--env phantom</code>を指定します：</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run acceptance --env phantom
+</code></pre></div>
+<p>3ブラウザーすべてのテストを実行するには、ただすべての環境を列挙します：</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run acceptance --env phantom --env chrome --env firefox
+</code></pre></div>
+<p>テストはそれぞれのブラウザーごとに3回実行されるでしょう。</p>
+
+<p>セパレーターとしてカンマを使うことで、複数の環境を1つにマージすることもできます：</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run acceptance --env dev,phantom --env dev,chrome --env dev,firefox
+</code></pre></div>
+<p>設定は与えられた順番でマージされます。この方法で環境設定の複数の組み合わせを簡単に作ることができます。</p>
+
+<p>環境に応じて、実行すべきテストを選択することができます。
+たとえば、いくつかはFirefoxのみで、少しだけChromeのみで、テストを実行する必要があるかもしれません。</p>
+
+<p>TestとCest形式のテストでは、<code>@env</code>アノテーションを用いて実行を求められる環境を指定することができます：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">UserCest</span>
+<span class="p">{</span>
+    <span class="sd">/**
+     * このテストは'firefox'と'phantom'環境でのみ実行されます
+     *
+     * @env firefox
+     * @env phantom
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">webkitOnlyTest</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// I do something
+</span>    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>Cept形式では<code>$scenario-&gt;env()</code>を使ってください：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">env</span><span class="p">(</span><span class="s1">'firefox'</span><span class="p">);</span>
+<span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">env</span><span class="p">(</span><span class="s1">'phantom'</span><span class="p">);</span>
+<span class="c1">// or
+</span><span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">env</span><span class="p">([</span><span class="s1">'phantom'</span><span class="p">,</span> <span class="s1">'firefox'</span><span class="p">]);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>もしマージされた環境を使っている場合は複数の必要な環境を指定してください（指定順序は気にしません）：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">env</span><span class="p">(</span><span class="s1">'firefox,dev'</span><span class="p">);</span>
+<span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">env</span><span class="p">(</span><span class="s1">'dev,phantom'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>この方法によりそれぞれの環境でどのテストを実行するのか、容易にコントロールすることができます。</p>
+
+<h3>現在の値</h3>
+
+<p>時としてリアルタイムにテストの振る舞いを変更する必要があるかもしれません。たとえば、同じテストの振る舞いがFirefoxとChromeとで異なるかもしれません。
+<code>$scenario-&gt;current()</code>メソッドを呼べば、現在の環境名、テスト名、有効化されているモジュールの一覧をリアルタイムに知ることができます。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="c1">// 現在の環境を受け取る
+</span><span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">current</span><span class="p">(</span><span class="s1">'env'</span><span class="p">);</span>
+
+<span class="c1">// 有効化されたモジュールを一覧する
+</span><span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">current</span><span class="p">(</span><span class="s1">'modules'</span><span class="p">);</span>
+
+<span class="c1">// テスト名
+</span><span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">current</span><span class="p">(</span><span class="s1">'name'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
 <h3>Dependsアノテーション</h3>
 
 <p><code>@depends</code>アノテーションを使って現在のテストが事前にどのテストにパスしているべきか、指定することができます。もし事前のテストが失敗したら、対象のテストはスキップされます。
@@ -165,7 +366,7 @@ Cest形式はとても単純でCept形式のシナリオと完全な互換性が
 <p>次のコマンドでコンソールを起動することができます。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar console suitename
 </code></pre></div>
-<p>これで、アクタークラスに対応したすべてのコマンドを実行することができ、結果をすぐに確認できます。特に、<code>WebDriver</code>モジュールと使用する場合に便利です。Selenuimとブラウザーの起動にはいつも長い時間がかかります。ところが、コンソールを使って別のセレクタ、異なるコマンドを試すことで、実行された際に確実にパスするテストを書くことができます。</p>
+<p>これで、アクタークラスに対応したすべてのコマンドを実行することができ、結果をすぐに確認できます。特に、<code>WebDriver</code>モジュールと使用する場合に便利です。Selenuimとブラウザーの起動にはいつも長い時間がかかります。ところが、コンソールを使って別のセレクター、異なるコマンドを試すことで、実行された際に確実にパスするテストを書くことができます。</p>
 
 <p>特別なヒント：コンソールとSeleniumを使ってあなたがウェブページを上手に操作できるか上司に見せましょう。この手順を自動化し、プロジェクトに受け入れテストを導入することを説得しやすくなるでしょう。</p>
 
@@ -177,14 +378,14 @@ Cest形式はとても単純でCept形式のシナリオと完全な互換性が
 <span class="gp">$ </span>php codecept.phar run -c ~/projects/drupal/
 <span class="gp">$ </span>php codecept.phar generate:cept acceptance CreateArticle -c ~/projects/drupal/
 </code></pre></div>
-<p>現在の場所と異なるディレクトリー内にプロジェクトを作成するには、パラメータとしてパスを指定するだけです。</p>
+<p>現在の場所と異なるディレクトリー内にプロジェクトを作成するには、パラメーターとしてパスを指定するだけです。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar bootstrap ~/projects/drupal/
 </code></pre></div>
 <p>基本的に<code>-c</code>オプションにはパスを指定しますが、使用する設定ファイルを指定することもできます。従って、テストスイートに対して複数の<code>codeception.yml</code>を持つことができます。さまざまな環境や設定を指定するためにこのオプションを使用することができます。特定の設定ファイルを使ってテストを実行するためには、<code>-c</code>オプションにファイル名を渡してください。</p>
 
-<h2>グループ</h2>
+グループ</h2>
 
-<p>テストをグルーピングして実行する方法はいくつかあります。特定のディレクトリを指定して実行することもできます。</p>
+<p>テストをグルーピングして実行する方法はいくつかあります。特定のディレクトリーを指定して実行することもできます。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run tests/acceptance/admin
 </code></pre></div>
 <p>また、特定の（もしくは複数の）グループを指定して実行することもできます。</p>
@@ -195,9 +396,9 @@ Cest形式はとても単純でCept形式のシナリオと完全な互換性が
 <span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">group</span><span class="p">(</span><span class="s1">'admin'</span><span class="p">);</span>
 <span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">group</span><span class="p">(</span><span class="s1">'editor'</span><span class="p">);</span>
 <span class="c1">// or
-</span><span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">group</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">'admin'</span><span class="p">,</span> <span class="s1">'editor'</span><span class="p">))</span>
+</span><span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">group</span><span class="p">([</span><span class="s1">'admin'</span><span class="p">,</span> <span class="s1">'editor'</span><span class="p">])</span>
 <span class="c1">// or
-</span><span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">groups</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">'admin'</span><span class="p">,</span> <span class="s1">'editor'</span><span class="p">))</span>
+</span><span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">groups</span><span class="p">([</span><span class="s1">'admin'</span><span class="p">,</span> <span class="s1">'editor'</span><span class="p">])</span>
 
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantToTest</span><span class="p">(</span><span class="s1">'admin area'</span><span class="p">);</span>
@@ -233,7 +434,7 @@ Cest形式はとても単純でCept形式のシナリオと完全な互換性が
 tests/unit/UserTest.php:create
 tests/unit/UserTest.php:update
 </code></pre></div>
-<p>グループファイルは手動で作成することもできますし、サードパーティ製のアプリケーションによって生成することもできます。
+<p>グループファイルは手動で作成することもできますし、サードパーティー製のアプリケーションによって生成することもできます。
 たとえば、XMLレポートから遅いテストを抽出してグループファイルを更新するスクリプトを記述することができるでしょう。</p>
 
 <p>1つの定義で複数のグループファイルをロードするような、パターンについても指定することもできます。</p>
@@ -242,273 +443,38 @@ tests/unit/UserTest.php:update
 </code></pre></div>
 <p>これは、<code>tests/_data</code>内の<code>p*</code>パターンに一致するすべてのファイルをグループとしてロードします。</p>
 
-<h2>リファクタリング</h2>
+<h2>カスタムレポーター</h2>
 
-<p>テストが成長していくにつれ、共通の変数や振る舞いを共有するためのリファクタリングが必要になります。古典的な例は、テストスイートのあらゆる箇所で呼び出される<code>login</code>アクションです。これは、1度だけ記述しすべてのテストで使用するようにするのが賢明です。</p>
+<p>出力をカスタマイズするため、<a href="https://github.com/Codeception/Codeception/blob/master/ext%2FSimpleOutput.php">SimpleOutput Extension</a>のように、エクステンションを使うことができます。
+では、<code>--xml</code>や<code>--json</code>オプションによって出力されるXMLやJSONの結果出力を変更するためには何が必要になるのでしょうか？</p>
 
-<p>このようなケースにおいてPHPクラスの中にそれらのメソッドを定義するというのは明白です。</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">class</span> <span class="nc">TestCommons</span>
-<span class="p">{</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="nv">$username</span> <span class="o">=</span> <span class="s1">'john'</span><span class="p">;</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="nv">$password</span> <span class="o">=</span> <span class="s1">'coltrane'</span><span class="p">;</span>
-
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">logMeIn</span><span class="p">(</span><span class="nv">$I</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/login'</span><span class="p">);</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'username'</span><span class="p">,</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$username</span><span class="p">);</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'password'</span><span class="p">,</span> <span class="nx">self</span><span class="o">::</span><span class="nv">$password</span><span class="p">);</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Enter'</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-<span class="cp">?&gt;</span>
+<p>CodeceptionはPHPUnitの出力機能を利用しており、そのいくつかをオーバーライドしています。もし標準のレポーターのいずれかをカスタマイズしたい場合はそれらをオーバーライドすることができます。
+もし独自のレポーターを実装する場合は、<code>codeception.yml</code>に<code>reporters</code>セクションを追加して、標準レポーターをあなたのものでオーバーライドしてください。</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">reporters</span><span class="pi">:</span>
+    <span class="s">xml</span><span class="pi">:</span> <span class="s">Codeception\PHPUnit\Log\JUnit</span>
+    <span class="s">html</span><span class="pi">:</span> <span class="s">Codeception\PHPUnit\ResultPrinter\HTML</span>
+    <span class="s">tap</span><span class="pi">:</span> <span class="s">PHPUnit_Util_Log_TAP</span>
+    <span class="s">json</span><span class="pi">:</span> <span class="s">PHPUnit_Util_Log_JSON</span>
+    <span class="s">report</span><span class="pi">:</span> <span class="s">Codeception\PHPUnit\ResultPrinter\Report</span>
 </code></pre></div>
-<p>そして、このファイルを<code>_bootstrap.php</code>ファイルから読み込みます。</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="c1">// bootstrap
-</span><span class="k">require_once</span> <span class="s1">'/path/to/test/commons/TestCommons.php'</span><span class="p">;</span>
-<span class="cp">?&gt;</span>
-</code></pre></div>
-<p>シナリオの中で使います。</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nx">TestCommons</span><span class="o">::</span><span class="na">logMeIn</span><span class="p">(</span><span class="nv">$I</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
-</code></pre></div>
-<p>もしアイディアを得られたら、テストコードを構造化するためのいくつかのビルトイン機能について学びましょう。Codeceptionにおける<code>PageObject</code>と<code>StepObject</code>パターンの実装について学びます。</p>
-
-<h2>ページオブジェクト</h2>
-
-<p><a href="http://code.google.com/p/selenium/wiki/PageObjects">ページオブジェクトパターン</a>はテスト自動化エンジニアの間では広く使われています。ページオブジェクトパターンでは、ウェブページをクラスとして、ページ上のDOM要素をプロパティとして表現し、いくつかの基本的なインタラクションをメソッドして持ちます。
-ページオブジェクトはテストの柔軟なアーキテクチャを作りこむ際にとても重要です。複雑なCSSやXPathロケーターをテストにハードコードするのではなく、ページオブジェクトクラスに移動してください。</p>
-
-<p>Codeceptionは次のコマンドでページオブジェクトクラスを生成することができます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:pageobject Login
-</code></pre></div>
-<p>これにより、<code>tests/_pages</code>内に<code>LoginPage</code>クラスが作成されます。基本のページオブジェクトはいくつかのスタブを持った空クラス以上の何ものでもありません。
-空クラスであることは、ページオブジェクトがページを表現するUIロケーターとともに準備されることを期待しており、それらのロケーターはページで利用されるでしょう。
-ロケーターはpublicでstaticなプロパティとして定義されます。</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">class</span> <span class="nc">LoginPage</span>
-<span class="p">{</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="nv">$URL</span> <span class="o">=</span> <span class="s1">'/login'</span><span class="p">;</span>
-
-    <span class="k">public</span> <span class="k">static</span> <span class="nv">$usernameField</span> <span class="o">=</span> <span class="s1">'#mainForm #username'</span><span class="p">;</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="nv">$passwordField</span> <span class="o">=</span> <span class="s1">'#mainForm input[name=password]'</span><span class="p">;</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="nv">$loginButton</span> <span class="o">=</span> <span class="s1">'#mainForm input[type=submit]'</span><span class="p">;</span>
-<span class="p">}</span>
-<span class="cp">?&gt;</span>
-</code></pre></div>
-<p>そして、ページオブジェクトはテストの中で次のように使用されます。</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'login to site'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$URL</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$usernameField</span><span class="p">,</span> <span class="s1">'bill evans'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$passwordField</span><span class="p">,</span> <span class="s1">'debby'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$loginButton</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Welcome, bill'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
-</code></pre></div>
-<p>このとおり、あなたはログインページのマークアップを気兼ねなく変更することができ、このページを対象とするすべてのテストに含まれるロケーターはLoginPageクラスのプロパティに従って更新されるでしょう。</p>
-
-<p>しかし、ここでさらに先に進みましょう。ページオブジェクトの概念は、ページのインタラクションを行うメソッドについてもページオブジェクトクラスに含まれるべき、と規定しています。
-先ほど作成した<code>LoginPage</code>クラスではこれを行うことはできません。なぜなら、このクラスはすべてのテストスイートからアクセス可能なので、どのアクタークラスをインタラクションに使用するのかわからないためです。そのため、別のページオブジェクトを作成する必要があります。この例では、ページオブジェクトを使用するテストスイートを明示します。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:pageobject acceptance UserLogin
-</code></pre></div>
-<p><em>先ほど作成したLoginクラスと名前が衝突しないよう、UserLoginクラスとします</em></p>
-
-<p>作成された<code>UserLoginPage</code>クラスは1つの違いをのぞき、ほぼ先ほどのLoginPageクラスと同じように見えます。今度は渡されたアクタークラスのインスタンスを保持しています。AcceptanceTesterに<code>AcceptanceTester</code>プロパティを介してアクセスできます。では、このクラスに<code>login</code>メソッドを定義しましょう。</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">class</span> <span class="nc">UserLoginPage</span>
-<span class="p">{</span>
-    <span class="c1">// include url of current page
-</span>    <span class="k">public</span> <span class="k">static</span> <span class="nv">$URL</span> <span class="o">=</span> <span class="s1">'/login'</span><span class="p">;</span>
-
-    <span class="sd">/**
-     * @var AcceptanceTester
-     */</span>
-    <span class="k">protected</span> <span class="nv">$AcceptanceTester</span><span class="p">;</span>
-
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">AcceptanceTester</span> <span class="o">=</span> <span class="nv">$I</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">of</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="k">return</span> <span class="k">new</span> <span class="k">static</span><span class="p">(</span><span class="nv">$I</span><span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">login</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$password</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="nv">$I</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">AcceptanceTester</span><span class="p">;</span>
-
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="nx">self</span><span class="o">::</span><span class="nv">$URL</span><span class="p">);</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$usernameField</span><span class="p">,</span> <span class="nv">$name</span><span class="p">);</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$passwordField</span><span class="p">,</span> <span class="nv">$password</span><span class="p">);</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$loginButton</span><span class="p">);</span>
-
-        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
-    <span class="p">}</span>    
-<span class="p">}</span>
-<span class="cp">?&gt;</span>
-</code></pre></div>
-<p>そして、これがテストの中でページオブジェクトを使用する方法の例です。</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nx">UserLoginPage</span><span class="o">::</span><span class="na">of</span><span class="p">(</span><span class="nv">$I</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">login</span><span class="p">(</span><span class="s1">'bill evans'</span><span class="p">,</span> <span class="s1">'debby'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
-</code></pre></div>
-<p>おそらく、<code>UserLoginPage</code>と<code>LoginPage</code>とは同じ役割を担っているようなので、マージすべきかもしれません。しかし、<code>LoginPage</code>が機能テストと受け入れテストの両方で使える一方、<code>UserLoginPage</code>は<code>AcceptanceTester</code>でのみ使うことができます。ですので、グローバルなページオブジェクトを利用するかテストスイート単位のページオブジェクトを使用するかはあなた次第です。もし機能テストと受け入れテストとに多くの共通点がある場合は、グローバルなページオブジェクトにロケーターを格納し、ページオブジェクトの振る舞いの部分については代替としてステップオブジェクトを使ってください。</p>
-
-<h2>ステップオブジェクト</h2>
-
-<p>ステップオブジェクトパターンはBDDフレームワークに由来します。ステップオブジェクトは異なるテストで広く使われるであろう共通のアクション群を含みます。
-前述の<code>login</code>メソッドはそのような共通アクションの良い例です。似たようなアクションであるリソースの作成・更新・削除についてもステップオブジェくトに移動するべきです。ステップオブジェクトを作成し、どのようなものか見てみましょう。</p>
-
-<p><code>Member</code>ステップクラスを作成しましょう。ジェネレーターが含まれるメソッドを聞いてくるので、<code>login</code>を追加しましょう。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:stepobject acceptance Member
-</code></pre></div>
-<p>アクション名を入力するよう求められますが、これはオプションです。はじめに「login」を入力し、エンターキーを押します。すべての必要なアクションを指定した後、ステップオブジェクトの作成に進むには空行のままにしておきます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:stepobject acceptance Member
-Add action to StepObject class <span class="o">(</span>ENTER to <span class="nb">exit</span><span class="o">)</span>: login
-Add action to StepObject class <span class="o">(</span>ENTER to <span class="nb">exit</span><span class="o">)</span>:
-StepObject was created <span class="k">in</span> &lt;you path&gt;/tests/acceptance/_steps/MemberSteps.php
-</code></pre></div>
-<p>これで次のような<code>tests/acceptance/_steps/MemberSteps.php</code>クラスが作成されます。</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">namespace</span> <span class="nx">AcceptanceTester</span><span class="p">;</span>
-
-<span class="k">class</span> <span class="nc">MemberSteps</span> <span class="k">extends</span> <span class="nx">\AcceptanceTester</span>
-<span class="p">{</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">login</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="nv">$I</span> <span class="o">=</span> <span class="nv">$this</span><span class="p">;</span>
-
-    <span class="p">}</span>
-<span class="p">}</span>
-<span class="cp">?&gt;</span>
-</code></pre></div>
-<p>ご覧のようにとてもシンプルなクラスです。<code>AcceptanceTester</code>クラスを継承しているので、<code>AcceptanceTester</code>のすべてのメソッドとプロパティがこのクラス内で利用可能です。</p>
-
-<p><code>login</code>メソッドは次のように実装できるでしょう。</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">namespace</span> <span class="nx">AcceptanceTester</span><span class="p">;</span>
-
-<span class="k">class</span> <span class="nc">MemberSteps</span> <span class="k">extends</span> <span class="nx">\AcceptanceTester</span>
-<span class="p">{</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">login</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$password</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="nv">$I</span> <span class="o">=</span> <span class="nv">$this</span><span class="p">;</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="nx">\LoginPage</span><span class="o">::</span><span class="nv">$URL</span><span class="p">);</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="nx">\LoginPage</span><span class="o">::</span><span class="nv">$usernameField</span><span class="p">,</span> <span class="nv">$name</span><span class="p">);</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="nx">\LoginPage</span><span class="o">::</span><span class="nv">$passwordField</span><span class="p">,</span> <span class="nv">$password</span><span class="p">);</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="nx">\LoginPage</span><span class="o">::</span><span class="nv">$loginButton</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-<span class="cp">?&gt;</span>
-</code></pre></div>
-<p>テストでは<code>AcceptanceTester</code>の代わりに<code>MemberSteps</code>クラスをインスタンス化することでステップオブジェクトを使用することができます。</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester\MemberSteps</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">login</span><span class="p">(</span><span class="s1">'bill evans'</span><span class="p">,</span> <span class="s1">'debby'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
-</code></pre></div>
-<p>このように、ステップオブジェクトクラスは従来のページオブジェクトと比較してより単純で可読性に優れています。
-ステップオブジェクトの代替として<code>AcceptanceHelper</code>クラスを利用することができます。ヘルパーの内部では<code>$I</code>オブジェクトそのものにアクセスできないため、ヘルパーは新しいアクションを実装するために使い、ステップオブジェクトは共通のシナリオを統合するために使うのが良いでしょう。</p>
-
-<h2>環境</h2>
-
-<p>別の設定を使ってテストを実行する必要がある場合、別の設定環境を定義することができます。
-最も典型的なユースケースとしては、種類の違うブラウザーで受け入れテストを実行する場合や、異なるデータベースエンジンを利用してテストを実行する場合です。</p>
-
-<p>ブラウザーのケースについて、環境をどう使うか、実際にやってみましょう。</p>
-
-<p><code>acceptance.suite.yml</code>に新しく行を追加する必要があります。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">AcceptanceTester</span>
-<span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="s">WebDriver</span>
-        <span class="pi">-</span> <span class="s">AcceptanceHelper</span>
-    <span class="s">config</span><span class="pi">:</span>
-        <span class="s">WebDriver</span><span class="pi">:</span>
-            <span class="s">url</span><span class="pi">:</span> <span class="s1">'</span><span class="s">http://127.0.0.1:8000/'</span>
-            <span class="s">browser</span><span class="pi">:</span> <span class="s1">'</span><span class="s">firefox'</span>
-
-<span class="s">env</span><span class="pi">:</span>
-    <span class="s">phantom</span><span class="pi">:</span>
-         <span class="s">modules</span><span class="pi">:</span>
-            <span class="s">config</span><span class="pi">:</span>
-                <span class="s">WebDriver</span><span class="pi">:</span>
-                    <span class="s">browser</span><span class="pi">:</span> <span class="s1">'</span><span class="s">phantomjs'</span>
-
-    <span class="s">chrome</span><span class="pi">:</span>
-         <span class="s">modules</span><span class="pi">:</span>
-            <span class="s">config</span><span class="pi">:</span>
-                <span class="s">WebDriver</span><span class="pi">:</span>
-                    <span class="s">browser</span><span class="pi">:</span> <span class="s1">'</span><span class="s">chrome'</span>
-
-    <span class="s">firefox</span><span class="pi">:</span>
-        <span class="c1"># nothing changed</span>
-</code></pre></div>
-<p>最初はこのような設定の構造は汚く見えるかもしれませんが、これが最もクリーンな方法です。
-基本的に、ルートの<code>env</code>配下に異なる環境を定義し、名前を付け（<code>phantom</code>とか<code>chrome</code>など）、そしてすでに設定されている任意のパラメータを再定義します。</p>
-
-<p>テスト実行する際に、<code>--env</code>オプションによって容易にこれらの設定を切り替えることができます。PhantomJSのみのテストを実行するには、次のように<code>--env phantom</code>を渡します。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run acceptance --env phantom
-</code></pre></div>
-<p>3つのブラウザーすべてのテストを実行するには、単にすべての環境を列挙します。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run acceptance --env phantom --env chrome --env firefox
-</code></pre></div>
-<p>異なるブラウザーごとに3回テストが実行されるでしょう。</p>
-
-<p>環境に応じて、実行されるべきテストを選択することができます。
-たとえば、いくつかのテストはFirefoxでのみ実行され、他のいくつかはChromeのみで実行されるようにする必要があるかもしれません。</p>
-
-<p>Test形式、Cest形式のテストでは、<code>@env</code>アノテーションを使って求められる環境を指定することができます。</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">class</span> <span class="nc">UserCest</span>
-<span class="p">{</span>
-    <span class="sd">/**
-     * This test will be executed only in 'firefox' and 'phantom' environments
-     *
-     * @env firefox
-     * @env phantom
-     */</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">webkitOnlyTest</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="c1">// I do something
-</span>    <span class="p">}</span>
-<span class="p">}</span>
-<span class="cp">?&gt;</span>
-</code></pre></div>
-<p>Cept形式では<code>$scenario-&gt;env()</code>を使ってください。</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">env</span><span class="p">(</span><span class="s1">'firefox'</span><span class="p">);</span>
-<span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">env</span><span class="p">(</span><span class="s1">'phantom'</span><span class="p">);</span>
-<span class="c1">// or
-</span><span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">env</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">'phantom'</span><span class="p">,</span> <span class="s1">'firefox'</span><span class="p">));</span>
-<span class="cp">?&gt;</span>
-</code></pre></div>
-<p>この方法で、どのブラウザーでどのテストを行うか、簡単にコントロールすることができます。</p>
+<p>すべてのレポーターは<a href="https://phpunit.de/manual/current/en/extending-phpunit.html#extending-phpunit.PHPUnit_Framework_TestListener">PHPUnit<em>Framework</em>TestListener</a>インターフェイスを実装します。
+オーバーライドする前にオリジナルのレポーターのコードを読むことをおすすめます。</p>
 
 <h2>まとめ</h2>
 
-<p>Codeceptionは一見シンプルなフレームワークのように見えますが、強力なテストを、単一のAPIを使って、それらをリファクタリングし、そしてインタラクティブ・コンソールを使ってより速く、構築することができます。CodeceptionのテストはグループやCestクラスを使って容易に整理することができ、ロケーターはページオブジェクトに、そして共通のステップはステップオブジェクトに統合することができます。</p>
-
-<p>おそらく単体のフレームワークとしては機能が多すぎるかもしれません。しかし、それにもかかわらずCodeceptionはKISSの原則に従っています。Codeceptionは簡単に始めることができ、習得が容易で、楽に拡張することができるのです。</p>
+<p>Codeceptionは一見シンプルなフレームワークのように見えますが、強力なテストを、単一のAPIを使って、それらをリファクタリングし、そしてインタラクティブ・コンソールを使ってより速く、構築することができます。CodeceptionのテストはグループやCestクラスを使って容易に整理することができます。</p>
 
         </section>
         <nav id="nav" class="col-md-3">
+            <h1>ガイド</h1>
             <div class="well">
                 <ol>
                     <li><a href="01-Introduction.html">イントロダクション</a></li>
                     <li><a href="02-GettingStarted.html">はじめに</a></li>
-                    <li><a href="03-ModulesAndHelpers.html">モジュールとヘルパー</a></li>
-                    <li><a href="04-AcceptanceTests.html">受け入れテスト</a></li>
-                    <li><a href="05-FunctionalTests.html">機能テスト</a></li>
-                    <li><a href="06-UnitTests.html">単体テスト</a></li>
+                    <li><a href="03-AcceptanceTests.html">受け入れテスト</a></li>
+                    <li><a href="04-FunctionalTests.html">機能テスト</a></li>
+                    <li><a href="05-UnitTests.html">単体テスト</a></li>
+                    <li><a href="06-ReusingTestCode.html">テストコードの再利用</a></li>
                     <li><a href="07-AdvancedUsage.html">高度な使用法</a></li>
                     <li><a href="08-Customization.html">カスタマイズ</a></li>
                     <li><a href="09-Data.html">データを取り扱う</a></li>
@@ -516,6 +482,10 @@ StepObject was created <span class="k">in</span> &lt;you path&gt;/tests/acceptan
                     <li><a href="11-Codecoverage.html">コードカバレッジ</a></li>
                     <li><a href="12-ParallelExecution.html">並列実行</a></li>
                 </ol>
+            </div>
+            <h1>目次</h1>
+            <div id="toc" class="well">
+                <h1>TOC</h1>
             </div>
         </nav>
     </div>
@@ -525,7 +495,7 @@ StepObject was created <span class="k">in</span> &lt;you path&gt;/tests/acceptan
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-06-29 10:23:55 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.15">Codeception 2.0.15</a></p>
+        <p>Last updated: 2015-07-10 15:56:56 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.0">Codeception 2.1.0</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
@@ -541,6 +511,15 @@ StepObject was created <span class="k">in</span> &lt;you path&gt;/tests/acceptan
     } catch(err) {}
 </script>
 <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="javascripts/toc.min.js"></script>
 <script src="javascripts/contributors.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#toc').toc({
+            'selectors': 'h2,h3,h4',
+            'container': '#main_content'
+        });
+    });
+</script>
 </body>
 </html>

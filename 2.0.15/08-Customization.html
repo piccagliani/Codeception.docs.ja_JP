@@ -42,7 +42,7 @@
 <p>プロジェクトが複数のアプリケーション（frontend, admin, api）で構成されていたり、バンドルとともにSymfony2を使っている場合、すべてのアプリケーション（バンドル）に対するすべてのテストを1ランナーで実行することに興味があるのではないでしょうか。
 ここではプロジェクト全体をカバーする1つのレポートを取得してみます。</p>
 
-<p><code>codeception.yml</code>ファイルをプロジェクトのルートフォルダーに配置して、インクルードしたい他の<code>codeception.yml</code>へのパスを指定します。</p>
+<p><code>codeception.yml</code> ファイルをプロジェクトのルートフォルダに配置して、インクルードしたい他の <code>codeception.yml</code> へのパスを指定します。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">include</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="s">frontend</span>
   <span class="pi">-</span> <span class="s">admin</span>
@@ -52,16 +52,16 @@
 <span class="s">settings</span><span class="pi">:</span>
   <span class="s">colors</span><span class="pi">:</span> <span class="s">false</span>
 </code></pre></div>
-<p>レポートやログの出力先となる<code>log</code>ディレクトリーへのパスも指定してください。</p>
+<p>レポートやログの出力先となる <code>log</code> ディレクトリへのパスも指定してください。</p>
 
 <h3>名前空間</h3>
 
 <p>アクタークラスとヘルパークラスの名前空間が衝突するのを避けるため、それらは名前空間に属すべきです。
-名前空間を持つテストスイートを作成するためには、ブートストラップコマンドに<code>--namespace</code>オプションを付与します。</p>
+名前空間を持つテストスイートを作成するためには、ブートストラップコマンドに <code>--namespace</code> オプションを付与します。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar bootstrap --namespace frontend
 </code></pre></div>
-<p>これにより、<code>namespace: frontend</code>パラメーターを持つ<code>codeception.yml</code>ファイルとともに、新しいプロジェクトが作成されます。
-ヘルパークラスの名前空間は<code>frontend\Codeception\Module</code>に、アクタークラスの名前空間は<code>frontend</code>になります。
+<p>これにより、<code>namespace: frontend</code> パラメータを持つ <code>codeception.yml</code> ファイルとともに、新しいプロジェクトが作成されます。
+ヘルパークラスの名前空間は <code>frontend\Codeception\Module</code> に、アクタークラスの名前空間は <code>frontend</code> になります。
 こうして、新しく作成されたテストは次のようになります。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span> <span class="k">use</span> <span class="nx">frontend\AcceptanceTester</span><span class="p">;</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
@@ -75,27 +75,45 @@
 
 <p>もし各アプリケーションが共通のヘルパーを利用している場合、次のセクションに従ってください。</p>
 
-<h2>拡張機能</h2>
+<h2>ヘルパークラスのオートロード</h2>
+
+<p>グローバルな <code>_bootstrap.php</code> ファイルがあります。このファイルはテスト実行の冒頭でインクルードされます。このファイルをオートローダーや定数の初期化に利用することをおすすめします。特に、<code>tests/_helpers</code> ディレクトリに格納されていないモジュールやヘルパークラスをインクルードしたい場合に役に立ちます。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">require_once</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">'/../lib/tests/helpers/MyHelper.php'</span><span class="p">;</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>代替として、Composerのオートローダーを使用することができます。Codeceptionも独自のオートローダーを持っています。
+これは（まだ）PSR-0の互換性はありませんが、ヘルパークラスへの代替パスを宣言する場合に非常に便利です。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">registerSuffix</span><span class="p">(</span><span class="s1">'Helper'</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">'/../lib/tests/helpers'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>これで、<code>__DIR__.&#39;/../lib/tests/helpers&#39;</code> から検索された、名前が<code>Helper</code>で終わるすべてのクラスが追加されます。特定の名前空間に属すヘルパーをロードするよう宣言することもできます。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">'MyApp\\Test'</span><span class="p">,</span> <span class="s1">'Helper'</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">'/../lib/tests/helpers'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>これは <code>__DIR__.&#39;/../lib/tests/helpers&#39;</code> 内の <code>MyApp\Test\MyHelper</code> のようなクラスを探すようオートローダーに示します。</p>
+
+<p>あるいは、クラス名に適切な接尾辞がつけられている場合に <strong>ページオブジェクトとコントローラー</strong> クラスへのパスを指定するためにオートローダーを使用することができます。</p>
+
+<p><code>tests/_bootstrap.php</code> ファイルの例:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">'MyApp\\Test'</span><span class="p">,</span> <span class="s1">'Helper'</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">'/../lib/tests/helpers'</span><span class="p">);</span>
+<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">'MyApp\\Test'</span><span class="p">,</span> <span class="s1">'Page'</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">'/pageobjects'</span><span class="p">);</span>
+<span class="nx">Codeception\Util\Autoload</span><span class="o">::</span><span class="na">register</span><span class="p">(</span><span class="s1">'MyApp\\Test'</span><span class="p">,</span> <span class="s1">'Controller'</span><span class="p">,</span> <span class="nx">__DIR__</span><span class="o">.</span><span class="s1">'/controller'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<h2>拡張クラス</h2>
+
+<div class="alert">このセクションは高度なPHPのスキルと、CodeceptionとPHPUnitの内部に関する一部の知識を必要とします。</div>
 
 <p>Codeceptionはコアな機能を拡張する限定的な機能を持っています。
 拡張機能は現在の機能をオーバーライドすることを想定していませんが、もしあなたが経験のある開発者でテストのフローをフックしたい場合にはとても便利です。</p>
 
-<p>デフォルトで、<code>RunFailed</code>エクステンションがすでに<code>codeception.yml</code>にて有効化されています。
-これにより、<code>-g failed</code>オプションをつけることで失敗したテストを再実行することができます。</p>
-<div class="highlight"><pre><code class="language-" data-lang="">php codecept.phar run -g failed
-</code></pre></div>
-<p>Codeceptionには<code>ext</code>ディレクトリーに配置された拡張機能が付属しています。たとえば、Monologを使ってテスト実行のログを記録するLogger拡張を有効にすることができます。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">extensions</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="s">Codeception\Extension\RunFailed</span> <span class="c1"># default extension</span>
-        <span class="pi">-</span> <span class="s">Codeception\Extension\Logger</span> <span class="c1"># enabled extension</span>
-    <span class="s">config</span><span class="pi">:</span>
-        <span class="s">Codeception\Extension\Logger</span><span class="pi">:</span>
-            <span class="s">max_files</span><span class="pi">:</span> <span class="s">5</span> <span class="c1"># logger configuration</span>
-</code></pre></div>
-<p>ではいったい拡張機能とは何でしょうか？基本的に、拡張機能は<a href="http://symfony.com/doc/current/components/event_dispatcher/introduction.html">Symfony Event Dispatcher</a>コンポーネントを基盤とするイベントリスナー以上の何ものでもありません。</p>
+<p>基本的には、拡張機能は <a href="http://symfony.com/doc/current/components/event_dispatcher/introduction.html">Symfony Event Dispatcher</a> コンポーネントを基盤とするイベントリスナー以上の何ものでもありません。</p>
 
-<p>これらがイベントとイベントクラスです。テスト実行中に発生する順番で一覧化しています。それぞれのイベントには対応したクラスがあり、特定のオブジェクトを含んでイベントリスナーに渡されます。</p>
+<p>これらがイベントとイベントクラスです。テスト実行中に発生する順番で一覧化しています。それぞれのイベントには対応したクラスがあり、特定のオブジェクトを含んでイベントリスターに渡されます。</p>
 
 <h3>イベント</h3>
 
@@ -190,7 +208,7 @@
 
 <p><code>test.start</code>と<code>test.before</code>、 <code>test.after</code>と<code>test.end</code>とに混乱するかもしれません。Start/endイベントはPHPUnit自身によって発生されますが、before/afterイベントはCodeceptionによって発生されます。ですので、従来の（<code>PHPUnit_Framework_TestCase</code>を継承した）PHPUnitのテストではbefore/afterイベントは発生しません。<code>test.before</code>イベントでは、<code>test.start</code>では不可能な、スキップされたか不完全なテストを追跡することができます。<a href="https://github.com/Codeception/Codeception/tree/master/src/Codeception/Subscriber">Codeception internal event listeners</a>にてより多くのことを学ぶことができます。</p>
 
-<p>拡張クラスは<code>Codeception\Platform\Extension</code>クラスを継承します。</p>
+<p>拡張クラスは <code>Codeception\Platform\Extension</code> クラスを継承します。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">class</span> <span class="nc">MyCustomExtension</span> <span class="k">extends</span> <span class="nx">\Codeception\Platform\Extension</span>
 <span class="p">{</span>
@@ -224,25 +242,26 @@
 <li><code>write</code> - コンソールに出力する</li>
 <li><code>writeln</code> - 改行コードとおともにコンソールに出力する</li>
 <li><code>getModule</code> - モジュールにアクセスする</li>
-<li><code>hasModule</code> - モジュールが有効かどうか確認する</li>
-<li><code>getModuleNames</code> - すべての有効なモジュール一覧を取得する</li>
 <li><code>_reconfigure</code> - コンストラクターをオーバーライドする替わりに実装する</li>
 </ul>
 
 <h3>拡張機能の有効化</h3>
 
-<p>単純な拡張クラスを実装したら、<code>tests/_bootstrap.php</code>ファイルにインクルードするか、
-<code>composer.json</code>に定義されたComposerのオートローダーでロードするか、もしくは<code>tests/_support</code>ディレクトリーにクラスを格納します。</p>
-
-<p><code>codeception.yml</code>で拡張機能を有効にします。</p>
+<p>単純な拡張クラスを実装したら、<code>tests/_bootstrap.php</code>ファイルにインクルードしてください。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">include_once</span> <span class="s1">'/path/to/my/MyCustomExtension.php'</span><span class="p">;</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p><code>codeception.yml</code> で拡張機能を有効にします。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">extensions</span><span class="pi">:</span>
     <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">MyCustomExtension</span><span class="pi">]</span>
+
 </code></pre></div>
 <h3>拡張機能の設定</h3>
 
-<p>拡張クラスでは<code>options</code>プロパティを介して現状渡されたオプションにアクセスすることができます。
-また、<code>\Codeception\Configuration::config()</code>を利用してグローバル設定にアクセスすることもできます。
-もし拡張クラスにカスタムなオプションを持たせたい場合、<code>codeception.yml</code>ファイルからそれを渡すことができます。</p>
+<p>拡張クラスでは <code>options</code> プロパティを介して現状渡されたオプションにアクセスすることができます。
+また、<code>\Codeception\Configuration::config()</code> を利用してグローバル設定にアクセスすることもできます。
+もし拡張クラスにカスタムなオプションを持たせたい場合、<code>codeception.yml</code> ファイルからそれを渡すことができます。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">extensions</span><span class="pi">:</span>
     <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">MyCustomExtension</span><span class="pi">]</span>
     <span class="s">config</span><span class="pi">:</span>
@@ -250,13 +269,13 @@
             <span class="s">param</span><span class="pi">:</span> <span class="s">value</span>
 
 </code></pre></div>
-<p>渡された設定には次のように<code>config</code>プロパティを介してアクセスすることができます。<code>$this-&gt;config[&#39;param&#39;]</code></p>
+<p>渡された設定には次のように <code>config</code> プロパティを介してアクセスすることができます。 <code>$this-&gt;config[&#39;param&#39;]</code></p>
 
-<p>とても基本的な拡張機能である<a href="https://github.com/Codeception/Notifier">Notifier</a>を確認してください。</p>
+<p>とても基本的な拡張機能である <a href="https://github.com/Codeception/Notifier">Notifier</a> を確認してください。</p>
 
-<h2>グループオブジェクト</h2>
+<h2>グループクラス</h2>
 
-<p>グループオブジェクトは特定のグループに属すテストのイベントをリッスンするための拡張機能です。
+<p>グループクラスは特定のグループに属すテストのイベントをリッスンするための拡張機能です。
 テストが次のグループに追加されたとき、</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span> 
 <span class="nv">$scenario</span><span class="o">-&gt;</span><span class="na">group</span><span class="p">(</span><span class="s1">'admin'</span><span class="p">);</span>
@@ -274,11 +293,9 @@
 <li><code>test.after.admin</code></li>
 </ul>
 
-<p>グループオブジェクトはこれらのイベントをリッスンするために構築されています。これは、テストに追加の設定が必要になった場合にとても便利です。<code>admin</code>グループに属すテストのためにフィクスチャをロードしたいとしましょう。</p>
+<p>グループクラスはこれらのイベントをリッスンするために構築されています。これは、テストに追加の設定が必要になった場合にとても便利です。<code>admin</code> グループに属すテストのためにフィクスチャをロードしたいとしましょう。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">namespace</span> <span class="nx">Group</span><span class="p">;</span>
-
-<span class="k">class</span> <span class="nc">Admin</span> <span class="k">extends</span> <span class="nx">\Codeception\GroupObject</span>
+<span class="k">class</span> <span class="nc">AdminGroup</span> <span class="k">extends</span> <span class="nx">\Codeception\Platform\Group</span>
 <span class="p">{</span>
     <span class="k">public</span> <span class="k">static</span> <span class="nv">$group</span> <span class="o">=</span> <span class="s1">'admin'</span><span class="p">;</span>
 
@@ -300,14 +317,14 @@
 <span class="p">}</span>
 <span class="cp">?&gt;</span>
 </code></pre></div>
-<p>グループクラスは<code>php codecept.phar generate:group groupname</code>コマンドによって作成することができます。
-グループクラスは<code>tests/_support/Group</code>ディレクトリーに格納されます。</p>
+<p>グループクラスは <code>php codecept.phar generate:group groupname</code> コマンドによって作成することができます。
+グループクラスは <code>tests/_groups</code> ディレクトリに格納されます。</p>
 
-<p>拡張クラスと同様、<code>codeception.yml</code>にてグループクラスを有効にすることができます。</p>
+<p>拡張クラスと同様、<code>codeception.yml</code> にてグループクラスを有効にすることができます。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">extensions</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">Group\AdminGroup</span><span class="pi">]</span>
+    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">AdminGroup</span><span class="pi">]</span>    
 </code></pre></div>
-<p>これでAdminグループクラスは<code>admin</code>グループに属すテストのすべてのイベントをリッスンするようになります。</p>
+<p>これで Adminグループクラスは <code>admin</code>グループに属すテストのすべてのイベントをリッスンするようになります。</p>
 
 <h2>まとめ</h2>
 
@@ -315,15 +332,14 @@
 
         </section>
         <nav id="nav" class="col-md-3">
-            <h1>ガイド</h1>
             <div class="well">
                 <ol>
                     <li><a href="01-Introduction.html">イントロダクション</a></li>
                     <li><a href="02-GettingStarted.html">はじめに</a></li>
-                    <li><a href="03-AcceptanceTests.html">受け入れテスト</a></li>
-                    <li><a href="04-FunctionalTests.html">機能テスト</a></li>
-                    <li><a href="05-UnitTests.html">単体テスト</a></li>
-                    <li><a href="06-ReusingTestCode.html">テストコードの再利用</a></li>
+                    <li><a href="03-ModulesAndHelpers.html">モジュールとヘルパー</a></li>
+                    <li><a href="04-AcceptanceTests.html">受け入れテスト</a></li>
+                    <li><a href="05-FunctionalTests.html">機能テスト</a></li>
+                    <li><a href="06-UnitTests.html">単体テスト</a></li>
                     <li><a href="07-AdvancedUsage.html">高度な使用法</a></li>
                     <li><a href="08-Customization.html">カスタマイズ</a></li>
                     <li><a href="09-Data.html">データを取り扱う</a></li>
@@ -331,10 +347,6 @@
                     <li><a href="11-Codecoverage.html">コードカバレッジ</a></li>
                     <li><a href="12-ParallelExecution.html">並列実行</a></li>
                 </ol>
-            </div>
-            <h1>目次</h1>
-            <div id="toc" class="well">
-                <h1>TOC</h1>
             </div>
         </nav>
     </div>
@@ -344,7 +356,7 @@
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-07-10 15:56:56 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.0">Codeception 2.1.0</a></p>
+        <p>Last updated: 2015-06-29 10:23:55 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.15">Codeception 2.0.15</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
@@ -360,15 +372,6 @@
     } catch(err) {}
 </script>
 <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
-<script src="javascripts/toc.min.js"></script>
 <script src="javascripts/contributors.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#toc').toc({
-            'selectors': 'h2,h3,h4',
-            'container': '#main_content'
-        });
-    });
-</script>
 </body>
 </html>

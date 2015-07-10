@@ -37,22 +37,17 @@
 
 <p>はじめにCodeceptionの構造を見てみましょう。
 あなたはすでに<a href="http://codeception.com/install">インストール</a> を終え、最初のテストをブートストラップしたと思います。
-Codeceptionは単体テスト、機能テスト、受け入れテストの3つを生成しました。これらについては前の章で解説してあります。<strong>/tests</strong>フォルダー内には、これら3つのテストに対応する名前の設定ファイルとディレクトリーが存在します。これらは共通の目的を持つテストのための独立したグループなのです。</p>
+Codeceptionは単体テスト、機能テスト、受け入れテストの3つを生成しました。これらについては前の章で解説してあります。<strong>/tests</strong> フォルダ内には、これら3つのテストに対応する名前の設定ファイルとディレクトリが存在します。これらは共通の目的を持つテストのための独立したグループなのです。</p>
 
-<h2>アクター</h2>
+<h2>アクター(Actors)</h2>
 
-<p>Codeceptionの主な概念の1つは人間の行動のように動作することです。UnitTesterは関数を実行し、コードのテストを行います。FunctionalTesterは内部の知識を持ち、アプリケーション全体をテストする有能なテスターです。そしてAcceptanceTesterは、私たちが提供するインターフェイスを使ってアプリケーションを操作するユーザーです。</p>
+<p>Codeceptionの主な概念の1つは、人間の行動のように動作することです。UnitTesterは関数を実行し、コードのテストを行います。FunctionalTesterは内部の知識を持ち、アプリケーション全体をテストする有能なテスターです。そしてAcceptanceTesterは、私たちが提供するインターフェイスを使ってアプリケーションを操作するユーザです。</p>
 
-<p>アクタークラスは記述するものではなく、スイート設定によってい生成されます。<strong>一般的にアクタークラスの各メソッドはCodeceptionのモジュールから取得されます</strong>。各モジュールは、異なるテストの目的のため事前に定義されたアクションを提供し、テスト環境に合わせて組み合わせることができます。Codeceptionはそのモジュールにより、テストで直面する可能性のある問題の90%を解決しようとしているため、車輪を再発明する必要はありません。私たちは、テストの記述により多くの時間を、それらテストを実行可能とするためのサポートコードの記述にはより少ない時間を費やすことができると考えています。デフォルトではAcceptanceTesterはPhpBrowserモジュールに依存しており、それは<code>tests/acceptance.suite.yml</code>ファイルで設定されます:</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">AcceptanceTester</span>
-<span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="s">PhpBrowser</span><span class="pi">:</span>
-            <span class="s">url</span><span class="pi">:</span> <span class="s">http://localhost/myapp/</span>
-        <span class="pi">-</span> <span class="s">\Helper\Acceptance</span>
-</code></pre></div>
-<p>この設定ファイルで、モジュールの有効化/無効化、必要に応じた再設定を行うことができます。
-設定ファイルを変更した場合、アクタークラスは自動的に再ビルドされます。もし、アクタークラスが期待通りに作成または更新されない場合、<code>build</code>コマンドを使い手動で生成してみてください。</p>
+<p>これらのアクターはそれぞれ、許可されたアクションを行うPHPのクラスなのです。彼らが異なる能力を持っていることにもうお気づきでしょう。これらのアクターは一定ではなく、あなたの手によって拡張することができます。各アクターはそれぞれのテストに対応しているのです。</p>
+
+<p>アクターのクラスは書かれるのではなく、設定ファイルによって生成されます。あなたが設定を変更すれば、アクタークラスは<strong>自動的にリビルド</strong>されます。</p>
+
+<p>もしアクターのクラスがうまく生成もしくはアップデートされなかった場合、以下のような<code>build</code> コマンドによる手動での生成を試みてください。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar build
 </code></pre></div>
 <h2>シナリオのサンプルを書いてみましょう</h2>
@@ -69,7 +64,7 @@ Codeceptionは単体テスト、機能テスト、受け入れテストの3つ�
 <span class="cp">?&gt;</span>
 </code></pre></div>
 <p>それではウェブサイトにログインしてみましょう。
-ユーザー名とパスワードの入力によって認証を行う&quot;ログインページ&quot;があります。ログイン後はユーザーページに飛ばされ、<code>Hello, %username%</code>というテキストが表示されます。このシナリオがCodeceptionでどのように記述されるか見てみましょう。</p>
+ユーザ名とパスワードの入力によって認証を行う&quot;ログインページ&quot;があります。ログイン後はユーザページに飛ばされ、<code>Hello, %username%</code>というテキストが表示されます。このシナリオがCodeceptionでどのように記述されるか見てみましょう。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'log in as regular user'</span><span class="p">);</span>
@@ -80,15 +75,12 @@ Codeceptionは単体テスト、機能テスト、受け入れテストの3つ�
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Hello, davert'</span><span class="p">);</span>
 <span class="cp">?&gt;</span>
 </code></pre></div>
-<p>テストを実行する前に、ローカル上のウェブサーバーでウェブサイトがしっかりと動いていることを確認してください。<code>tests/acceptance.suite.yml</code>ファイルを開き、URLをあなたのウェブアプリケーションのURLに置き換えてください。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">AcceptanceTester</span>
-<span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="s">PhpBrowser</span><span class="pi">:</span>
-            <span class="s">url</span><span class="pi">:</span> <span class="s1">'</span><span class="s">http://myappurl.local'</span>
-        <span class="pi">-</span> <span class="s">\Helper\Acceptance</span>
+<p>テストを実行する前に、ローカル上のウェブサーバでウェブサイトがしっかりと動いていることを確認してください。<code>tests/acceptance.suite.yml</code>ファイルを開き、URLをあなたのウェブアプリケーションのURLに置き換えてください。</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">config</span><span class="pi">:</span>
+    <span class="s">PhpBrowser</span><span class="pi">:</span>
+        <span class="s">url</span><span class="pi">:</span> <span class="s1">'</span><span class="s">http://myappurl.local'</span>
 </code></pre></div>
-<p>URLの設定後、<code>run</code>コマンドによってテストを走らせることができます。</p>
+<p>URLの設定後、<code>run</code> コマンドによってテストを走らせることができます。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run
 </code></pre></div>
 <p>このようなアウトプットが表示されるはずです。</p>
@@ -125,55 +117,21 @@ Time: 0 seconds, Memory: 21.00Mb
 
 OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span class="o">)</span>
 </code></pre></div>
-<p>このシンプルなテストは完全なウェブサイトの利用シナリオへと拡張することができます。
-したがって、ユーザーのアクションをエミュレートすることであたなはどのようなウェブサイトでもテストすることができます。</p>
+<p>これは皆さん自身のウェブサイトで再現可能なとてもシンプルなテストでした。ユーザのアクションをエミレートすることで、あなたのウェブサイトをすべて同様にテストすることができるのです。</p>
 
 <p>ぜひトライしてみましょう！</p>
 
+<h2>モジュールとヘルパー</h2>
+
+<p>アクタークラスのアクションはモジュールから取得されます。生成されたアクタークラスは多重継承をエミュレートします。モジュールは1つのメソッドで1つのアクションを実行するよう設計されています。<a href="http://ja.wikipedia.org/wiki/Don&#x27;t_repeat_yourself">DRY原則</a>によると、あなたが異なるモジュールで同じシナリオコンポーネントを使用する場合は、それらを組み合わせて、カスタムモジュールにそれらを移動させることができます。デフォルトでは、各スイートはアクタークラスを拡張するために使用できるの空のモジュールを持っています。それらは <strong>support</strong> ディレクトリに保存されています。</p>
+
 <h2>ブートストラップ</h2>
 
-<p>各スイートは自分自身のブートストラップファイルを所有しています。それらは各スイートのディレクトリー内部にあり、<code>_bootstrap.php</code>という名前で保存されています。これはテストの前に実行されます。他にも、<code>tests</code>ディレクトリー内にはグローバルブートストラップファイルがあります。これは追加ファイルをインクルードする際に使用することができます。</p>
+<p>各スイートは自分自身のブートストラップファイルを所有しています。それらは各スイートのディレクトリ内部にあり、<code>_bootstrap.php</code>という名前で保存されています。これはテストの前に実行されます。他にも、<code>tests</code>ディレクトリ内にはグローバルブートストラップファイルがあります。これは追加ファイルをインクルードする際に使用することができます。</p>
 
-<h2>Cept、Cest、テスト形式</h2>
+<h2>テストフォーマット</h2>
 
-<p>Codeceptionは3つのテスト形式をサポートしています。先述したシナリオベースのCept形式だけでなく、Codeceptionは <a href="http://codeception.com/docs/06-UnitTests">単体テスト向けのPHPUnit形式</a> およびCest形式についても実行することができます。</p>
-
-<p>Cest形式はシナリオ駆動型テストのアプローチとオブジェクト指向設計を組み合わせています。いくつかのテストシナリオをグループにまとめたい場合、Cest形式を利用することを検討すべきです。下の例では、CRUDのアクションをいくつかのテスト（それぞれがCRUDの各操作に対応）から成る単一のファイルでテストしています:</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">class</span> <span class="nc">PageCrudCest</span>
-<span class="p">{</span>
-    <span class="k">function</span> <span class="nf">_before</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="c1">// will be executed at the beginning of each test
-</span>        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/'</span><span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="k">function</span> <span class="nf">createPage</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
-    <span class="p">{</span>
-       <span class="c1">// todo: write test
-</span>    <span class="p">}</span>
-
-    <span class="k">function</span> <span class="nf">viewPage</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
-    <span class="p">{</span>
-       <span class="c1">// todo: write test
-</span>    <span class="p">}</span>
-
-    <span class="k">function</span> <span class="nf">updatePage</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="c1">// todo: write test
-</span>    <span class="p">}</span>
-
-    <span class="k">function</span> <span class="nf">deletePage</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
-    <span class="p">{</span>
-       <span class="c1">// todo: write test
-</span>    <span class="p">}</span>
-<span class="p">}</span>
-<span class="cp">?&gt;</span>
-</code></pre></div>
-<p>このようなCest形式のファイルはジェネレーターを実行することにより作成することができます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:cest acceptance PageCrud
-</code></pre></div>
-<p>高度な使用法に<a href="http://codeception.com/docs/07-AdvancedUsage#Cest-Classes">Cest形式</a>の詳細があります。</p>
+<p>Codeceptionは3つのテストフォーマットをサポートしています。先述したシナリオベースのCeptフォーマットだけでなく、<a href="http://codeception.com/docs/06-UnitTests">PHPUnit test files for unit testing</a> と <a href="http://codeception.com/docs/07-AdvancedUsage#Cest-Classes">class-based Cest</a> フォーマットに対応しています。これらについては後の章で解説します。どちらの形式のテストスイートでも実行される方法に違いはありません。</p>
 
 <h2>設定</h2>
 
@@ -187,7 +145,7 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
 <p>最初の引数を使用すれば、1つのスイートからテストを実行することができます。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run acceptance
 </code></pre></div>
-<p>本当に1つだけのテストを行いたいのなら、2つ目の引数を使用します。スイートのディレクトリーから、テストファイルへのローカルパスを指定します。</p>
+<p>本当に1つだけのテストを行いたいのなら、2つ目の引数を使用します。スイートのディレクトリから、テストファイルへのローカルパスを指定します。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run acceptance SigninCept.php
 </code></pre></div>
 <p>または、テストファイルへのフルパスを指定することも可能です。</p>
@@ -196,29 +154,29 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
 <p>テストクラスから1つのテストを実行することもできます。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run tests/acceptance/SignInCest.php:anonymousLogin
 </code></pre></div>
-<p>ディレクトリーパスを指定することも可能です。</p>
+<p>ディレクトリパスを指定することも可能です。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run tests/acceptance/backend
 </code></pre></div>
-<p>これはバックエンドのディレクトリーからすべてのテストを実行します。</p>
+<p>これはバックエンドのディレクトリからすべてのテストを実行します。</p>
 
-<p>同じディレクトリーにないテストのグループを実行したい場合は、<a href="http://codeception.com/docs/07-AdvancedUsage#Groups">groups</a>を編成できます。</p>
+<p>同じディレクトリにないテストのグループを実行したい場合は、<a href="http://codeception.com/docs/07-AdvancedUsage#Groups">groups</a>を編成できます。</p>
 
 <h3>レポート</h3>
 
 <p><code>--xml</code>オプションを付与すればJUnit XMLのアウトプットが生成され、<code>--html</code>オプションを付与すればHTMLのレポートが生成されます。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run --steps --xml --html
 </code></pre></div>
-<p>このコマンドはすべてのスイートのすべてのテストをステップごとに表示しながら実行し、HTMLとXMLのレポートを作成します。レポートは<code>tests/_output/</code>ディレクトリー内に保存されます。</p>
+<p>このコマンドはすべてのスイートのすべてのテストをステップごとに表示しながら実行し、HTMLとXMLのレポートを作成します。レポートは<code>tests/_output/</code>ディレクトリ内に保存されます。</p>
 
 <p>以下のコマンドを実行することで、使用できるすべてのオプションを確認することができます。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar <span class="nb">help </span>run
 </code></pre></div>
 <h2>デバッグ</h2>
 
-<p>詳細なアウトプットを受け取るためには、<code>--debug</code>オプションを使ったテストを実行します。
+<p>詳細なアウトプットを受け取るためには、<code>--debug</code> オプションを使ったテストを実行します。
 <code>codecept_debug</code>関数を使えば、テスト内の任意の情報を出力することができます。</p>
 
-<h3>ジェネレーター</h3>
+<h3>ジェネレータ (Generators)</h3>
 
 <p>Codeceptionの役立つコマンドはたくさんあります。</p>
 
@@ -237,15 +195,14 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
 
         </section>
         <nav id="nav" class="col-md-3">
-            <h1>ガイド</h1>
             <div class="well">
                 <ol>
                     <li><a href="01-Introduction.html">イントロダクション</a></li>
                     <li><a href="02-GettingStarted.html">はじめに</a></li>
-                    <li><a href="03-AcceptanceTests.html">受け入れテスト</a></li>
-                    <li><a href="04-FunctionalTests.html">機能テスト</a></li>
-                    <li><a href="05-UnitTests.html">単体テスト</a></li>
-                    <li><a href="06-ReusingTestCode.html">テストコードの再利用</a></li>
+                    <li><a href="03-ModulesAndHelpers.html">モジュールとヘルパー</a></li>
+                    <li><a href="04-AcceptanceTests.html">受け入れテスト</a></li>
+                    <li><a href="05-FunctionalTests.html">機能テスト</a></li>
+                    <li><a href="06-UnitTests.html">単体テスト</a></li>
                     <li><a href="07-AdvancedUsage.html">高度な使用法</a></li>
                     <li><a href="08-Customization.html">カスタマイズ</a></li>
                     <li><a href="09-Data.html">データを取り扱う</a></li>
@@ -253,10 +210,6 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
                     <li><a href="11-Codecoverage.html">コードカバレッジ</a></li>
                     <li><a href="12-ParallelExecution.html">並列実行</a></li>
                 </ol>
-            </div>
-            <h1>目次</h1>
-            <div id="toc" class="well">
-                <h1>TOC</h1>
             </div>
         </nav>
     </div>
@@ -266,7 +219,7 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-07-10 15:56:56 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.0">Codeception 2.1.0</a></p>
+        <p>Last updated: 2015-06-29 10:23:55 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.0.15">Codeception 2.0.15</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
@@ -282,15 +235,6 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
     } catch(err) {}
 </script>
 <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
-<script src="javascripts/toc.min.js"></script>
 <script src="javascripts/contributors.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#toc').toc({
-            'selectors': 'h2,h3,h4',
-            'container': '#main_content'
-        });
-    });
-</script>
 </body>
 </html>
