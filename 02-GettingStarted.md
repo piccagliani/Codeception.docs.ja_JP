@@ -251,6 +251,11 @@ Codeceptionの役立つコマンドはたくさんあります。
 * `generate:phpunit` *スイート名* *ファイル名* - 標準的なPHPUnitテストを生成します
 * `generate:suite` *スイート名* *アクター名* - 与えられたアクタークラスを持つ新しいスイートを生成します
 * `generate:scenarios` *スイート名* - テストからシナリオを含んだテキストファイルを生成します
+* `generate:helper` *ファイル名* - ヘルパーファイルのサンプルを生成します
+* `generate:pageobject` *スイート名* *ファイル名* - ページオブジェクトのサンプルを生成します
+* `generate:stepobject` *スイート名* *ファイル名* - ステップオブジェクトのサンプルを生成します
+* `generate:environment` *環境* - 環境設定のサンプルを生成します
+* `generate:groupobject` *グループ* - グループ拡張のサンプルを生成します
 
 
 ## まとめ
