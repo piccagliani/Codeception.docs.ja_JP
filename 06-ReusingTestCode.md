@@ -390,7 +390,7 @@ Codeceptionはモジュールの順序によってアクションをオーバー
 
 しかしながら、いくつかのモジュールは互いに衝突するかもしれません。最も優先されるモジュールがなんであるか混乱するのをを避けるために、フレームワークモジュール、PhpBrowserモジュール、そしてWebDriverモジュールは一緒に使うことができません。モジュールの`_conflicts`メソッドはどのクラスまたはインターフェイスが衝突するか指定するために使われます。Codeceptionはもし条件に一致するモジュールが有効出る場合、例外を投げます。
 
-### モジュールへの接続
+### ほかのモジュールへの接続
 
 他のモジュールの内部データや関数にアクセスすることができます。たとえば、あたなのモジュールは他のモジュールのレスポンスや内部アクションにアクセスする必要がある場合があります。
 モジュールは`getModule`メソッドを通して互いにやり取りすることができます。もし必要なモジュールが読み込まれていない場合、例外が投げられることに注意してください。
@@ -408,23 +408,22 @@ function reconnectToDatabase() {
 ?>
 ```
 
-`getModule`メソッドを使うことで、要求したモジュールのすべてのpublicなメソッドとプロパティにアクセスできるようになります。このdbhプロパティは他のモジュールから利用できるようpublicとして定義されました。
+`getModule`メソッドを使うことで、要求したモジュールのすべてのpublicなメソッドとプロパティにアクセスできるようになります。この`dbh`プロパティは他のモジュールから利用できるようpublicとして定義されました。
 
 標準モジュールの機能を拡張したい場合は、そのモジュールに接続してpublicなプロパティとメソッドを使うカスタムアクションやアサーションを作成してください。
+
+モジュールにはヘルパークラス内での利用を想定したメソッドも含まれています。それらのメソッドは`_`ではじまり、アクタークラスでは利用できず、モジュールと拡張機能からのみアクセスすることができます。
+
+モジュールの内部を使った独自のアクションを記述するためには、それらのメソッドを使う必要があります。
 
 ```php
 <?php
 function seeNumResults($num)
 {
     // retrieving webdriver session
-    /** @var $wd \RemoteWebDriver */
-    $wd = $this->getModule('WebDriver')->webDriver;
-
-    // searching for table which contains results
-    /**@var $el \WebDriverElement */
-    $el = $wd->findElement(WebDriverBy::id('results'));
-    // asserting that #results is actually a table
-    $this->assertEquals('table', $el->getTagName());
+    /**@var $table \Facebook\WebDriver\WebDriverElement */
+    $table = $this->getModule('WebDriver')->_findElements('#result');
+    $this->assertEquals('table', $table->getTagName());
     $results = $el->findElements('tr');
 
     // asserting that table contains exactly $num rows
@@ -433,9 +432,8 @@ function seeNumResults($num)
 ?>
 ```
 
-<div class="alert alert-info">
-この例ではSelenium WebDriverのクライアントである<a href="https://github.com/facebook/php-webdriver">facebook/php-webdriver</a>のAPIを使用しています。
-</div>
+この例では、モジュールの構築元となるSelenium WebDriverのクライアントである<a href="https://github.com/facebook/php-webdriver">facebook/php-webdriver</a>のAPIを使用しています。
+Seleniumと直接的にやり取りするための`Facebook\WebDriver\RemoteWebDriver`インスタンスにアクセスするため、`webDriver`プロパティを利用することもできます。
 
 ### フック
 

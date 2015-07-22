@@ -501,6 +501,8 @@ codecept_debug($I->grabTextFrom('#name'));
 
 テストによって開かれたウェブページを調査したくなるときがあると思います。そのような場合にはWebDriverモジュールの[pauseExecution](http://codeception.com/docs/modules/WebDriver#pauseExecution)メソッドを利用することができます。
 
+[Recorder extension](http://codeception.com/addons#CodeceptionExtensionRecorder)を利用することにより、テストをステップごとに記録し、実行の様子をスライドショー形式で確認することもできます。
+
 ## まとめ
 
 CodeceptionとPhpBrowserで受け入れテストを書くことは、良いスタートです。フレームワークで作られたサイトと同じように、Joomla、Drupal、WordPressのサイトも簡単にテストできます。受け入れテストを書くことはPHPでのテスターの行動を説明するようなものです。可読性に長け、とても書きやすいです。テストを実行するごとにデータベースの再構築を忘れないように。
