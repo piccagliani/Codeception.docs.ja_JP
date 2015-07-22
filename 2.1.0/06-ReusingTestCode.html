@@ -359,7 +359,7 @@ Codeceptionはモジュールの順序によってアクションをオーバー
 
 <p>しかしながら、いくつかのモジュールは互いに衝突するかもしれません。最も優先されるモジュールがなんであるか混乱するのをを避けるために、フレームワークモジュール、PhpBrowserモジュール、そしてWebDriverモジュールは一緒に使うことができません。モジュールの<code>_conflicts</code>メソッドはどのクラスまたはインターフェイスが衝突するか指定するために使われます。Codeceptionはもし条件に一致するモジュールが有効出る場合、例外を投げます。</p>
 
-<h3>ほかのモジュールへの接続</h3>
+<h3>モジュールへの接続</h3>
 
 <p>他のモジュールの内部データや関数にアクセスすることができます。たとえば、あたなのモジュールは他のモジュールのレスポンスや内部アクションにアクセスする必要がある場合があります。
 モジュールは<code>getModule</code>メソッドを通して互いにやり取りすることができます。もし必要なモジュールが読み込まれていない場合、例外が投げられることに注意してください。</p>
@@ -374,20 +374,21 @@ Codeceptionはモジュールの順序によってアクションをオーバー
 <span class="p">}</span>
 <span class="cp">?&gt;</span>
 </code></pre></div>
-<p><code>getModule</code>メソッドを使うことで、要求したモジュールのすべてのpublicなメソッドとプロパティにアクセスできるようになります。この<code>dbh</code>プロパティは他のモジュールから利用できるようpublicとして定義されました。</p>
+<p><code>getModule</code>メソッドを使うことで、要求したモジュールのすべてのpublicなメソッドとプロパティにアクセスできるようになります。このdbhプロパティは他のモジュールから利用できるようpublicとして定義されました。</p>
 
 <p>標準モジュールの機能を拡張したい場合は、そのモジュールに接続してpublicなプロパティとメソッドを使うカスタムアクションやアサーションを作成してください。</p>
-
-<p>モジュールにはヘルパークラス内での利用を想定したメソッドも含まれています。それらのメソッドは<code>_</code>ではじまり、アクタークラスでは利用できず、モジュールと拡張機能からのみアクセスすることができます。</p>
-
-<p>モジュールの内部を使った独自のアクションを記述するためには、それらのメソッドを使う必要があります。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">function</span> <span class="nf">seeNumResults</span><span class="p">(</span><span class="nv">$num</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="c1">// retrieving webdriver session
-</span>    <span class="sd">/**@var $table \Facebook\WebDriver\WebDriverElement */</span>
-    <span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'WebDriver'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">_findElements</span><span class="p">(</span><span class="s1">'#result'</span><span class="p">);</span>
-    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">'table'</span><span class="p">,</span> <span class="nv">$table</span><span class="o">-&gt;</span><span class="na">getTagName</span><span class="p">());</span>
+</span>    <span class="sd">/** @var $wd \RemoteWebDriver */</span>
+    <span class="nv">$wd</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'WebDriver'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">webDriver</span><span class="p">;</span>
+
+    <span class="c1">// searching for table which contains results
+</span>    <span class="sd">/**@var $el \WebDriverElement */</span>
+    <span class="nv">$el</span> <span class="o">=</span> <span class="nv">$wd</span><span class="o">-&gt;</span><span class="na">findElement</span><span class="p">(</span><span class="nx">WebDriverBy</span><span class="o">::</span><span class="na">id</span><span class="p">(</span><span class="s1">'results'</span><span class="p">));</span>
+    <span class="c1">// asserting that #results is actually a table
+</span>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">'table'</span><span class="p">,</span> <span class="nv">$el</span><span class="o">-&gt;</span><span class="na">getTagName</span><span class="p">());</span>
     <span class="nv">$results</span> <span class="o">=</span> <span class="nv">$el</span><span class="o">-&gt;</span><span class="na">findElements</span><span class="p">(</span><span class="s1">'tr'</span><span class="p">);</span>
 
     <span class="c1">// asserting that table contains exactly $num rows
@@ -395,8 +396,9 @@ Codeceptionはモジュールの順序によってアクションをオーバー
 <span class="p">}</span>
 <span class="cp">?&gt;</span>
 </code></pre></div>
-<p>この例では、モジュールの構築元となるSelenium WebDriverのクライアントである<a href="https://github.com/facebook/php-webdriver">facebook/php-webdriver</a>のAPIを使用しています。
-Seleniumと直接的にやり取りするための<code>Facebook\WebDriver\RemoteWebDriver</code>インスタンスにアクセスするため、<code>webDriver</code>プロパティを利用することもできます。</p>
+<div class="alert alert-info">
+この例ではSelenium WebDriverのクライアントである<a href="https://github.com/facebook/php-webdriver">facebook/php-webdriver</a>のAPIを使用しています。
+</div>
 
 <h3>フック</h3>
 
@@ -585,6 +587,7 @@ PhpBrowserモジュールでの使用例がこちらです：</p>
             </div>
             <h1>目次</h1>
             <div id="toc" class="well">
+                <h1>TOC</h1>
             </div>
         </nav>
     </div>
@@ -594,7 +597,7 @@ PhpBrowserモジュールでの使用例がこちらです：</p>
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-07-22 13:55:36 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.1">Codeception 2.1.1</a></p>
+        <p>Last updated: 2015-07-10 15:56:56 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.0">Codeception 2.1.0</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
