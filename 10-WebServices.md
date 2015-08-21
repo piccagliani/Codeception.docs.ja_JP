@@ -20,9 +20,9 @@ REST方式のWebサービスは、HTTPの標準的なメソッドである`GET`�
 class_name: ApiTester
 modules:
     enabled:
-				- REST:
-				    url: http://serviceapp/api/v1/
-				    depends: PhpBrowser
+		- REST:
+			url: http://serviceapp/api/v1/
+			depends: PhpBrowser
 ```
 
 この設定に従ってRESTモジュールは`PhpBrowser`に接続するでしょう。Webサービスによっては、XMLまたはJSONレスポンスを扱うことができます。Codeceptionはどちらの形式もうまく扱いますが、もしいずれかが必要でない場合、明示的にモジュールがJSONやXMLを利用するよう指定することができます。
@@ -31,10 +31,10 @@ modules:
 class_name: ApiTester
 modules:
     enabled:
-				- REST:
-				    url: http://serviceapp/api/v1/
-				    depends: PhpBrowser
-				    part: Json
+		- REST:
+			url: http://serviceapp/api/v1/
+			depends: PhpBrowser
+			part: Json
 ```
 
 APIテストは機能テストとして、そしてSymfony2、Laravel4、Laravel5、Zend、または他のフレームワークモジュールを使って実行することができます。そのためには設定ファイルを少し更新する必要があります：
@@ -43,9 +43,9 @@ APIテストは機能テストとして、そしてSymfony2、Laravel4、Laravel
 class_name: ApiTester
 modules:
     enabled:
-				- REST:
-				    url: /api/v1/
-				    depends: Laravel5
+		- REST:
+			url: /api/v1/
+			depends: Laravel5
 ```
 
 新しいテストスーとを設定できたら、最初のサンプルテストを作りましょう：
@@ -166,9 +166,9 @@ SOAP方式のWebサービスは通常、より複雑になります。[SOAPサ�
 class_name: ApiTester
 modules:
     enabled:
-				- SOAP:
-				    depends: PhpBrowser
-				    endpoint: http://serviceapp/api/v1/
+		- SOAP:
+			depends: PhpBrowser
+			endpoint: http://serviceapp/api/v1/
 ```
 
 SOAPリクエストには認証や支払いのようなアプリケーション固有の情報を含みます。この情報はXMLリクエストの`<soap:Header>`要素に含まれるSOAPヘッダーによって提供されます。もしこのようなヘッダーを送信したい場合、`haveSoapHeader`メソッドを使用することができます。たとえば次のようになります。

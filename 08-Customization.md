@@ -11,7 +11,7 @@
 
 ``` yaml
 include:
-  - frontend
+  - frontend/src/*Bundle
   - admin
   - api/rest
 paths:
@@ -21,6 +21,10 @@ settings:
 ```
 
 レポートやログの出力先となる`log`ディレクトリーへのパスも指定してください。
+
+<div class="alert alert-notice">
+複数のディレクトリーを一度に指定するためにワイルドカード（*）を使うことができます。
+</div>
 
 ### 名前空間
 
