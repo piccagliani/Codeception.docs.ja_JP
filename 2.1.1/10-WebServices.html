@@ -50,26 +50,26 @@
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">ApiTester</span>
 <span class="s">modules</span><span class="pi">:</span>
     <span class="s">enabled</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="s">REST</span><span class="pi">:</span>
-            <span class="s">url</span><span class="pi">:</span> <span class="s">http://serviceapp/api/v1/</span>
-            <span class="s">depends</span><span class="pi">:</span> <span class="s">PhpBrowser</span>
+                <span class="pi">-</span> <span class="s">REST</span><span class="pi">:</span>
+                    <span class="s">url</span><span class="pi">:</span> <span class="s">http://serviceapp/api/v1/</span>
+                    <span class="s">depends</span><span class="pi">:</span> <span class="s">PhpBrowser</span>
 </code></pre></div>
 <p>この設定に従ってRESTモジュールは<code>PhpBrowser</code>に接続するでしょう。Webサービスによっては、XMLまたはJSONレスポンスを扱うことができます。Codeceptionはどちらの形式もうまく扱いますが、もしいずれかが必要でない場合、明示的にモジュールがJSONやXMLを利用するよう指定することができます。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">ApiTester</span>
 <span class="s">modules</span><span class="pi">:</span>
     <span class="s">enabled</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="s">REST</span><span class="pi">:</span>
-            <span class="s">url</span><span class="pi">:</span> <span class="s">http://serviceapp/api/v1/</span>
-            <span class="s">depends</span><span class="pi">:</span> <span class="s">PhpBrowser</span>
-            <span class="s">part</span><span class="pi">:</span> <span class="s">Json</span>
+                <span class="pi">-</span> <span class="s">REST</span><span class="pi">:</span>
+                    <span class="s">url</span><span class="pi">:</span> <span class="s">http://serviceapp/api/v1/</span>
+                    <span class="s">depends</span><span class="pi">:</span> <span class="s">PhpBrowser</span>
+                    <span class="s">part</span><span class="pi">:</span> <span class="s">Json</span>
 </code></pre></div>
 <p>APIテストは機能テストとして、そしてSymfony2、Laravel4、Laravel5、Zend、または他のフレームワークモジュールを使って実行することができます。そのためには設定ファイルを少し更新する必要があります：</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">ApiTester</span>
 <span class="s">modules</span><span class="pi">:</span>
     <span class="s">enabled</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="s">REST</span><span class="pi">:</span>
-            <span class="s">url</span><span class="pi">:</span> <span class="s">/api/v1/</span>
-            <span class="s">depends</span><span class="pi">:</span> <span class="s">Laravel5</span>
+                <span class="pi">-</span> <span class="s">REST</span><span class="pi">:</span>
+                    <span class="s">url</span><span class="pi">:</span> <span class="s">/api/v1/</span>
+                    <span class="s">depends</span><span class="pi">:</span> <span class="s">Laravel5</span>
 </code></pre></div>
 <p>新しいテストスーとを設定できたら、最初のサンプルテストを作りましょう：</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:cept api CreateUser
@@ -169,9 +169,9 @@ XmlBuilderのインスタンスを作成するためには、`\Codeception\Util\
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">ApiTester</span>
 <span class="s">modules</span><span class="pi">:</span>
     <span class="s">enabled</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="s">SOAP</span><span class="pi">:</span>
-            <span class="s">depends</span><span class="pi">:</span> <span class="s">PhpBrowser</span>
-            <span class="s">endpoint</span><span class="pi">:</span> <span class="s">http://serviceapp/api/v1/</span>
+                <span class="pi">-</span> <span class="s">SOAP</span><span class="pi">:</span>
+                    <span class="s">depends</span><span class="pi">:</span> <span class="s">PhpBrowser</span>
+                    <span class="s">endpoint</span><span class="pi">:</span> <span class="s">http://serviceapp/api/v1/</span>
 </code></pre></div>
 <p>SOAPリクエストには認証や支払いのようなアプリケーション固有の情報を含みます。この情報はXMLリクエストの<code>&lt;soap:Header&gt;</code>要素に含まれるSOAPヘッダーによって提供されます。もしこのようなヘッダーを送信したい場合、<code>haveSoapHeader</code>メソッドを使用することができます。たとえば次のようになります。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
@@ -272,7 +272,7 @@ XmlBuilderのインスタンスを作成するためには、`\Codeception\Util\
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-08-21 12:02:34 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.2">Codeception 2.1.2</a></p>
+        <p>Last updated: 2015-07-22 13:55:36 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.1">Codeception 2.1.1</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

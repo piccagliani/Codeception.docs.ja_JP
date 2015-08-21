@@ -229,17 +229,13 @@ Codeceptionは次のコマンドでページオブジェクトクラスを生成
 </code></pre></div>
 <p>このとおり、あなたはログインページのマークアップを気兼ねなく変更することができ、このページを対象とするすべてのテストに含まれるロケーターはLoginPageクラスのプロパティに従って更新されるでしょう。</p>
 
-<p>しかし、ここでさらに先に進みましょう。ページオブジェクトの概念は、ページのインタラクションを行うメソッドについてもページオブジェクトクラスに含まれるべき、と規定しています。今度は渡されたアクタークラスのインスタンスを保持しています。AcceptanceTesterに<code>AcceptanceTester</code>プロパティを介してアクセスできます。では、このクラスに<code>login</code>メソッドを定義しましょう。</p>
+<p>しかし、ここでさらに先に進みましょう。ページオブジェクトの概念は、ページのインタラクションを行うメソッドについてもページオブジェクトクラスに含まれるべき、と規定しています。今度は渡されたアクタークラスのインスタンスを保持しています。AcceptanceTesterに<code>AcceptanceTester</code>プロパティを介してアクセスできます。では、このクラスに<code>login</code>メソッドを定義しましょう。
+（訳注：ここの説明、文章がいくつか飛んでしまっているよう？で、下のコードとの文脈が失われています）</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">namespace</span> <span class="nx">Page</span><span class="p">;</span>
-
-<span class="k">class</span> <span class="nc">Login</span>
+<span class="k">class</span> <span class="nc">UserLoginPage</span>
 <span class="p">{</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="nv">$URL</span> <span class="o">=</span> <span class="s1">'/login'</span><span class="p">;</span>
-
-    <span class="k">public</span> <span class="k">static</span> <span class="nv">$usernameField</span> <span class="o">=</span> <span class="s1">'#mainForm #username'</span><span class="p">;</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="nv">$passwordField</span> <span class="o">=</span> <span class="s1">'#mainForm input[name=password]'</span><span class="p">;</span>
-    <span class="k">public</span> <span class="k">static</span> <span class="nv">$loginButton</span> <span class="o">=</span> <span class="s1">'#mainForm input[type=submit]'</span><span class="p">;</span>
+    <span class="c1">// include url of current page
+</span>    <span class="k">public</span> <span class="k">static</span> <span class="nv">$URL</span> <span class="o">=</span> <span class="s1">'/login'</span><span class="p">;</span>
 
     <span class="sd">/**
      * @var AcceptanceTester
@@ -256,9 +252,9 @@ Codeceptionは次のコマンドでページオブジェクトクラスを生成
         <span class="nv">$I</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tester</span><span class="p">;</span>
 
         <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="nx">self</span><span class="o">::</span><span class="nv">$URL</span><span class="p">);</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="nx">self</span><span class="o">::</span><span class="nv">$usernameField</span><span class="p">,</span> <span class="nv">$name</span><span class="p">);</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="nx">self</span><span class="o">::</span><span class="nv">$passwordField</span><span class="p">,</span> <span class="nv">$password</span><span class="p">);</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="nx">self</span><span class="o">::</span><span class="nv">$loginButton</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$usernameField</span><span class="p">,</span> <span class="nv">$name</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$passwordField</span><span class="p">,</span> <span class="nv">$password</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="nx">LoginPage</span><span class="o">::</span><span class="nv">$loginButton</span><span class="p">);</span>
 
         <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
     <span class="p">}</span>    
@@ -267,10 +263,8 @@ Codeceptionは次のコマンドでページオブジェクトクラスを生成
 </code></pre></div>
 <p>そして、これがテストの中でこのページオブジェクトがどのように使われるかの例です。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">use</span> <span class="nx">Page\Login</span> <span class="k">as</span> <span class="nx">LoginPage</span><span class="p">;</span>
-
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$loginPage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">LoginPage</span><span class="p">(</span><span class="nv">$I</span><span class="p">);</span>
+<span class="nv">$loginPage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">\Page\Login</span><span class="p">(</span><span class="nv">$I</span><span class="p">);</span>
 <span class="nv">$loginPage</span><span class="o">-&gt;</span><span class="na">login</span><span class="p">(</span><span class="s1">'bill evans'</span><span class="p">,</span> <span class="s1">'debby'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/profile'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Bill Evans Profile'</span><span class="p">,</span> <span class="s1">'h1'</span><span class="p">);</span>
@@ -474,6 +468,7 @@ PhpBrowserモジュールでの使用例がこちらです：</p>
 <span class="k">*</span> Response code: 200
 </code></pre></div>
 <h3>設定</h3>
+
 <p>モジュールとヘルパーはスイート設定もしくはグローバルな<code>codeception.yml</code>によって設定されます。</p>
 
 <p>必須のパラメーターはモジュールクラスの<code>$requiredFields</code>プロパティで定義する必要があります。Dbモジュールでの例を見てみましょう。：</p>
@@ -505,7 +500,7 @@ PhpBrowserモジュールでの使用例がこちらです：</p>
 </code></pre></div>
 <p>オプションと必須のパラメーターは<code>$config</code>プロパティからアクセスすることができます。その値を取得するには、<code>$this-&gt;config[&#39;parameter&#39;]</code>を使ってください。</p>
 
-<h3>動的設定</h3>
+動的設定</h3>
 
 <p>もし実行時にモジュールを再設定したければ、モジュールの<code>_reconfigure</code>メソッドを使用してください。
 それをヘルパークラスから呼び出し、変更したいすべてのフィールドに渡すことができます。</p>
@@ -599,7 +594,7 @@ PhpBrowserモジュールでの使用例がこちらです：</p>
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-08-21 12:02:34 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.2">Codeception 2.1.2</a></p>
+        <p>Last updated: 2015-07-22 13:55:36 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.1">Codeception 2.1.1</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
