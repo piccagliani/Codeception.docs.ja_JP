@@ -3,4 +3,4 @@ markdown: redcarpet
 redcarpet:
   extensions: ["tables"]
 highlighter: rouge
-version: 2.1.1
+version: 2.1.2

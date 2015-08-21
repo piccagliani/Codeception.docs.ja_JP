@@ -237,14 +237,18 @@ $I->see('Welcome, bill');
 このとおり、あなたはログインページのマークアップを気兼ねなく変更することができ、このページを対象とするすべてのテストに含まれるロケーターはLoginPageクラスのプロパティに従って更新されるでしょう。
 
 しかし、ここでさらに先に進みましょう。ページオブジェクトの概念は、ページのインタラクションを行うメソッドについてもページオブジェクトクラスに含まれるべき、と規定しています。今度は渡されたアクタークラスのインスタンスを保持しています。AcceptanceTesterに`AcceptanceTester`プロパティを介してアクセスできます。では、このクラスに`login`メソッドを定義しましょう。
-（訳注：ここの説明、文章がいくつか飛んでしまっているよう？で、下のコードとの文脈が失われています）
 
 ```php
 <?php
-class UserLoginPage
+namespace Page;
+
+class Login
 {
-    // include url of current page
     public static $URL = '/login';
+
+    public static $usernameField = '#mainForm #username';
+    public static $passwordField = '#mainForm input[name=password]';
+    public static $loginButton = '#mainForm input[type=submit]';
 
     /**
      * @var AcceptanceTester
@@ -261,9 +265,9 @@ class UserLoginPage
         $I = $this->tester;
 
         $I->amOnPage(self::$URL);
-        $I->fillField(LoginPage::$usernameField, $name);
-        $I->fillField(LoginPage::$passwordField, $password);
-        $I->click(LoginPage::$loginButton);
+        $I->fillField(self::$usernameField, $name);
+        $I->fillField(self::$passwordField, $password);
+        $I->click(self::$loginButton);
 
         return $this;
     }    
@@ -275,8 +279,10 @@ class UserLoginPage
 
 ```php
 <?php
+use Page\Login as LoginPage;
+
 $I = new AcceptanceTester($scenario);
-$loginPage = new \Page\Login($I);
+$loginPage = new LoginPage($I);
 $loginPage->login('bill evans', 'debby');
 $I->amOnPage('/profile');
 $I->see('Bill Evans Profile', 'h1');
