@@ -136,7 +136,7 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
 
 <h2>Cept、Cest、テスト形式</h2>
 
-<p>Codeceptionは3つのテスト形式をサポートしています。先述したシナリオベースのCept形式だけでなく、Codeceptionは <a href="http://codeception.com/docs/05-UnitTests">単体テスト向けのPHPUnit形式</a> およびCest形式についても実行することができます。</p>
+<p>Codeceptionは3つのテスト形式をサポートしています。先述したシナリオベースのCept形式だけでなく、Codeceptionは <a href="http://codeception.com/docs/06-UnitTests">単体テスト向けのPHPUnit形式</a> およびCest形式についても実行することができます。</p>
 
 <p>Cest形式はシナリオ駆動型テストのアプローチとオブジェクト指向設計を組み合わせています。いくつかのテストシナリオをグループにまとめたい場合、Cest形式を利用することを検討すべきです。下の例では、CRUDのアクションをいくつかのテスト（それぞれがCRUDの各操作に対応）から成る単一のファイルでテストしています:</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
@@ -270,7 +270,7 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-10-13 11:03:18 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.3">Codeception 2.1.3</a></p>
+        <p>Last updated: 2015-08-21 12:02:34 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.2">Codeception 2.1.2</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
@@ -292,10 +292,7 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
     $(document).ready(function () {
         $('#toc').toc({
             'selectors': 'h2,h3,h4',
-            'container': '#main_content',
-            'anchorName': function(i, heading, prefix) {
-                return prefix + i;
-            }
+            'container': '#main_content'
         });
     });
 </script>

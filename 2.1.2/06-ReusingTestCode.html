@@ -246,7 +246,7 @@ Codeceptionは次のコマンドでページオブジェクトクラスを生成
      */</span>
     <span class="k">protected</span> <span class="nv">$tester</span><span class="p">;</span>
 
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">(</span><span class="nx">\AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tester</span> <span class="o">=</span> <span class="nv">$I</span><span class="p">;</span>
     <span class="p">}</span>
@@ -394,7 +394,7 @@ Codeceptionはモジュールの順序によってアクションをオーバー
 </span>    <span class="sd">/**@var $table \Facebook\WebDriver\WebDriverElement */</span>
     <span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'WebDriver'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">_findElements</span><span class="p">(</span><span class="s1">'#result'</span><span class="p">);</span>
     <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">'table'</span><span class="p">,</span> <span class="nv">$table</span><span class="o">-&gt;</span><span class="na">getTagName</span><span class="p">());</span>
-    <span class="nv">$results</span> <span class="o">=</span> <span class="nv">$table</span><span class="o">-&gt;</span><span class="na">findElements</span><span class="p">(</span><span class="s1">'tr'</span><span class="p">);</span>
+    <span class="nv">$results</span> <span class="o">=</span> <span class="nv">$el</span><span class="o">-&gt;</span><span class="na">findElements</span><span class="p">(</span><span class="s1">'tr'</span><span class="p">);</span>
 
     <span class="c1">// asserting that table contains exactly $num rows
 </span>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="nv">$num</span><span class="p">,</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$results</span><span class="p">));</span>
@@ -474,7 +474,6 @@ PhpBrowserモジュールでの使用例がこちらです：</p>
 <span class="k">*</span> Response code: 200
 </code></pre></div>
 <h3>設定</h3>
-
 <p>モジュールとヘルパーはスイート設定もしくはグローバルな<code>codeception.yml</code>によって設定されます。</p>
 
 <p>必須のパラメーターはモジュールクラスの<code>$requiredFields</code>プロパティで定義する必要があります。Dbモジュールでの例を見てみましょう。：</p>
@@ -600,7 +599,7 @@ PhpBrowserモジュールでの使用例がこちらです：</p>
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-10-13 11:03:18 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.3">Codeception 2.1.3</a></p>
+        <p>Last updated: 2015-08-21 12:02:34 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.2">Codeception 2.1.2</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
@@ -622,10 +621,7 @@ PhpBrowserモジュールでの使用例がこちらです：</p>
     $(document).ready(function () {
         $('#toc').toc({
             'selectors': 'h2,h3,h4',
-            'container': '#main_content',
-            'anchorName': function(i, heading, prefix) {
-                return prefix + i;
-            }
+            'container': '#main_content'
         });
     });
 </script>

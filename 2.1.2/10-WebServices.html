@@ -44,7 +44,7 @@
 
 <h2>REST</h2>
 
-<p>REST方式のWebサービスは、HTTPの標準的なメソッドである<code>GET</code>、<code>POST</code>、<code>PUT</code>、<code>DELETE</code>を介してアクセスされます。これにより、ユーザーはWebサービスからエンティティを受け取り、操作することができます。WebサービスへのアクセスにはHTTPクライアントが必要であるため、<code>PhpBrowser</code>やいずれかのフレームワーク用モジュールのセットアップを行う必要があります。Webサーバーを無視し、Webサービスを内部的にテストするために、たとえば、Symfony2で実装されたアプリケーションであれば、<code>Symfony2</code>モジュールを使用します。</p>
+<p>REST方式のWebサービスは、HTTPの標準的なメソッドである<code>GET</code>、<code>POST</code>、<code>PUT</code>、<code>DELETE</code>を介してアクセスされます。これにより、Webサービスからエンティティを受け取り、操作することができます。WebサービスへのアクセスにはHTTPクライアントが必要であるため、<code>PhpBrowser</code>やいずれかのフレームワーク用モジュールのセットアップを行う必要があります。Webサーバーを無視し、Webサービスを内部的にテストするために、たとえば、Symfony2で実装されたアプリケーションであれば、<code>Symfony2</code>モジュールを使用します。</p>
 
 <p><code>api.suite.yml</code>にモジュールの設定を行います。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">ApiTester</span>
@@ -71,7 +71,7 @@
             <span class="s">url</span><span class="pi">:</span> <span class="s">/api/v1/</span>
             <span class="s">depends</span><span class="pi">:</span> <span class="s">Laravel5</span>
 </code></pre></div>
-<p>新しいテストスイートを設定できたら、最初のサンプルテストを作りましょう：</p>
+<p>新しいテストスーとを設定できたら、最初のサンプルテストを作りましょう：</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:cept api CreateUser
 </code></pre></div>
 <p>これを<code>CreateUserCept.php</code>と呼ぶこととします。REST APIを介したユーザーの作成をテストするために使用します。</p>
@@ -90,7 +90,7 @@
 </code></pre></div>
 <h3>JSONレスポンスのテスト</h3>
 
-<p>前のサンプルコードの最終行では、与えられた文字列がレスポンスに含まれることを検証しています。しかしながら、内容の形式によっては同じデータでも異なる結果を受け取ることができるので、この方法に頼るべきではありません。私たちに実際に必要なことは、レスポンスが解析できることを確認することであり、それには期待する何らかの値が含まれています。JSONの場合には<code>seeResponseContainsJson</code>メソッドを使うことができます。</p>
+<p>最後の行ではレスポンスに与えられた文字列が含まれることを確認しています。しかしながら、内容の形式によっては同じデータでも異なる結果を受け取ることができるので、この方法に頼るべきではありません。私たちに実際に必要なことは、レスポンスが解析できることを確認することであり、それには期待する何らかの値が含まれています。JSONの場合には<code>seeResponseContainsJson</code>メソッドを使うことができます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="c1">// matches {"result":"ok"}'
 </span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseContainsJson</span><span class="p">([</span><span class="s1">'result'</span> <span class="o">=&gt;</span> <span class="s1">'ok'</span><span class="p">]);</span>
@@ -272,7 +272,7 @@ XmlBuilderのインスタンスを作成するためには、`\Codeception\Util\
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-10-13 11:03:18 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.3">Codeception 2.1.3</a></p>
+        <p>Last updated: 2015-08-21 12:02:34 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.2">Codeception 2.1.2</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
@@ -294,10 +294,7 @@ XmlBuilderのインスタンスを作成するためには、`\Codeception\Util\
     $(document).ready(function () {
         $('#toc').toc({
             'selectors': 'h2,h3,h4',
-            'container': '#main_content',
-            'anchorName': function(i, heading, prefix) {
-                return prefix + i;
-            }
+            'container': '#main_content'
         });
     });
 </script>
