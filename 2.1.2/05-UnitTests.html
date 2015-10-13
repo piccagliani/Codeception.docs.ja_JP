@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Codeception.docs.ja : Codeception docs japanese translation">
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/guides.css">
+
+    <title>Codeception.docs.ja</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="container inner">
+        <a id="forkme_banner" href="https://github.com/piccagliani/Codeception.docs.ja_JP">View on GitHub</a>
+
+        <h1 id="project_title"><a href="index.html">Codeception.docs.ja</a></h1>
+        <h2 id="project_tagline">Codeception docs japanese translation</h2>
+
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="container">
+    <div class="row">
+        <section id="main_content" class="col-md-9">
+            <h1>単体テスト</h1>
+
+<p>Codeceptionはテストの実行環境としてPHPUnitを使用しています。したがって、PHPUnitのどのテストでもCodeceptionのテストスイートに追加できますし、実行できます。
+いままでにPHPUnitテストを書いていたならば、これまで書いてきたようにするだけです。
+Codeceptionは簡単な共通処理に対して、すばらしいヘルパー機能を追加しています。</p>
+
+<p>単体テストの基礎はここでは割愛する代わりに、単体テストにCodeceptionが追加する特徴の基礎知識をお伝えしましょう。</p>
+
+<p><strong>もう一度言います: テストを実行するためにPHPUnitをインストールする必要はありません。Codeceptionも実行できます。</strong></p>
+
+<h2>テストを作成する</h2>
+
+<p>Codeceptionは簡単にテストを作成する、すばらしいジェネレーターを持っています。
+<code>\PHPUnit_Framework_TestCase</code>クラスを継承している従来のPHPUnitテストを生成するところから始める事ができます。
+以下のようなコマンドで生成されます。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:phpunit unit Example
+</code></pre></div>
+<p>Codeceptionは一般的な単体テストのアドオンを備えています、それでは試してみましょう。
+Codeceptionの単体テストを作成するには別のコマンドが必要です。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:test unit Example
+</code></pre></div>
+<p>どちらのテストも<code>tests/unit</code>ディレクトリーに新しく<code>ExampleTest</code>ファイルを作成します。</p>
+
+<p><code>generate:test</code>によって作成されたテストは、このようになります。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">use</span> <span class="nx">Codeception\Util\Stub</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">ExampleTest</span> <span class="k">extends</span> <span class="nx">\Codeception\TestCase\Test</span>
+<span class="p">{</span>
+   <span class="sd">/**
+    * @var UnitTester
+    */</span>
+    <span class="k">protected</span> <span class="nv">$tester</span><span class="p">;</span>
+
+    <span class="c1">// 各テスト前に実行される
+</span>    <span class="k">protected</span> <span class="k">function</span> <span class="nf">_before</span><span class="p">()</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// 各テスト後に実行される
+</span>    <span class="k">protected</span> <span class="k">function</span> <span class="nf">_after</span><span class="p">()</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>このクラスは、はじめから<code>_before</code>と<code>_after</code>のメソッドが定義されています。それらは各テスト前にテスト用のオブジェクトを作成し、終了後に削除するのに使用できます。</p>
+
+<p>ご覧の通り、PHPUnitとは違い、<code>setUp</code>と<code>tearDown</code>メソッドがエイリアス: <code>_before</code>, <code>_after</code>されています。</p>
+
+<p>実際には<code>setUp</code>と<code>tearDown</code>メソッドは、親クラスの<code>\Codeception\TestCase\Test</code>クラスに実装されており、さらに単体テストの一部として実行できるように、Ceptファイルからすべてのすてきなアクションを持ったUnitTesterクラスがセットアップされています。受け入れテストや機能テストのように、<code>unit.suite.yml</code>の設定ファイルの中で<code>UnitTester</code>クラスが使う適切なモジュールを選べます。</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># Codeception Test Suite Configuration</span>
+
+<span class="c1"># suite for unit (internal) tests.</span>
+<span class="s">class_name</span><span class="pi">:</span> <span class="s">UnitTester</span>
+<span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">Asserts</span>
+        <span class="pi">-</span> <span class="s">\Helper\Unit</span>
+</code></pre></div>
+<h3>従来の単体テスト</h3>
+
+<p>Codeceptionの単体テストは、PHPUnitで書かれているのとまったく同じように書かれています。：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="k">extends</span> <span class="nx">\Codeception\TestCase\Test</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testValidation</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$user</span> <span class="o">=</span> <span class="nx">User</span><span class="o">::</span><span class="na">create</span><span class="p">();</span>
+
+        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]));</span>
+
+        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">'toolooooongnaaaaaaameeee'</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]));</span>
+
+        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">'davert'</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]));</span>           
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<h3>BDD Specテスト</h3>
+
+<p>テストを書くときは、アプリケーションにおける一定の変化のためにテストを準備する必要があります。テストは読みやすく維持されやすくするべきです。あなたのアプリケーションの仕様が変わったら、同じようにテストもアップデートされるべきです。ドキュメントのテストにおいてチーム内部で話し合いが持たれなかったのならば、新しい機能の導入によってテストが影響を受けるということを理解していくのに壁があるでしょう。</p>
+
+<p>そのため、アプリケーションを単体テストで網羅するだけでなく、テスト自体を説明的に保っておくことはとても重要な事です。私たちは、シナリオ駆動の受け入れテストと機能テストでこれを実践しています。そして、単体テストや結合テストにおいても同様にこれを実践するべきです。</p>
+
+<p>この場合において、単体テスト内部の仕様を書いている<a href="https://github.com/Codeception/Specify">Specify</a>（pharパッケージに含まれている）というスタンドアロンのプロジェクトを用意しています。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="k">extends</span> <span class="nx">\Codeception\TestCase\Test</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">\Codeception\Specify</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testValidation</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$user</span> <span class="o">=</span> <span class="nx">User</span><span class="o">::</span><span class="na">create</span><span class="p">();</span>
+
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">specify</span><span class="p">(</span><span class="s2">"username is required"</span><span class="p">,</span> <span class="k">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]));</span>
+        <span class="p">});</span>
+
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">specify</span><span class="p">(</span><span class="s2">"username is too long"</span><span class="p">,</span> <span class="k">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">'toolooooongnaaaaaaameeee'</span><span class="p">;</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]));</span>
+        <span class="p">});</span>
+
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">specify</span><span class="p">(</span><span class="s2">"username is ok"</span><span class="p">,</span> <span class="k">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">'davert'</span><span class="p">;</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]));</span>           
+        <span class="p">});</span>     
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>        
+</code></pre></div>
+<p><code>specify</code>のコードブロックを使用する事で、テストを細かい単位で説明することができます。このことはチームの全員にとってテストがとても見やすく、理解しやすい状態にしてくれます。</p>
+
+<p><code>specify</code>ブロックの内部にあるコードは独立しています。上記の例だと、<code>$this-&gt;user</code>（他のどんなオブジェクトやプロパティでも）への変更は他のコードブロックに反映されないでしょう。</p>
+
+<p>あなたはBDD-styleのアサーションをするために、<a href="https://github.com/Codeception/Verify">Codeception\Verify</a>も追加するかもしれません。もし、あなたが<code>assert</code>の呼び出しの中で、引数のどちらが期待している値で、どちらが実際の値なのかをよく混同してしまうなら、この小さなライブラリーはとてもすばらしく可読性に長けたアサーションを追加します。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nx">verify</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">equals</span><span class="p">(</span><span class="s1">'john'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<h2>モジュールを使う</h2>
+
+<p>シナリオ駆動の機能テストや受け入れテストの中で、あなたはアクタークラスのメソッドにアクセスできました。もし結合テストを書く場合は、データベースをテストする<code>Db</code>モジュールが役に立つかもしれません。</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># Codeception Test Suite Configuration</span>
+
+<span class="c1"># suite for unit (internal) tests.</span>
+<span class="s">class_name</span><span class="pi">:</span> <span class="s">UnitTester</span>
+<span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">Asserts</span>
+        <span class="pi">-</span> <span class="s">Db</span>
+        <span class="pi">-</span> <span class="s">\Helper\Unit</span>
+</code></pre></div>
+<p>UnitTesterのメソッドにアクセスする事で、テストの中で<code>UnitTester</code>のプロパティを使用できます。</p>
+
+<h3>データベースをテストする</h3>
+
+<p>それでは、どのようにデータベースのテストができるのか、見て行きましょう：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">function</span> <span class="nf">testSavingUser</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nv">$user</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">User</span><span class="p">();</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="s1">'Miles'</span><span class="p">);</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">setSurname</span><span class="p">(</span><span class="s1">'Davis'</span><span class="p">);</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">();</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">'Miles Davis'</span><span class="p">,</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getFullName</span><span class="p">());</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tester</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Miles'</span><span class="p">,</span> <span class="s1">'surname'</span> <span class="o">=&gt;</span> <span class="s1">'Davis'</span><span class="p">));</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>単体テストでデータベース機能を有効にするためには、unit.suite.yml設定ファイルにて有効なモジュール一覧に<code>Db</code>モジュールが含まれていることを確認してください。
+受け入れテストや機能テストのように、データベースはテストが終了するごとに、クリーンにされて構築されるでしょう。
+それが必要のない振る舞いであれば、現在のスイートの<code>Db</code>モジュールの設定を変更してください。</p>
+
+<h3>フレームワークとやりとりする</h3>
+
+<p>もしプロジェクトがすでにデータベースとのやりとりのためにORMを利用しているのであれば、データベースに直接アクセスすべきではないはずです。
+テストの中で直接ORMを使ってみませんか？LaravelのORMであるEloquentを使ってテストを書いてみましょう。そのためにはLaravel5モジュールを設定する必要があります。<code>amOnPage</code>や<code>see</code>といったWebに対する振る舞いは必要ないため、ORMのみ有効化しましょう：</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">UnitTester</span>
+<span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">Asserts</span>
+        <span class="pi">-</span> <span class="s">Laravel5</span><span class="pi">:</span>
+            <span class="s">part</span><span class="pi">:</span> <span class="s">ORM</span>
+        <span class="pi">-</span> <span class="s">\Helper\Unit</span>
+</code></pre></div>
+<p>機能テストと同じように、Laravel5モジュールをインクルードしました。実際のテストでの使い方を見てみましょう：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">function</span> <span class="nf">testUserNameCanBeChanged</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">// フレームワークからユーザーを作成、このユーザーはテスト後に削除される
+</span>    <span class="nv">$id</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tester</span><span class="o">-&gt;</span><span class="na">haveRecord</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'miles'</span><span class="p">]);</span>
+    <span class="c1">// モジュールにアクセスする
+</span>    <span class="nv">$user</span> <span class="o">=</span> <span class="nx">User</span><span class="o">::</span><span class="na">find</span><span class="p">(</span><span class="nv">$id</span><span class="p">);</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="s1">'bill'</span><span class="p">);</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">();</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">'bill'</span><span class="p">,</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">());</span>
+    <span class="c1">// フレームワークの関数を使ってデータが保存されたことを検証する
+</span>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tester</span><span class="o">-&gt;</span><span class="na">seeRecord</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'bill'</span><span class="p">]);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tester</span><span class="o">-&gt;</span><span class="na">dontSeeRecord</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'miles'</span><span class="p">]);</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>ActiveRecordパターンで実装されたORMを持つすべてのフレームワークにおいて、とても良く似たアプローチをとることができます。
+それらはYii2やPhalconで、同じように動作する<code>haveRecord</code>、<code>seeRecord</code>、<code>dontSeeRecord</code>を持っています。機能テスト用のアクションを利用しないよう、<code>part: ORM</code>を指定してインクルードしてください。</p>
+
+<p>In case you are using Symfony2 with Doctrine you may not enable Symfony2 itself but use only Doctrine2 only:
+DoctrineとともにSymfony2を利用するケースでは、Symfony2そのものは有効とせず、Doctrine2のみを利用するようにしてください。：</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">UnitTester</span>
+<span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">Asserts</span>
+        <span class="pi">-</span> <span class="s">Doctrine2</span><span class="pi">:</span>
+            <span class="s">depends</span><span class="pi">:</span> <span class="s">Symfony2</span>
+        <span class="pi">-</span> <span class="s">\Helper\Unit</span>
+</code></pre></div>
+<p>このようにすることで、Doctrineはデータベースへの接続確立のためにSymfony2を使いながら、Doctrine2モジュールのメソッドを利用することができます。このケースではテストは次のようになります。：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">function</span> <span class="nf">testUserNameCanBeChanged</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">// フレームワークからユーザーを作成、このユーザーはテスト後に削除される
+</span>    <span class="nv">$id</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tester</span><span class="o">-&gt;</span><span class="na">haveInRepository</span><span class="p">(</span><span class="s1">'Acme\DemoBundle\Entity\User'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'miles'</span><span class="p">]);</span>
+    <span class="c1">// モジュールにアクセスしてEntity Managerを取得する
+</span>    <span class="nv">$em</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'Doctrine2'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">em</span><span class="p">;</span>
+    <span class="c1">// 実際のユーザーを取得する
+</span>    <span class="nv">$user</span> <span class="o">=</span> <span class="nv">$em</span><span class="o">-&gt;</span><span class="na">find</span><span class="p">(</span><span class="s1">'Acme\DemoBundle\Entity\User'</span><span class="p">,</span> <span class="nv">$id</span><span class="p">);</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="s1">'bill'</span><span class="p">);</span>
+    <span class="nv">$em</span><span class="o">-&gt;</span><span class="na">persist</span><span class="p">(</span><span class="nv">$user</span><span class="p">);</span>
+    <span class="nv">$em</span><span class="o">-&gt;</span><span class="na">flush</span><span class="p">();</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">'bill'</span><span class="p">,</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">());</span>
+    <span class="c1">// フレームワークの関数を使ってデータが保存されたことを検証する
+</span>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tester</span><span class="o">-&gt;</span><span class="na">seeInRepository</span><span class="p">(</span><span class="s1">'Acme\DemoBundle\Entity\User'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'bill'</span><span class="p">]);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">tester</span><span class="o">-&gt;</span><span class="na">dontSeeInRepository</span><span class="p">(</span><span class="s1">'Acme\DemoBundle\Entity\User'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'miles'</span><span class="p">]);</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>どちらの例においても、テスト間におけるデータの永続化について心配する必要はありません。
+Doctrine2、Laravel4、どちらのモジュールにおいてもテストの終了時に作成されたデータはクリーンアップされます。
+これは、トランザクションでテストをラッピングし、その後、それをロールバックすることによって行われます。</p>
+
+<h3>モジュールにアクセスする</h3>
+
+<p>Codeceptionはこのスイートにおいて、すべてのモジュールに定義されたプロパティとメソッドにアクセスする事を許可しています。このときはUnitTesterクラスを使うときとは違い、直接モジュールを使用する事で、モジュールのすべてのパブリックなプロパティへのアクセスを得られます。</p>
+
+<p>この話は、先ほどのコードでDoctrine2モジュールからEntity Managerへのアクセスを行ったように、すでに検証しました。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="sd">/** @var Doctrine\ORM\EntityManager */</span>
+<span class="nv">$em</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'Doctrine2'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">em</span><span class="p">;</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>もし<code>Symfony2</code>を使うなら、このようにSymfonyのコンテナにアクセスします：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="sd">/** @var Symfony\Component\DependencyInjection\Container */</span>
+<span class="nv">$container</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'Symfony2'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">container</span><span class="p">;</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>有効化されているモジュールのすべてのPublicプロパティについても同じようにアクセスすることができます。アクセス可能なプロパティはモジュールリファレンスに列挙されています。</p>
+
+<h3>Cest</h3>
+
+<p><code>PHPUnit_Framework_TestCase</code>を継承したテストケースの代わりに、Codeception仕様のCest形式を使用できるでしょう。他のどのクラスも継承する必要はありません。このクラスのすべてのパブリックなメソッドがテストです。</p>
+
+<p>上記の例をシナリオ駆動の形式でこのように書きなおすことができます：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">UserCest</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">validateUser</span><span class="p">(</span><span class="nx">UnitTester</span> <span class="nv">$t</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$user</span> <span class="o">=</span> <span class="nv">$t</span><span class="o">-&gt;</span><span class="na">createUser</span><span class="p">();</span>
+        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+        <span class="nv">$t</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]);</span> 
+
+        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">'toolooooongnaaaaaaameeee'</span><span class="p">;</span>
+        <span class="nv">$t</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]));</span>
+
+        <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">'davert'</span><span class="p">;</span>
+        <span class="nv">$t</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">([</span><span class="s1">'username'</span><span class="p">]));</span>
+
+        <span class="nv">$t</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Miles'</span><span class="p">,</span> <span class="s1">'surname'</span> <span class="o">=&gt;</span> <span class="s1">'Davis'</span><span class="p">]);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p><code>$t</code>変数でアクセスしているであろう、UnitTesterクラスのいつものアサーションを追加する<code>Asserts</code>モジュールを単体テストのために追加するかもしれません。</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># Codeception Test Suite Configuration</span>
+
+<span class="c1"># suite for unit (internal) tests.</span>
+<span class="s">class_name</span><span class="pi">:</span> <span class="s">UnitTester</span>
+<span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">Asserts</span>
+        <span class="pi">-</span> <span class="s">Db</span>
+        <span class="pi">-</span> <span class="s">\Helper\Unit</span>
+</code></pre></div>
+<p><a href="http://codeception.com/docs/07-AdvancedUsage#Cest-Classes">Cest形式について もっと知る</a>.</p>
+
+<div class="alert alert-info">
+Cest形式は、テストを記述するにはシンプルすぎるように思えるかもしれません。
+Cestはアサーション用の関数、モックやスタブを作成する関数、さらにはこれまで見てきた例にあったモジュールにアクセスするための`getModule`でさえも提供しません。
+しかしながらCest形式は関心を分離するという点で優れています。テストコードは`UnitTester`オブジェクトによって提供されるサポートコードと干渉しません。単体/結合テストに必要となる、すべての追加アクションは`Helper\Unit`クラスに実装するようにしてください。これは推奨されたアプローチであり、テストをムダなく綺麗な状態に保つことができます。
+</div>
+
+<h3>スタブ</h3>
+
+<p>Codeceptionは、スタブを簡単に作成するPHPUnitモックフレームワークの小さいラッパーを提供しています。<code>\Codeception\Util\Stub</code>を追加して、ダミーオブジェクトの作成を始めてください。</p>
+
+<p>この例では、コンストラクタを呼び出さずにオブジェクトを初期化し、<code>getName</code>メソッドが<em>john</em>という値を返すように置き換えています。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$user</span> <span class="o">=</span> <span class="nx">Stub</span><span class="o">::</span><span class="na">make</span><span class="p">(</span><span class="s1">'User'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'getName'</span> <span class="o">=&gt;</span> <span class="s1">'john'</span><span class="p">]);</span>
+<span class="nv">$name</span> <span class="o">=</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">();</span> <span class="c1">// 'john'
+</span><span class="cp">?&gt;</span>
+</code></pre></div>
+<p>スタブはPHPUnitのモックフレームワークから生成されます。<a href="https://github.com/padraic/mockery">Mockery</a>（<a href="https://github.com/Codeception/MockeryModule">Mockery module</a>とセット）、<a href="https://github.com/Codeception/AspectMock">AspectMock</a>、など他のものを代わりに使用することもできます。</p>
+
+<p>スタブのユーティリティークラスの全リファレンスは<a href="/docs/reference/Stub">ここ</a>を見てください。</p>
+
+<h2>まとめ</h2>
+
+<p>テストスイートの中で、PHPUnitのテストはfirst-class citizensです。単体テストを書いて実行したいときはいつでも、PHPUnitをインストールする必要はなく、そのままCodeception上で実行することができます。いくつかのすばらしい特徴は、Codeceptionモジュールを統合する事で共通の単体テストを追加できることです。単体テストや結合テストのほとんどにおいて、PHPUnitのテストだけで十分です。PHPUnitのテストは速く、維持しやすいからです。</p>
+
+        </section>
+        <nav id="nav" class="col-md-3">
+            <h1>ガイド</h1>
+            <div class="well">
+                <ol>
+                    <li><a href="01-Introduction.html">イントロダクション</a></li>
+                    <li><a href="02-GettingStarted.html">はじめに</a></li>
+                    <li><a href="03-AcceptanceTests.html">受け入れテスト</a></li>
+                    <li><a href="04-FunctionalTests.html">機能テスト</a></li>
+                    <li><a href="05-UnitTests.html">単体テスト</a></li>
+                    <li><a href="06-ReusingTestCode.html">テストコードの再利用</a></li>
+                    <li><a href="07-AdvancedUsage.html">高度な使用法</a></li>
+                    <li><a href="08-Customization.html">カスタマイズ</a></li>
+                    <li><a href="09-Data.html">データを取り扱う</a></li>
+                    <li><a href="10-WebServices.html">Webサービスをテストする</a></li>
+                    <li><a href="11-Codecoverage.html">コードカバレッジ</a></li>
+                    <li><a href="12-ParallelExecution.html">並列実行</a></li>
+                </ol>
+            </div>
+            <h1>目次</h1>
+            <div id="toc" class="well">
+            </div>
+        </nav>
+    </div>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="container inner">
+        <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
+        <p>Last updated: 2015-08-21 12:02:34 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.2">Codeception 2.1.2</a></p>
+        <div id="contributors"></div>
+    </footer>
+</div>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-59804278-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+<script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="javascripts/toc.min.js"></script>
+<script src="javascripts/contributors.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#toc').toc({
+            'selectors': 'h2,h3,h4',
+            'container': '#main_content'
+        });
+    });
+</script>
+</body>
+</html>

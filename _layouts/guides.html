@@ -86,7 +86,10 @@
     $(document).ready(function () {
         $('#toc').toc({
             'selectors': 'h2,h3,h4',
-            'container': '#main_content'
+            'container': '#main_content',
+            'anchorName': function(i, heading, prefix) {
+                return prefix + i;
+            }
         });
     });
 </script>

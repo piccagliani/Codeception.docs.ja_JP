@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Codeception.docs.ja : Codeception docs japanese translation">
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/guides.css">
+
+    <title>Codeception.docs.ja</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="container inner">
+        <a id="forkme_banner" href="https://github.com/piccagliani/Codeception.docs.ja_JP">View on GitHub</a>
+
+        <h1 id="project_title"><a href="index.html">Codeception.docs.ja</a></h1>
+        <h2 id="project_tagline">Codeception docs japanese translation</h2>
+
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="container">
+    <div class="row">
+        <section id="main_content" class="col-md-9">
+            <h1>イントロダクション</h1>
+
+<p>テストをするというアイディアは決して新しいものではありません。あなたが最後にコミットしたものがアプリケーション全体をダウンさせていないということに確証が持てなければ、きっと夜も心地よく眠ることができないでしょう。しっかりとテストをすることで、あなたのアプリケーションが安定していると確信できるのです。</p>
+
+<p>多くのケースにおいて、テストはあなたのアプリケーションが100%正しく期待通りに動く保証をしているわけではありません。複雑なアプリケーションにおいて、起こりうるすべてのシナリオや例外を事前に把握するのは不可能です。しかしテストをすることにより、あなたのアプリケーションの最も大事な部分は予想通りに、そして確実に動作するという確証を持つことができるのです。</p>
+
+<p>アプリケーションをテストする方法はたくさんあります。
+最もポピュラーなパラダイムは <a href="http://ja.wikipedia.org/wiki/%E5%8D%98%E4%BD%93%E3%83%86%E3%82%B9%E3%83%88">単体テスト</a>です。
+ウェブアプリケーションでは、コントローラーやモデルを単体でテストしてもあなたのアプリケーションが正しく動作するという保証は持てません。アプリケーション全体の挙動をテストするには、機能テスト（functional test）または受け入れテスト（acceptance test）を書くべきです。</p>
+
+<p>Codeceptionのテストフレームワークはこれらのレベルを区別します。単体テスト、機能テスト、受け入れテストを1つの方法ですぐに書けるようになるためのツールなのです。</p>
+
+<p>それでは、リストされているテストのパラダイムを逆の順序で確認してみましょう。</p>
+
+<h3>受け入れテスト</h3>
+
+<p>あなたのクライアントやマネージャー、テスターまたは他の技術に詳しくない人はどのようにして、あなたのサイトが動作していることを知ることができますか？ ブラウザーを開き、ウェブサイトにアクセスし、リンクをクリックし、フォームを埋め、表示されたウェブページのコンテンツを実際に見る必要があります。その人はウェブサイトがどのようなフレームワークやデータベース、ウェブサーバー、またはプログラミング言語によって実装されているのかを知らないですし、なぜアプリケーションが期待通りに動作しないかも分かりません。</p>
+
+<p>受け入れテストでは、ユーザー視点による標準的かつ複雑なシナリオをカバーすることができます。受け入れテストを行うことで、あなたは定義されたシナリオ通りに動くユーザーがエラーに直面しないと確証を得ることができるのです。</p>
+
+<p>受け入れテストは<strong>任意のウェブサイト</strong>で行えるということを覚えておいてください。
+それは、あなたがカスタマイズしたCMSやフレームワークを使っていたとしてもです。</p>
+
+<h4>受け入れテストのサンプル</h4>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Sign Up'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">'#signup'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'username'</span> <span class="o">=&gt;</span> <span class="s1">'MilesDavis'</span><span class="p">,</span> <span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s1">'miles@davis.com'</span><span class="p">]);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Thank you for Signing Up!'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<h4>長所</h4>
+
+<ul>
+<li>どんなウェブサイト上でも動作します</li>
+<li>javascriptとajaxのリクエストをテストできます</li>
+<li>あなたのクライアントやマネージャーに見せることができます</li>
+<li>安定的なサポート: ソースコードや技術の変化による影響が小さいです</li>
+</ul>
+
+<h4>短所</h4>
+
+<ul>
+<li>動作が遅い: 動作しているブラウザーとデータベースのデータを入れ直す必要があります</li>
+<li>チェックする項目が少ないと、偽陽性（false-positive）の結果になってしまう可能性があります</li>
+<li>繰り返しますが、本当に遅いのです</li>
+<li>実行中の不安定さ: レンダリングやjavascriptの問題は予測できない結果につながる可能性があります</li>
+</ul>
+
+<h3>機能テスト</h3>
+
+<p>もし私たちのアプリケーションをサーバーを動かさずにチェックできたらどうでしょう？そうすることで私たちは例外の詳細なエラーを見たり、テスト速度を早くしたり、データベースの値が予想通りであることをチェックできるのです。これが機能テストです。</p>
+
+<p>機能テストのためには、ウェブリクエスト（<code>$_GET</code>と<code>$_POST</code>変数）をエミュレートし、HTMLレスポンスを返すアプリケーションに送信します。テスト内でレスポンスに関するアサーションを行ったり、データがデータベースに正しく格納されたかをチェックすることもできます。</p>
+
+<p>機能テストを行うにあたって、あなたのアプリケーションはテスト環境で実行する準備が整っていなければなりません。。
+Codeceptionはいくつかの人気なPHPフレームワークとのコネクターを提供していますが、あなた自身でそれを書くこともできます。</p>
+
+<h4>機能テストのサンプル</h4>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Sign Up'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">'#signup'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'username'</span> <span class="o">=&gt;</span> <span class="s1">'MilesDavis'</span><span class="p">,</span> <span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s1">'miles@davis.com'</span><span class="p">]);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Thank you for Signing Up!'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeEmailSent</span><span class="p">(</span><span class="s1">'miles@davis.com'</span><span class="p">,</span> <span class="s1">'Thank you for registration'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s1">'miles@davis.com'</span><span class="p">]);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<h4>長所</h4>
+
+<ul>
+<li>受け入れテストに似ており、より高速です</li>
+<li>より詳細なレポートを提供できます</li>
+<li>このコードをマネージャーやクライアントに見せることも可能です</li>
+<li>充分な安定: 悪影響を及ぼす可能性があるのは、大規模なコードの変更やフレームワークの変更だけです</li>
+</ul>
+
+<h4>短所</h4>
+
+<ul>
+<li>javascriptとajaxをテストできません</li>
+<li>ブラウザーをエミュレートするため、より多くの偽陽性の結果を得るかもしれません</li>
+<li>フレームワークが必要です</li>
+</ul>
+
+<h3>単体テスト</h3>
+
+<p>複数のコードを連結する前に、コードの断片をテストするのは非常に重要なことです。これを行うことにより、機能テストもしくは受け入れテストでカバーされなかった場合であったとしても、深い箇所に隠されたいくつかの機能がまだ動作するということに確証が得られます。これはまた、あなたが安定したテスト可能なコードを生成したということを証明します。</p>
+
+<p>Codeceptionは<a href="http://www.phpunit.de/">PHPUnit</a>の上に作成されています。もしあなたがPHPUnitを使った単体テストを書いた経験があるようでしたら、それを引き続き行うことが可能です。Codeception上で標準のPHPUnitによる単体テストを実行しても問題はありませんが、Codeceptionはあなたの単体テストがより簡単かつ綺麗になるよう構築されたツールをいくつか提供しています。</p>
+
+<p>テストが未経験の開発者でも、何がどのようにテストされているのかを知っておくべきでしょう。要件やコードは急激に変わることがあり、単体テストも要件に合うよう毎回アップデートするべきです。よりベターなのは、あなたがテストのシナリオを理解し、新しい挙動に対して迅速にアップデートすることです。</p>
+
+<h4>単体テストのサンプル</h4>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">function</span> <span class="nf">testSavingUser</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nv">$user</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">User</span><span class="p">();</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="s1">'Miles'</span><span class="p">);</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">setSurname</span><span class="p">(</span><span class="s1">'Davis'</span><span class="p">);</span>
+    <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">();</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">'Miles Davis'</span><span class="p">,</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getFullName</span><span class="p">());</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">unitTester</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Miles'</span><span class="p">,</span> <span class="s1">'surname'</span> <span class="o">=&gt;</span> <span class="s1">'Davis'</span><span class="p">]);</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<h4>長所</h4>
+
+<ul>
+<li>最も早いです（もちろん、現在のサンプルではデータベースのデータを入れ直す必要があります）</li>
+<li>普段あまり使用されることのない機能もカバーされます</li>
+<li>アプリケーションのコア部分の安定性がテストできます</li>
+<li>単体テストを書くことで、良い開発者と見なされます :)</li>
+</ul>
+
+<h4>短所</h4>
+
+<ul>
+<li>ユニット間の連結についてはテストを行いません</li>
+<li>サポートが不安定: コードの変更に非常に敏感です</li>
+</ul>
+
+<h2>まとめ</h2>
+
+<p>TDDの幅広い人気にも関わらず、これまでに、すべてのPHP開発者がアプリケーションのための自動化テストを書いてきたわけではありません。Codeceptionのフレームワークはテストを行うのが本当に楽しくなるよう開発されました。それは単体テスト、機能テスト、そして受け入れテストを1つのスタイルで書けるようにしたのです。</p>
+
+<p>これはBDDフレームワークと呼べるでしょう。Codeceptionのすべてのテストは記述作法に基づいて書かれています。テスト本文を見るだけで、あなたは何のテストがどのように行われているのかを明確に理解することができるようになります。多くのアサーションのある複雑なテストでさえ、単純なPHPのDSLで記述されています。</p>
+
+        </section>
+        <nav id="nav" class="col-md-3">
+            <h1>ガイド</h1>
+            <div class="well">
+                <ol>
+                    <li><a href="01-Introduction.html">イントロダクション</a></li>
+                    <li><a href="02-GettingStarted.html">はじめに</a></li>
+                    <li><a href="03-AcceptanceTests.html">受け入れテスト</a></li>
+                    <li><a href="04-FunctionalTests.html">機能テスト</a></li>
+                    <li><a href="05-UnitTests.html">単体テスト</a></li>
+                    <li><a href="06-ReusingTestCode.html">テストコードの再利用</a></li>
+                    <li><a href="07-AdvancedUsage.html">高度な使用法</a></li>
+                    <li><a href="08-Customization.html">カスタマイズ</a></li>
+                    <li><a href="09-Data.html">データを取り扱う</a></li>
+                    <li><a href="10-WebServices.html">Webサービスをテストする</a></li>
+                    <li><a href="11-Codecoverage.html">コードカバレッジ</a></li>
+                    <li><a href="12-ParallelExecution.html">並列実行</a></li>
+                </ol>
+            </div>
+            <h1>目次</h1>
+            <div id="toc" class="well">
+            </div>
+        </nav>
+    </div>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="container inner">
+        <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
+        <p>Last updated: 2015-08-21 12:02:34 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.2">Codeception 2.1.2</a></p>
+        <div id="contributors"></div>
+    </footer>
+</div>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-59804278-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+<script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="javascripts/toc.min.js"></script>
+<script src="javascripts/contributors.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#toc').toc({
+            'selectors': 'h2,h3,h4',
+            'container': '#main_content'
+        });
+    });
+</script>
+</body>
+</html>

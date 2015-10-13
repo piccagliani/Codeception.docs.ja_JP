@@ -130,7 +130,7 @@ OK (1 test, 1 assertions)
 
 ## Cept、Cest、テスト形式
 
-Codeceptionは3つのテスト形式をサポートしています。先述したシナリオベースのCept形式だけでなく、Codeceptionは [単体テスト向けのPHPUnit形式](http://codeception.com/docs/06-UnitTests) およびCest形式についても実行することができます。
+Codeceptionは3つのテスト形式をサポートしています。先述したシナリオベースのCept形式だけでなく、Codeceptionは [単体テスト向けのPHPUnit形式](http://codeception.com/docs/05-UnitTests) およびCest形式についても実行することができます。
 
 Cest形式はシナリオ駆動型テストのアプローチとオブジェクト指向設計を組み合わせています。いくつかのテストシナリオをグループにまとめたい場合、Cest形式を利用することを検討すべきです。下の例では、CRUDのアクションをいくつかのテスト（それぞれがCRUDの各操作に対応）から成る単一のファイルでテストしています:
 

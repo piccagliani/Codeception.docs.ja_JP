@@ -202,7 +202,7 @@ class ModeratorCest {
 ?>
 ```
 
-`@before`と`@after`アノテーションはインクルードされた関数に対しても使えます。ただし、1つのメソッドに対して同じ種類のアノテーションを複数記述することはできません。1つのメソッドに対して、1つの`@before`と1つの`@after`アノテーションのみですd - one method can have only one `@before` and only one `@after` annotation.
+`@before`と`@after`アノテーションはインクルードされた関数に対しても使えます。ただし、1つのメソッドに対して同じ種類のアノテーションを複数記述することはできません。1つのメソッドに対して、1つの`@before`と1つの`@after`アノテーションのみです。
 
 ## 環境
 
