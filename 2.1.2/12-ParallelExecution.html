@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Codeception.docs.ja : Codeception docs japanese translation">
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/guides.css">
+
+    <title>Codeception.docs.ja</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="container inner">
+        <a id="forkme_banner" href="https://github.com/piccagliani/Codeception.docs.ja_JP">View on GitHub</a>
+
+        <h1 id="project_title"><a href="index.html">Codeception.docs.ja</a></h1>
+        <h2 id="project_tagline">Codeception docs japanese translation</h2>
+
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="container">
+    <div class="row">
+        <section id="main_content" class="col-md-9">
+            <h1>並列実行</h1>
+
+<p>テストの実行時間がコーヒーブレイクよりも長くなったとしたら、それはテストの実行速度向上を考える良い機会です。もしすでにテストをSSD上で実行している、またはSeleniumの替わりにPhantomJSの使用を試しているのに、まだ実行速度にイライラしているようでしたら、テストを並列実行してみるのが良いかもしれません。</p>
+
+<h2>どこからはじめよう？</h2>
+
+<p>Codeceptionは<code>run-parallel</code>のようなコマンドを提供していません。全員にとって満足に動作する共通の解決策はありません。あなたは次の疑問を解決する必要があります。</p>
+
+<ul>
+<li>どのようにして並列プロセスは実行されるのか？</li>
+<li>どのようにして並列プロセスがお互いに影響を与えないようにするか？</li>
+<li>プロセスごとに異なるデータベースを使用するか？</li>
+<li>プロセスごとに異なるホストを使用するか？</li>
+<li>どのように並列プロセス間でテストを分割すべきか？</li>
+</ul>
+
+<p>並列化を実現するためのアプローチは2つあります。<a href="http://docker.com">Docker</a>を使って、それぞれのプロセスを独立したコンテナ内で実行するか、それらコンテナを同時に実行するか、することができます。</p>
+
+<div class="alert alert-warning">
+Dockerは独立したテスト環境のため、本当に良く機能します。
+この章を記述している時点では、Dockerのようなすばらしいツールはありませんでした。この章では、手動による並列実行の管理方法について説明します。見てわかるように、Dockerが簡単にやってのけるのに対して、この章ではテストを分離するためにとても多くの労力を割いています。現在では、テストの並列実行には**Dockerを使うことをおすすめします**。
+</div>
+
+<h2>なにをすればいい？</h2>
+
+<p>並列テスト実行は以下の3ステップから構成されます。</p>
+
+<ul>
+<li>テストを分割する</li>
+<li>テストを並列に実行する</li>
+<li>テスト結果をマージする</li>
+</ul>
+
+<p>これらのステップの実施にタスクランナーを利用することを提案します。このガイドでは<a href="http://robo.li"><strong>Robo</strong></a>というタスクランナーを使用します。これは非常に簡単に利用できるモダンなPHPのタスクランナーです。バックグラウンドおよび並列プロセスの起動に<a href="http://symfony.com/doc/current/components/process.html">Symfony Process</a>を使っています。ステップ2に必要なのはこれだけです！ではステップ1とステップ2はどうでしょう？私たちはテストをグループに分割するのと、テスト結果をJUnit XMLレポートにマージするためにrobo <a href="https://github.com/Codeception/robo-paracept">tasks</a>を作成しました。</p>
+
+<p>まとめると、私たちに必要なものは以下となります。</p>
+
+<ul>
+<li><a href="http://robo.li">Robo</a> - タスクランナー</li>
+<li><a href="https://github.com/Codeception/robo-paracept">robo-paracept</a> - 並列実行のためのCodeceptionタスク</li>
+</ul>
+
+<h2>Roboを準備する</h2>
+
+<p><code>Robo</code>はグローバルインストールすることを推奨します。<a href="https://getcomposer.org/doc/03-cli.md#global">Composerを使用してグローバルインストールする</a>か、<code>robo.phar</code>をダウンロードしてPATHを通すか、どちらでも構いません。</p>
+
+<p>プロジェクトのルートで<code>robo</code>を実行します。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>robo
+  RoboFile.php not found <span class="k">in </span>this dir
+  Should I create RoboFile here? <span class="o">(</span>y/n<span class="o">)</span>
+</code></pre></div>
+<p><code>RoboFile.php</code>が作成されることを確認します。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">RoboFile</span> <span class="k">extends</span> <span class="nx">\Robo\Tasks</span>
+<span class="p">{</span>
+    <span class="c1">// define public methods as commands
+</span><span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>Composer経由で<code>codeception/robo-paracept</code>をインストールし、RoboFileにインクルードします。</p>
+
+<p>robofileの各publicメソッドはコンソールコマンドとして実行することができます。先ほどの3つのステップのコマンドを定義しましょう。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">require_once</span> <span class="s1">'vendor/autoload.php'</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Robofile</span> <span class="k">extends</span> <span class="nx">\Robo\Tasks</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">\Codeception\Task\MergeReports</span><span class="p">;</span>
+    <span class="k">use</span> <span class="nx">\Codeception\Task\SplitTestsByGroups</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">parallelSplitTests</span><span class="p">()</span>
+    <span class="p">{</span>
+
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">parallelRun</span><span class="p">()</span>
+    <span class="p">{</span>
+
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">parallelMergeResults</span><span class="p">()</span>
+    <span class="p">{</span>
+
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p><code>robo</code>を実行すると、それぞれのコマンドが表示されます。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>robo
+Robo version 0.4.4
+---
+Available commands:
+  <span class="nb">help                     </span>Displays <span class="nb">help
+  </span>list                     Lists commands
+parallel
+  parallel:merge-results   
+  parallel:run             
+  parallel:split-tests     
+</code></pre></div>
+<h2>サンプルプロジェクト</h2>
+
+<p>とても時間のかかる受け入れテストを5プロセスに分割して実行することを考えてみましょう。それぞれのテストが衝突しないように異なるホストとデータベースを使用すべきです。そのため、先に進む前に5つの異なるホストにApache/Nginxを設定する必要があります（もしくは、単に異なるポートを使用してPHPのビルトインサーバーでアプリケーションを実行します）。ホスト情報に基づいて対応するデータベースを使用するようにしてください。</p>
+
+<p>代替として<a href="https://www.docker.io/">Docker</a>や<a href="https://linuxcontainers.org/">LXC</a>を使用して<strong>分離された環境</strong>を準備し、それぞれのテストプロセスをコンテナー上で実行することもできます。新しいコンテナを起動してより多くのプロセスを実行することは、手動で追加のデータベースとホストを作成するよりもはるかに簡単です。これはより安定したテスト環境を作成しているということです（データベース、ファイル、プロセスの衝突はありません）。ただ、新しく仮想マシンを作成する度にコンテナをプロビジョニングする必要があるでしょう。</p>
+
+<p>SSHを使用してリモートホスト上でテストを実行するということも考えられます。<code>Robo</code>はSSHコマンドを実行するためのビルトインタスクも備えています。</p>
+
+<p>このサンプルプロジェクトでは、アプリケーションのために5つのデータべースと5つの独立したホストを準備していることを想定しています。</p>
+
+<h3>ステップ1 テストを分割する</h3>
+
+<p>Codeceptionはテストを<a href="http://codeception.com/docs/07-AdvancedUsage#Groups">グループ</a>に整理することができます。バージョン2.0からはグループの情報をファイルから読み込むことができます。テキストファイルにファイルの一覧を記述すると、動的にグループとして設定されます。サンプルのグループファイルを見てみましょう。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">tests/functional/LoginCept.php
+tests/functional/AdminCest.php:createUser
+tests/functional/AdminCest.php:deleteUser
+</code></pre></div>
+<p><code>\Codeception\Task\SplitTestsByGroups</code>タスクは交差しない（non-intersecting）グループファイルを生成します。テストはファイル単位、テスト単位のどちらでも分割することができます。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+    <span class="k">function</span> <span class="nf">parallelSplitTests</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">taskSplitTestFilesByGroups</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">projectRoot</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">testsFrom</span><span class="p">(</span><span class="s1">'tests/functional'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">groupsTo</span><span class="p">(</span><span class="s1">'tests/_log/p'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">run</span><span class="p">();</span>
+
+        <span class="c1">// alternatively
+</span>        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">taskSplitTestsByGroups</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">projectRoot</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">testsFrom</span><span class="p">(</span><span class="s1">'tests/functional'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">groupsTo</span><span class="p">(</span><span class="s1">'tests/_log/p'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">run</span><span class="p">();</span>
+    <span class="p">}</span>    
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>後者の場合、<code>Codeception\TestLoader</code>が使用され、テストクラスはメモリ上に読み込まれます。</p>
+
+<p>グループファイルを準備しましょう。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>robo parallel:split-tests
+
+ <span class="o">[</span>Codeception<span class="se">\T</span>ask<span class="se">\S</span>plitTestFilesByGroupsTask] Processing 33 files
+ <span class="o">[</span>Codeception<span class="se">\T</span>ask<span class="se">\S</span>plitTestFilesByGroupsTask] Writing tests/_log/p1
+ <span class="o">[</span>Codeception<span class="se">\T</span>ask<span class="se">\S</span>plitTestFilesByGroupsTask] Writing tests/_log/p2
+ <span class="o">[</span>Codeception<span class="se">\T</span>ask<span class="se">\S</span>plitTestFilesByGroupsTask] Writing tests/_log/p3
+ <span class="o">[</span>Codeception<span class="se">\T</span>ask<span class="se">\S</span>plitTestFilesByGroupsTask] Writing tests/_log/p4
+ <span class="o">[</span>Codeception<span class="se">\T</span>ask<span class="se">\S</span>plitTestFilesByGroupsTask] Writing tests/_log/p5
+</code></pre></div>
+<p>これでグループファイルができました。生成されたグループファイルを読み込むよう、<code>codeception.yml</code>を更新してください。今回の場合、<em>p1</em>、<em>p2</em>、<em>p3</em>、<em>p4</em>、<em>p5</em>のグループがあります。</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">groups</span><span class="pi">:</span>
+    <span class="s">p*</span><span class="pi">:</span> <span class="s">tests/_log/p*</span>
+</code></pre></div>
+<p>2つ目のグループからテストを実行してみましょう。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run functional -g p2
+</code></pre></div>
+<h3>ステップ2 テストを実行する</h3>
+
+<p>すでに述べたように、Roboにはバックグラウンドプロセスを起動するための<code>ParallelExec</code>を備えています。しかし、これが唯一のオプションとは考えないでください。たとえば、SSHを介してリモートでテストを実行することもできますし、GearmanやRabbitMQなどを利用してプロセスを起動することもできます。ただ、この例では5つのバックグラウンドプロセスを利用します。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+    <span class="k">function</span> <span class="nf">parallelRun</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$parallel</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">taskParallelExec</span><span class="p">();</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nv">$i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nv">$i</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">;</span> <span class="nv">$i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>            
+            <span class="nv">$parallel</span><span class="o">-&gt;</span><span class="na">process</span><span class="p">(</span>
+                <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">taskCodecept</span><span class="p">()</span> <span class="c1">// use built-in Codecept task
+</span>                <span class="o">-&gt;</span><span class="na">suite</span><span class="p">(</span><span class="s1">'acceptance'</span><span class="p">)</span> <span class="c1">// run acceptance tests
+</span>                <span class="o">-&gt;</span><span class="na">group</span><span class="p">(</span><span class="s2">"p</span><span class="nv">$i</span><span class="s2">"</span><span class="p">)</span>        <span class="c1">// for all p* groups
+</span>                <span class="o">-&gt;</span><span class="na">xml</span><span class="p">(</span><span class="s2">"tests/_log/result_</span><span class="nv">$i</span><span class="s2">.xml"</span><span class="p">)</span> <span class="c1">// save XML results
+</span>            <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nv">$parallel</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="cp">?&gt;</span>    
+</code></pre></div>
+<p>私たちは何か重要なことを見落としています。異なるプロセスに異なるデータベースを定義することを忘れていますね。これは<a href="http://codeception.com/docs/07-AdvancedUsage#Environments">環境</a>を利用して行うことができます。<code>acceptance.suite.yml</code>に新しく5つの環境を定義しましょう。</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">AcceptanceTester</span>
+<span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">WebDriver</span><span class="pi">,</span> <span class="nv">Db</span><span class="pi">]</span>
+    <span class="s">config</span><span class="pi">:</span>
+        <span class="s">Db</span><span class="pi">:</span>
+            <span class="s">dsn</span><span class="pi">:</span> <span class="s1">'</span><span class="s">mysql:dbname=testdb;host=127.0.0.1'</span> 
+            <span class="s">user</span><span class="pi">:</span> <span class="s1">'</span><span class="s">root'</span>
+            <span class="s">dump</span><span class="pi">:</span> <span class="s1">'</span><span class="s">tests/_data/dump.sql'</span>
+            <span class="s">populate</span><span class="pi">:</span> <span class="s">true</span>
+            <span class="s">cleanup</span><span class="pi">:</span> <span class="s">true</span>
+        <span class="s">WebDriver</span><span class="pi">:</span>
+            <span class="s">url</span><span class="pi">:</span> <span class="s1">'</span><span class="s">http://localhost/'</span>
+<span class="s">env</span><span class="pi">:</span>
+    <span class="s">p1</span><span class="pi">:</span>
+        <span class="s">modules</span><span class="pi">:</span>
+            <span class="s">config</span><span class="pi">:</span>
+                <span class="s">Db</span><span class="pi">:</span>
+                    <span class="s">dsn</span><span class="pi">:</span> <span class="s1">'</span><span class="s">mysql:dbname=testdb_1;host=127.0.0.1'</span> 
+                <span class="s">WebDriver</span><span class="pi">:</span>
+                    <span class="s">url</span><span class="pi">:</span> <span class="s1">'</span><span class="s">http://test1.localhost/'</span>
+    <span class="s">p2</span><span class="pi">:</span>
+        <span class="s">modules</span><span class="pi">:</span>
+            <span class="s">config</span><span class="pi">:</span>
+                <span class="s">Db</span><span class="pi">:</span>
+                    <span class="s">dsn</span><span class="pi">:</span> <span class="s1">'</span><span class="s">mysql:dbname=testdb_2;host=127.0.0.1'</span> 
+                <span class="s">WebDriver</span><span class="pi">:</span>
+                    <span class="s">url</span><span class="pi">:</span> <span class="s1">'</span><span class="s">http://test2.localhost/'</span>
+    <span class="s">p3</span><span class="pi">:</span>
+        <span class="s">modules</span><span class="pi">:</span>
+            <span class="s">config</span><span class="pi">:</span>
+                <span class="s">Db</span><span class="pi">:</span>
+                    <span class="s">dsn</span><span class="pi">:</span> <span class="s1">'</span><span class="s">mysql:dbname=testdb_3;host=127.0.0.1'</span> 
+                <span class="s">WebDriver</span><span class="pi">:</span>
+                    <span class="s">url</span><span class="pi">:</span> <span class="s1">'</span><span class="s">http://test3.localhost/'</span>
+    <span class="s">p4</span><span class="pi">:</span>
+        <span class="s">modules</span><span class="pi">:</span>
+            <span class="s">config</span><span class="pi">:</span>
+                <span class="s">Db</span><span class="pi">:</span>
+                    <span class="s">dsn</span><span class="pi">:</span> <span class="s1">'</span><span class="s">mysql:dbname=testdb_4;host=127.0.0.1'</span> 
+                <span class="s">WebDriver</span><span class="pi">:</span>
+                    <span class="s">url</span><span class="pi">:</span> <span class="s1">'</span><span class="s">http://test4.localhost/'</span>
+    <span class="s">p5</span><span class="pi">:</span>
+        <span class="s">modules</span><span class="pi">:</span>
+            <span class="s">config</span><span class="pi">:</span>
+                <span class="s">Db</span><span class="pi">:</span>
+                    <span class="s">dsn</span><span class="pi">:</span> <span class="s1">'</span><span class="s">mysql:dbname=testdb_5;host=127.0.0.1'</span> 
+                <span class="s">WebDriver</span><span class="pi">:</span>
+                    <span class="s">url</span><span class="pi">:</span> <span class="s1">'</span><span class="s">http://test5.localhost/'</span>
+</code></pre></div>
+<p>そうしたら、対応する環境を利用するように<code>parallelRun</code>メソッドを更新してください。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+    <span class="k">function</span> <span class="nf">parallelRun</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$parallel</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">taskParallelExec</span><span class="p">();</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nv">$i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nv">$i</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">;</span> <span class="nv">$i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>            
+            <span class="nv">$parallel</span><span class="o">-&gt;</span><span class="na">process</span><span class="p">(</span>
+                <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">taskCodecept</span><span class="p">()</span> <span class="c1">// use built-in Codecept task
+</span>                <span class="o">-&gt;</span><span class="na">suite</span><span class="p">(</span><span class="s1">'acceptance'</span><span class="p">)</span> <span class="c1">// run acceptance tests
+</span>                <span class="o">-&gt;</span><span class="na">group</span><span class="p">(</span><span class="s2">"p</span><span class="nv">$i</span><span class="s2">"</span><span class="p">)</span>        <span class="c1">// for all p* groups
+</span>                <span class="o">-&gt;</span><span class="na">env</span><span class="p">(</span><span class="s2">"p</span><span class="nv">$i</span><span class="s2">"</span><span class="p">)</span>          <span class="c1">// in its own environment
+</span>                <span class="o">-&gt;</span><span class="na">xml</span><span class="p">(</span><span class="s2">"tests/_log/result_</span><span class="nv">$i</span><span class="s2">.xml"</span><span class="p">)</span> <span class="c1">// save XML results
+</span>              <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nv">$parallel</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="cp">?&gt;</span>    
+</code></pre></div>
+<p>これで次のようにテストを実行することができます。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>robo parallel:run
+</code></pre></div>
+<h3>ステップ3 テスト結果をマージする</h3>
+
+<p>テスト実行中はコンソールに出力される内容を信用すべきではありません。<code>parallelExec</code>タスクの場合、いくつかの文字列は失われるでしょう。テスト結果は、マージできて継続的インテグレーションに挿入できるJUnit XML形式で保存することをおすすめします。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+    <span class="k">function</span> <span class="nf">parallelMergeResults</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$merge</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">taskMergeXmlReports</span><span class="p">();</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nv">$i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> <span class="nv">$i</span><span class="o">&lt;=</span><span class="mi">5</span><span class="p">;</span> <span class="nv">$i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$merge</span><span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="s2">"/tests/_log/result_</span><span class="nv">$i</span><span class="s2">.xml"</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="nv">$merge</span><span class="o">-&gt;</span><span class="na">into</span><span class="p">(</span><span class="s2">"/tests/_log/result.xml"</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">run</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p><code>result.xml</code>ファイルが生成されます。これを処理して、分析することができます。</p>
+
+<h3>すべてを統合する</h3>
+
+<p>これまでのステップを統括して1つのコマンドとするために、新しくpublicな<code>parallelAll</code>メソッドを定義し、すべてのコマンドを実行するようにします。<code>parallelRun</code>の結果を保存して、最終的な終了コードとして使います。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+    <span class="k">function</span> <span class="nf">parallelAll</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">parallelSplitTests</span><span class="p">();</span>
+        <span class="nv">$result</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">parallelRun</span><span class="p">();</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">parallelMergeResults</span><span class="p">();</span>
+        <span class="k">return</span> <span class="nv">$result</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<h2>まとめ</h2>
+
+<p>Codeceptionはテストを並列実行するためのツールを提供していません。これは複雑なタスクであり、解決策はプロジェクトに依存しています。私たちはすべての必要なステップを行うために外部ツールとしての<a href="http://robo.li">Robo</a>タスクランナーを使いました。テストを並列実行するための準備としてCodeceptionの動的グループと環境の仕組みを利用しました。さらに、テストプロセスに応じて動的な設定を行うための拡張機能とグループクラスを作成することができます。</p>
+
+        </section>
+        <nav id="nav" class="col-md-3">
+            <h1>ガイド</h1>
+            <div class="well">
+                <ol>
+                    <li><a href="01-Introduction.html">イントロダクション</a></li>
+                    <li><a href="02-GettingStarted.html">はじめに</a></li>
+                    <li><a href="03-AcceptanceTests.html">受け入れテスト</a></li>
+                    <li><a href="04-FunctionalTests.html">機能テスト</a></li>
+                    <li><a href="05-UnitTests.html">単体テスト</a></li>
+                    <li><a href="06-ReusingTestCode.html">テストコードの再利用</a></li>
+                    <li><a href="07-AdvancedUsage.html">高度な使用法</a></li>
+                    <li><a href="08-Customization.html">カスタマイズ</a></li>
+                    <li><a href="09-Data.html">データを取り扱う</a></li>
+                    <li><a href="10-WebServices.html">Webサービスをテストする</a></li>
+                    <li><a href="11-Codecoverage.html">コードカバレッジ</a></li>
+                    <li><a href="12-ParallelExecution.html">並列実行</a></li>
+                </ol>
+            </div>
+            <h1>目次</h1>
+            <div id="toc" class="well">
+            </div>
+        </nav>
+    </div>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="container inner">
+        <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
+        <p>Last updated: 2015-08-21 12:02:34 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.2">Codeception 2.1.2</a></p>
+        <div id="contributors"></div>
+    </footer>
+</div>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-59804278-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+<script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="javascripts/toc.min.js"></script>
+<script src="javascripts/contributors.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#toc').toc({
+            'selectors': 'h2,h3,h4',
+            'container': '#main_content'
+        });
+    });
+</script>
+</body>
+</html>

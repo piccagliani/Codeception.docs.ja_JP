@@ -254,7 +254,7 @@ class Login
      */
     protected $tester;
 
-    public function __construct(AcceptanceTester $I)
+    public function __construct(\AcceptanceTester $I)
     {
         $this->tester = $I;
     }
@@ -304,7 +304,7 @@ class UserCest
 ?>
 ```
 
-The dependency nijection container can construct any object that require any known class type. For instance, `Page\Login` required `AcceptanceTester`, and so it was injected into `Page\Login` constructor, and PageObject was created and passed into method arguments. You should specify explicitly the types of requried objects for Codeception to know what objects should be created for a test. Dependency Injection will be described in the next chapter. 
+The dependency injection container can construct any object that require any known class type. For instance, `Page\Login` required `AcceptanceTester`, and so it was injected into `Page\Login` constructor, and PageObject was created and passed into method arguments. You should specify explicitly the types of requried objects for Codeception to know what objects should be created for a test. Dependency Injection will be described in the next chapter. 
 
 ## Modules and Helpers
 
@@ -429,7 +429,7 @@ function seeNumResults($num)
     /**@var $table \Facebook\WebDriver\WebDriverElement */
     $table = $this->getModule('WebDriver')->_findElements('#result');
     $this->assertEquals('table', $table->getTagName());
-    $results = $el->findElements('tr');
+    $results = $table->findElements('tr');
 
     // asserting that table contains exactly $num rows
     $this->assertEquals($num, count($results));
