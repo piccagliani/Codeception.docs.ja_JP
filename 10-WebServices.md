@@ -90,7 +90,7 @@ $I->seeResponseContainsJson([
 ?>
 ```
 
-レスポンスに対して、より複雑な検証を行いたい場合があると思います。そのためには [ヘルパー](http://codeception.com/docs/03-ModulesAndHelpers#Helpers)クラスに独自のメソッドを記述します。最後のJSONレスポンスにアクセスするためには、`REST`モジュールの`response`プロパティーを使用します。次に示す`seeResponseIsHtml`メソッドで説明しましょう。
+レスポンスに対して、より複雑な検証を行いたい場合があると思います。そのためには [ヘルパー](http://codeception.com/docs/06-ReusingTestCode#Helpers)クラスに独自のメソッドを記述します。最後のJSONレスポンスにアクセスするためには、`REST`モジュールの`response`プロパティーを使用します。次に示す`seeResponseIsHtml`メソッドで説明しましょう。
 （訳注：「ヘルパー」のリンク先は正しくは[こちら](http://codeception.com/docs/06-ReusingTestCode#Modules-and-Helpers)）
 
 ```php
@@ -125,6 +125,26 @@ $I->seeResponseJsonMatchesJsonPath('$[0].user.login');
 $I->seeResponseJsonMatchesXpath('//user/login');
 ?>
 ```
+
+レスポンス内のフィールドの型を検証する必要がある場合、より詳細な確認が可能です。
+JSONレスポンスの構造を定義する[seeResponseMatchesJsonType](http://codeception.com/docs/modules/REST#seeResponseMatchesJsonType)アクションを使用して行うことができます。
+
+```php
+<?php
+$I->sendGET('/users/1');
+$I->seeResponseIsJson();
+$I->seeResponseMatchesJsonType([
+    'id' => 'integer',
+    'name' => 'string',
+    'email' => 'string:email',
+    'homepage' => 'string:url|null',
+    'created_at' => 'string:date',
+    'is_active' => 'boolean'
+]);
+?>
+```
+
+Codeceptionは、[容易に学習・拡張](http://codeception.com/docs/modules/REST#seeResponseMatchesJsonType)できるよう、このシンプルで軽量な定義フォーマットを使用しています。
 
 ### XMLレスポンスのテスト
 

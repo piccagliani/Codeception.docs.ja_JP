@@ -15,7 +15,13 @@ Codeceptionの[公式ドキュメント](https://github.com/Codeception/Codecept
 
 ## ChangeLog
 
-- [2.1.3](http://piccagliani.github.io/Codeception.docs.ja_JP/)
+- [2.1.4](http://piccagliani.github.io/Codeception.docs.ja_JP/)
+  - 2015-11-26公開
+  - 変更ファイル
+    - 05-UnitTests.md（修正点はサンプルコードのみ、日本語訳変更なし）
+    - 06-ReusingTestCode.md
+    - 10-WebServices.md
+- [2.1.3](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.3/)
   - 2015-10-13公開
   - 変更ファイル
     - 02-GettingStarted.md（リンク修正のみ、日本語訳変更なし）
