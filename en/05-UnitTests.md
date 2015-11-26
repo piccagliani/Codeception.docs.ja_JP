@@ -111,27 +111,29 @@ class UserTest extends \Codeception\TestCase\Test
 {
     use \Codeception\Specify;
 
+    private $user;
+
     public function testValidation()
     {
-        $user = User::create();
+        $this->user = User::create();
 
         $this->specify("username is required", function() {
-            $user->username = null;
-            $this->assertFalse($user->validate(['username']));
+            $this->user->username = null;
+            $this->assertFalse($this->user->validate(['username']));
         });
 
         $this->specify("username is too long", function() {
-            $user->username = 'toolooooongnaaaaaaameeee';
-            $this->assertFalse($user->validate(['username']));
+            $this->user->username = 'toolooooongnaaaaaaameeee';
+            $this->assertFalse($this->user->validate(['username']));
         });
 
         $this->specify("username is ok", function() {
-            $user->username = 'davert';
-            $this->assertTrue($user->validate(['username']));           
-        });     
+            $this->user->username = 'davert';
+            $this->assertTrue($this->user->validate(['username']));
+        });
     }
 }
-?>        
+?>
 ```
 
 Using `specify` codeblocks you can describe any piece of test. This makes tests much cleaner and understandable for everyone in your team.

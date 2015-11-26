@@ -20,8 +20,7 @@ $I->seeFileFound('running.lock');
 これは異なるエンティティで動作します。ウェブページはPhpBrowserモジュールをロードすることができ、データベースのアサーションはDbモジュールを使用し、ファイルの状態はFilesystemモジュールで確認することができます。
 
 モジュールはスイート設定によりアクタークラスに取り付けられます。
-たとえば、`tests/functional.suite.yml`を見てください。
-（訳注：`tests/acceptance.suite.yml`の誤りと思われる）
+たとえば、`tests/acceptance.suite.yml`を見てください。
 
 ```yaml
 class_name: AcceptanceTester
@@ -33,8 +32,7 @@ modules:
         - Filesystem
 ```
 
-FunctionalTesterクラスはモジュールに定義されているメソッドを持っています。では、`tests/_support`ディレクトリーに配置されている、`AcceptanceTester`クラスの内部を見てみましょう。
-（訳注：冒頭の`FunctionalTesterクラス`は`AcceptanceTesterクラス`の誤りと思われる）
+AcceptanceTesterクラスはモジュールに定義されているメソッドを持っています。では、`tests/_support`ディレクトリーに配置されている、`AcceptanceTester`クラスの内部を見てみましょう。
 
 ```php
 <?php
@@ -161,7 +159,7 @@ class Member extends \AcceptanceTester
 
 ```php
 <?php
-use Step/Acceptance/Admin as AdminTester;
+use Step\Acceptance\Admin as AdminTester;
 
 $I = new AdminTester($scenario);
 $I->loginAsAdmin();
@@ -307,7 +305,7 @@ class UserCest
 
 DIコンテナは任意の既知のクラスを必要とするどのようなオブジェクトでも作成することができます。たとえば、`Page\Login`は`AcceptanceTester`を必要としたので、`Page\Login`のコンストラクタにそれが注入されましたし、ページオブジェクトは作成されてメソッドの引数に渡されました。Codeceptionがテストのためにどのオブジェクトを作成すればよいか知るために、必要とするオブジェクトの型を明示的に指定してください。依存性の注入については次の章で解説します。
 
-## モジュールとヘルパー
+## ヘルパー
 
 上の例はただアクションを1つのグループにしただけでした。カスタムアクションが必要となったときはどうなるのでしょうか？
 そのようなケースでは足りないアクションやアサーションコマンドをカスタムモジュールに定義するのが良いアイディアで、それをヘルパーと呼びます。ヘルパーは`tests/_support/Helper`ディレクトリーで見つけることができます。
@@ -428,10 +426,11 @@ function seeNumResults($num)
 {
     // retrieving webdriver session
     /**@var $table \Facebook\WebDriver\WebDriverElement */
-    $table = $this->getModule('WebDriver')->_findElements('#result');
+    $elements = $this->getModule('WebDriver')->_findElements('#result');
+    $this->assertNotEmpty($elements);
+    $table = reset($elements);
     $this->assertEquals('table', $table->getTagName());
     $results = $table->findElements('tr');
-
     // asserting that table contains exactly $num rows
     $this->assertEquals($num, count($results));
 }
