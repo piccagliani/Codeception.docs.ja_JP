@@ -1,0 +1,247 @@
+@import url(syntax.css);
+@import url(common.css);
+
+/*******************************************************************************
+Theme Styles
+*******************************************************************************/
+body {
+    box-sizing: border-box;
+    color:#373737;
+    font-size: 16px;
+    font-family: 'Myriad Pro', Calibri, 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, 'メイリオ', Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    color:#222222;
+    font-family: 'Lucida Grande', Calibri, 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, 'メイリオ', Helvetica, Arial, sans-serif;
+    letter-spacing: -1px;
+}
+
+h1 {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 10px 0 10px 0;
+}
+
+h2 {
+    padding-bottom: 10px;
+    font-size: 32px;
+    background: url('../images/bg_hr.png') repeat-x bottom;
+    margin: 25px 0 10px 0;
+}
+
+h3 {
+    font-size: 24px;
+    margin: 20px 0 10px 0;
+}
+
+h4 {
+    font-size: 21px;
+    margin: 15px 0 10px 0;
+}
+
+h5 {
+    font-size: 18px;
+    margin: 10px 0 10px 0;
+}
+
+h6 {
+    font-size: 16px;
+    margin: 10px 0 10px 0;
+}
+
+p {
+    margin: 10px 0 15px 0;
+}
+
+pre, code {
+    width: 100%;
+    color: #fff;
+    background-color: #222;
+
+    font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+    font-size: 14px;
+
+    border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+}
+
+pre {
+    width: 100%;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,.1);
+    overflow: auto;
+}
+
+code {
+    padding: 3px;
+    margin: 0 3px;
+    box-shadow: 0 0 10px rgba(0,0,0,.1);
+}
+
+pre code {
+    display: block;
+    box-shadow: none;
+}
+
+footer a,
+footer a:hover {
+    color: #45414B;
+    text-decoration: underline;
+}
+
+img {
+    position: relative;
+    margin: 0 auto;
+    padding: 5px;
+    margin: 10px 0 10px 0;
+    border: 1px solid #45414B;
+}
+
+/*******************************************************************************
+Full-Width Styles
+*******************************************************************************/
+
+.outer {
+    width: 100%;
+}
+
+.inner {
+    position: relative;
+    padding: 20px 10px;
+    margin: 0 auto;
+}
+
+#forkme_banner {
+    display: block;
+    position: absolute;
+    top:0;
+    right: 10px;
+    z-index: 10;
+    padding: 10px 50px 10px 10px;
+    color: #fff;
+    background: url('../images/blacktocat.png') #0090ff no-repeat 95% 50%;
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(0,0,0,.5);
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+#header_wrap {
+    background: #042943;
+    background: -moz-linear-gradient(top, #042943, #002742);
+    background: -webkit-linear-gradient(top, #042943, #002742);
+    background: -ms-linear-gradient(top, #042943, #002742);
+    background: -o-linear-gradient(top, #042943, #002742);
+    background: linear-gradient(top, #042943, #002742);
+}
+
+#header_wrap .inner {
+    padding: 50px 10px 30px 10px;
+}
+
+#project_title {
+    margin: 0;
+    color: #fff;
+    font-size: 42px;
+    font-weight: 700;
+    text-shadow: #111 0px 0px 10px;
+}
+
+#project_title a {
+    color: #fff;
+    text-decoration: none;
+}
+
+#project_tagline {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 300;
+    background: none;
+    text-shadow: #111 0px 0px 10px;
+}
+
+#downloads {
+    position: absolute;
+    width: 210px;
+    z-index: 10;
+    bottom: -40px;
+    right: 0;
+    height: 70px;
+    background: url('../images/icon_download.png') no-repeat 0% 90%;
+}
+
+.zip_download_link {
+    display: block;
+    float: right;
+    width: 90px;
+    height:70px;
+    text-indent: -5000px;
+    overflow: hidden;
+    background: url(../images/sprite_download.png) no-repeat bottom left;
+}
+
+.tar_download_link {
+    display: block;
+    float: right;
+    width: 90px;
+    height:70px;
+    text-indent: -5000px;
+    overflow: hidden;
+    background: url(../images/sprite_download.png) no-repeat bottom right;
+    margin-left: 10px;
+}
+
+.zip_download_link:hover {
+    background: url(../images/sprite_download.png) no-repeat top left;
+}
+
+.tar_download_link:hover {
+    background: url(../images/sprite_download.png) no-repeat top right;
+}
+
+#main_content {
+    padding-top: 40px;
+    padding-bottom: 20px;
+}
+
+#nav {
+    padding-top: 60px;
+}
+
+#nav h1 {
+    font-size: 20px;
+    border-left: solid 10px #f0ad4e;
+    padding-left: 5px;
+}
+
+#nav .well{
+    padding: 10px 0 0 0;
+}
+
+#toc ul {
+    list-style-type: none;
+    padding: 0 10px;
+    margin: 0;
+}
+
+#toc .toc-h3 {
+    padding-left: 15px;
+}
+
+#toc .toc-h4 {
+    padding-left: 30px;
+}
+
+#footer_wrap {
+    background: #bdc3c7;
+    color: #45414B;
+}
+
+#main_content img {
+    width: 100%;
+}

@@ -104,7 +104,7 @@
 <span class="p">]);</span>
 <span class="cp">?&gt;</span>
 </code></pre></div>
-<p>レスポンスに対して、より複雑な検証を行いたい場合があると思います。そのためには <a href="http://codeception.com/docs/06-ReusingTestCode#Helpers">ヘルパー</a>クラスに独自のメソッドを記述します。最後のJSONレスポンスにアクセスするためには、<code>REST</code>モジュールの<code>response</code>プロパティーを使用します。次に示す<code>seeResponseIsHtml</code>メソッドで説明しましょう。
+<p>レスポンスに対して、より複雑な検証を行いたい場合があると思います。そのためには <a href="http://codeception.com/docs/03-ModulesAndHelpers#Helpers">ヘルパー</a>クラスに独自のメソッドを記述します。最後のJSONレスポンスにアクセスするためには、<code>REST</code>モジュールの<code>response</code>プロパティーを使用します。次に示す<code>seeResponseIsHtml</code>メソッドで説明しましょう。
 （訳注：「ヘルパー」のリンク先は正しくは<a href="http://codeception.com/docs/06-ReusingTestCode#Modules-and-Helpers">こちら</a>）</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">namespace</span> <span class="nx">Helper</span><span class="p">;</span>
@@ -134,23 +134,6 @@
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseJsonMatchesXpath</span><span class="p">(</span><span class="s1">'//user/login'</span><span class="p">);</span>
 <span class="cp">?&gt;</span>
 </code></pre></div>
-<p>レスポンス内のフィールドの型を検証する必要がある場合、より詳細な確認が可能です。
-JSONレスポンスの構造を定義する<a href="http://codeception.com/docs/modules/REST#seeResponseMatchesJsonType">seeResponseMatchesJsonType</a>アクションを使用して行うことができます。</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendGET</span><span class="p">(</span><span class="s1">'/users/1'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseIsJson</span><span class="p">();</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseMatchesJsonType</span><span class="p">([</span>
-    <span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="s1">'integer'</span><span class="p">,</span>
-    <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'string'</span><span class="p">,</span>
-    <span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s1">'string:email'</span><span class="p">,</span>
-    <span class="s1">'homepage'</span> <span class="o">=&gt;</span> <span class="s1">'string:url|null'</span><span class="p">,</span>
-    <span class="s1">'created_at'</span> <span class="o">=&gt;</span> <span class="s1">'string:date'</span><span class="p">,</span>
-    <span class="s1">'is_active'</span> <span class="o">=&gt;</span> <span class="s1">'boolean'</span>
-<span class="p">]);</span>
-<span class="cp">?&gt;</span>
-</code></pre></div>
-<p>Codeceptionは、<a href="http://codeception.com/docs/modules/REST#seeResponseMatchesJsonType">容易に学習・拡張</a>できるよう、このシンプルで軽量な定義フォーマットを使用しています。</p>
-
 <h3>XMLレスポンスのテスト</h3>
 
 <p>REST APIがXML形式で動作する場合についても、似たような方法でデータと構造をテストすることができます。
@@ -289,7 +272,7 @@ XmlBuilderのインスタンスを作成するためには、`\Codeception\Util\
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-11-26 10:12:21 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.1.4">Codeception 2.1.4</a></p>
+        <p>Last updated: 2015-10-13 11:03:18 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.3">Codeception 2.1.3</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

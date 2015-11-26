@@ -52,7 +52,8 @@
 <p>これは異なるエンティティで動作します。ウェブページはPhpBrowserモジュールをロードすることができ、データベースのアサーションはDbモジュールを使用し、ファイルの状態はFilesystemモジュールで確認することができます。</p>
 
 <p>モジュールはスイート設定によりアクタークラスに取り付けられます。
-たとえば、<code>tests/acceptance.suite.yml</code>を見てください。</p>
+たとえば、<code>tests/functional.suite.yml</code>を見てください。
+（訳注：<code>tests/acceptance.suite.yml</code>の誤りと思われる）</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">AcceptanceTester</span>
 <span class="s">modules</span><span class="pi">:</span>
     <span class="s">enabled</span><span class="pi">:</span> 
@@ -61,7 +62,8 @@
         <span class="pi">-</span> <span class="s">Db</span>
         <span class="pi">-</span> <span class="s">Filesystem</span>
 </code></pre></div>
-<p>AcceptanceTesterクラスはモジュールに定義されているメソッドを持っています。では、<code>tests/_support</code>ディレクトリーに配置されている、<code>AcceptanceTester</code>クラスの内部を見てみましょう。</p>
+<p>FunctionalTesterクラスはモジュールに定義されているメソッドを持っています。では、<code>tests/_support</code>ディレクトリーに配置されている、<code>AcceptanceTester</code>クラスの内部を見てみましょう。
+（訳注：冒頭の<code>FunctionalTesterクラス</code>は<code>AcceptanceTesterクラス</code>の誤りと思われる）</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="sd">/**
  * Inherited Methods
@@ -165,7 +167,7 @@ StepObject was created <span class="k">in</span> /tests/acceptance/_support/Step
 </code></pre></div>
 <p>テストでは、<code>AcceptanceTester</code>のかわりに<code>Step\Acceptance\Admin</code>をインスタンス化うることでステップオブジェクトを使うことができます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">use</span> <span class="nx">Step\Acceptance\Admin</span> <span class="k">as</span> <span class="nx">AdminTester</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Step</span><span class="o">/</span><span class="nx">Acceptance</span><span class="o">/</span><span class="nx">Admin</span> <span class="k">as</span> <span class="nx">AdminTester</span><span class="p">;</span>
 
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AdminTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">loginAsAdmin</span><span class="p">();</span>
@@ -289,7 +291,7 @@ Codeceptionは次のコマンドでページオブジェクトクラスを生成
 </code></pre></div>
 <p>DIコンテナは任意の既知のクラスを必要とするどのようなオブジェクトでも作成することができます。たとえば、<code>Page\Login</code>は<code>AcceptanceTester</code>を必要としたので、<code>Page\Login</code>のコンストラクタにそれが注入されましたし、ページオブジェクトは作成されてメソッドの引数に渡されました。Codeceptionがテストのためにどのオブジェクトを作成すればよいか知るために、必要とするオブジェクトの型を明示的に指定してください。依存性の注入については次の章で解説します。</p>
 
-<h2>ヘルパー</h2>
+<h2>モジュールとヘルパー</h2>
 
 <p>上の例はただアクションを1つのグループにしただけでした。カスタムアクションが必要となったときはどうなるのでしょうか？
 そのようなケースでは足りないアクションやアサーションコマンドをカスタムモジュールに定義するのが良いアイディアで、それをヘルパーと呼びます。ヘルパーは<code>tests/_support/Helper</code>ディレクトリーで見つけることができます。</p>
@@ -390,11 +392,10 @@ Codeceptionはモジュールの順序によってアクションをオーバー
 <span class="p">{</span>
     <span class="c1">// retrieving webdriver session
 </span>    <span class="sd">/**@var $table \Facebook\WebDriver\WebDriverElement */</span>
-    <span class="nv">$elements</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'WebDriver'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">_findElements</span><span class="p">(</span><span class="s1">'#result'</span><span class="p">);</span>
-    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertNotEmpty</span><span class="p">(</span><span class="nv">$elements</span><span class="p">);</span>
-    <span class="nv">$table</span> <span class="o">=</span> <span class="nb">reset</span><span class="p">(</span><span class="nv">$elements</span><span class="p">);</span>
+    <span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'WebDriver'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">_findElements</span><span class="p">(</span><span class="s1">'#result'</span><span class="p">);</span>
     <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">'table'</span><span class="p">,</span> <span class="nv">$table</span><span class="o">-&gt;</span><span class="na">getTagName</span><span class="p">());</span>
     <span class="nv">$results</span> <span class="o">=</span> <span class="nv">$table</span><span class="o">-&gt;</span><span class="na">findElements</span><span class="p">(</span><span class="s1">'tr'</span><span class="p">);</span>
+
     <span class="c1">// asserting that table contains exactly $num rows
 </span>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="nv">$num</span><span class="p">,</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$results</span><span class="p">));</span>
 <span class="p">}</span>
@@ -599,7 +600,7 @@ PhpBrowserモジュールでの使用例がこちらです：</p>
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-11-26 10:12:21 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.1.4">Codeception 2.1.4</a></p>
+        <p>Last updated: 2015-10-13 11:03:18 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/releases/tag/2.1.3">Codeception 2.1.3</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
