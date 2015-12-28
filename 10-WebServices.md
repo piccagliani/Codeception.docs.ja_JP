@@ -170,7 +170,7 @@ $I->seeXmlResponseIncludes(XmlUtils::toXml(
 ?>
 ```
 
-XML構造をきれいな方法で構築することのできるXmlUtilsクラスを使っています。`toXml`メソッドは文字列もしくは配列をとり、\DOMDocumentインスタンスを返します。もしXMLに属性が含まれていいる関係によりPHPの配列で表現できない場合は、[XmlBulder](http://codeception.com/docs/reference/XmlBuilder)を使ってXMLを作成することができます。次のセクションでもう少し見てみましょう。
+XML構造をきれいな方法で構築することのできるXmlUtilsクラスを使っています。`toXml`メソッドは文字列もしくは配列をとり、\DOMDocumentインスタンスを返します。もしXMLに属性が含まれていいる関係によりPHPの配列で表現できない場合は、[XmlBuilder](http://codeception.com/docs/reference/XmlBuilder)を使ってXMLを作成することができます。次のセクションでもう少し見てみましょう。
 
 <div class="alert alert-info">
 XmlBuilderのインスタンスを作成するためには、`\Codeception\Util\Xml::build()`を使ってください。
