@@ -101,7 +101,7 @@
     <span class="p">{</span>
         <span class="nv">$I</span> <span class="o">=</span> <span class="nv">$this</span><span class="p">;</span>
         <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/login'</span><span class="p">);</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">'#loginForm'</span><span class="p">,</span> <span class="p">[</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">'#loginForm'</span> <span class="p">[</span>
             <span class="s1">'login'</span> <span class="o">=&gt;</span> <span class="nv">$name</span><span class="p">,</span> 
             <span class="s1">'password'</span> <span class="o">=&gt;</span> <span class="nv">$password</span>
         <span class="p">]);</span>
@@ -599,7 +599,7 @@ PhpBrowserモジュールでの使用例がこちらです：</p>
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2015-12-28 15:27:12 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.1.5">Codeception 2.1.5</a></p>
+        <p>Last updated: 2015-11-26 10:12:21 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.1.4">Codeception 2.1.4</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
