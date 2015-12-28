@@ -15,7 +15,18 @@ Codeceptionの[公式ドキュメント](https://github.com/Codeception/Codecept
 
 ## ChangeLog
 
-- [2.1.4](http://piccagliani.github.io/Codeception.docs.ja_JP/)
+- [2.1.5](http://piccagliani.github.io/Codeception.docs.ja_JP/)
+  - 2015-12-28公開
+  - 変更ファイル
+    - 04-FunctionalTests.md（リンク修正のみ、日本語訳変更なし）
+    - 05-UnitTests.md（修正点はtypoのみ、日本語訳変更なし）
+    - 06-ReusingTestCode.md（修正点はtypo・サンプルコードのみ、日本語訳変更なし）
+    - 07-AdvancedUsage.md（修正点はtypoのみ、日本語訳変更なし）
+    - 08-Customization.md（修正点はtypoのみ、日本語訳変更なし）
+    - 10-WebServices.md（修正点はtypoのみ、日本語訳変更なし）
+    - 11-Codecoverage.md（修正点はサンプルコードのみ、日本語訳変更なし）
+    - 12-ParallelExecution.md（修正点はtypoのみ、日本語訳変更なし）
+- [2.1.4](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.4/)
   - 2015-11-26公開
   - 変更ファイル
     - 05-UnitTests.md（修正点はサンプルコードのみ、日本語訳変更なし）

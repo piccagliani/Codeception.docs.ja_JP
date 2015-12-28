@@ -26,6 +26,7 @@ coverage:
 
 ``` yaml
 coverage:
+    enabled: true
     whitelist:
         include:
             - app/*

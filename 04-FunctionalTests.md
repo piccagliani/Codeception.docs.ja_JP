@@ -149,7 +149,7 @@ modules:
 
 ## 機能テストを書く
 
-機能テストは`PhpBrowser`モジュールでの[受け入れテスト](http://codeception.com/docs/04-AcceptanceTests)と同じような方法で書かれます。すべてのフレームワークモジュールと`PhpBrowser`モジュールは同じメソッドと同じエンジンを共有しています。
+機能テストは`PhpBrowser`モジュールでの[受け入れテスト](http://codeception.com/docs/03-AcceptanceTests)と同じような方法で書かれます。すべてのフレームワークモジュールと`PhpBrowser`モジュールは同じメソッドと同じエンジンを共有しています。
 
 したがって、私たちは`amOnPage`メソッドでウェブページを開くことができます。
 
