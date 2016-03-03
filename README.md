@@ -14,8 +14,10 @@ Codeceptionの[公式ドキュメント](https://github.com/Codeception/Codecept
 ということなので、guidesのみを対象としています。
 
 ## ChangeLog
-
-- [2.1.5](http://piccagliani.github.io/Codeception.docs.ja_JP/)
+- [2.1.6](http://piccagliani.github.io/Codeception.docs.ja_JP/)
+  - 2015-03-03公開
+  - 変更ファイルなし
+- [2.1.5](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.5/)
   - 2015-12-28公開
   - 変更ファイル
     - 04-FunctionalTests.md（リンク修正のみ、日本語訳変更なし）
