@@ -1,5 +1,3 @@
-### Welcome to Codeception.docs.ja.
-
 1. [イントロダクション](01-Introduction.html)
 2. [はじめに](02-GettingStarted.html)
 3. [受け入れテスト](03-AcceptanceTests.html)

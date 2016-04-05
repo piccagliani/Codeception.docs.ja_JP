@@ -14,7 +14,11 @@ Codeceptionの[公式ドキュメント](https://github.com/Codeception/Codecept
 ということなので、guidesのみを対象としています。
 
 ## ChangeLog
-- [2.1.6](http://piccagliani.github.io/Codeception.docs.ja_JP/)
+- [2.1.7](http://piccagliani.github.io/Codeception.docs.ja_JP/)
+  - 2015-04-05公開
+  - 変更ファイル
+    - 11-Codecoverage.md
+- [2.1.6](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.6/)
   - 2015-03-03公開
   - 変更ファイルなし
 - [2.1.5](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.5/)
