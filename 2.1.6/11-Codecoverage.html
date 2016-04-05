@@ -40,7 +40,7 @@
 カバレッジレポートを収集するためにテストを実行すると、そのテストによって実行されたすべてのクラス、メソッド、そして行の統計情報を取得します。
 スクリプトの全行数と通過した行数との比率が、主要なカバレッジ基準となります。理想論では100%のカバレッジを取得する必要がありますが、実際には80%で十分でしょう。なぜなら、100%のカバレッジであったとしても致命的なエラーやクラッシュを防ぐことができないからです。</p>
 
-<p><strong>カバレッジを収集するためには<code>xdebug</code>が必要です。</strong></p>
+<p><strong>Codeceptionはバージョン1.5からコードカバレッジ用のツールを備えています。カバレッジを収集するためには<code>xdebug</code>が必要となります。</strong>.</p>
 
 <p><img src="http://codeception.com/images/coverage.png" alt="コードカバレッジの例"></p>
 
@@ -75,10 +75,6 @@ SeleniumやPhpBrowserによるテストはコードカバレッジを収集す�
 <li><strong>whitelist</strong> 通過しなかったとしてもレポートに含まれるべきファイルの一覧です</li>
 <li><strong>blacklist</strong> 通過したとしてもレポートから除外すべきファイルの一覧です</li>
 </ul>
-
-<div class="alert alert-info">
-ブラックリストはPHPUnit 5で削除されましたが、PHPUnit 4.8ではまだ利用可能です。
-</div>
 
 <p>include/excludeセクションにファイルまたはディレクトリーの配列を渡します。&#39;*&#39;で終わるパスはディレクトリーにマッチします。
 また、&#39;*&#39;マスクをファイル名に使用することができます。たとえば、<code>app/models/*Model.php</code>はすべてのモデルにマッチします。</p>
@@ -196,7 +192,7 @@ c3がウェブサーバー（ローカル、リモートのどちらであろう
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2016-04-05 15:55:07 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.1.7">Codeception 2.1.7</a></p>
+        <p>Last updated: 2016-03-03 13:01:06 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.1.6">Codeception 2.1.6</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
