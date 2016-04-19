@@ -303,7 +303,7 @@ class UserCest
     {
         $user = $t->createUser();
         $user->username = null;
-        $t->assertFalse($user->validate(['username']); 
+        $t->assertFalse($user->validate(['username']);
 
         $user->username = 'toolooooongnaaaaaaameeee';
         $t->assertFalse($user->validate(['username']));
@@ -336,7 +336,7 @@ modules:
 <div class="alert alert-info">
 Cest形式は、テストを記述するにはシンプルすぎるように思えるかもしれません。
 Cestはアサーション用の関数、モックやスタブを作成する関数、さらにはこれまで見てきた例にあったモジュールにアクセスするための`getModule`でさえも提供しません。
-しかしながらCest形式は関心を分離するという点で優れています。テストコードは`UnitTester`オブジェクトによって提供されるサポートコードと干渉しません。単体/結合テストに必要となる、すべての追加アクションは`Helper\Unit`クラスに実装するようにしてください。これは推奨されたアプローチであり、テストをムダなく綺麗な状態に保つことができます。
+しかしながらCest形式は関心を分離するという点で優れています。テストコードは`UnitTester`オブジェクトによって提供されるサポートコードと干渉しません。単体/結合テストに必要となる、すべての追加アクションは`Helper\Unit`クラスに実装するようにしてください。
 </div>
 
 ### スタブ
