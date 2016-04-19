@@ -25,7 +25,7 @@ $I->seeFileFound('running.lock');
 ```yaml
 class_name: AcceptanceTester
 modules:
-    enabled: 
+    enabled:
         - PhpBrowser:
             url: http://localhost
         - Db
@@ -78,11 +78,11 @@ class AcceptanceTester extends \Codeception\Actor
         $I = $this;
         $I->amOnPage('/login');
         $I->submitForm('#loginForm', [
-            'login' => $name, 
+            'login' => $name,
             'password' => $password
         ]);
         $I->see($name, '.navbar');
-    } 
+    }
 }
 ?>
 ```
@@ -170,7 +170,7 @@ $I->loginAsAdmin();
 
 ```php
 <?php
-class UserCest 
+class UserCest
 {    
     function showUserProfile(\Step\Acceptance\Admin $I)
     {
@@ -187,10 +187,9 @@ class UserCest
 ## ページオブジェクト
 
 受入テストと機能テストにおいて、異なるテストにわたって共通のアクションを再利用可能とするだけではなく、ボタンやリンク、フォームの入力欄についても同じように再利用できるようにする必要があるでしょう。
-そのようなケースでは、テスト自動化エンジニアの間では広く使われている[ページオブジェクトパターン](http://code.google.com/p/selenium/wiki/PageObjects)を実装する必要があります。ページオブジェクトパターンでは、ウェブページをクラスとして、ページ上のDOM要素をプロパティとして表現し、いくつかの基本的なインタラクションをメソッドして持ちます。
+そのようなケースでは、テスト自動化エンジニアの間では広く使われている[ページオブジェクトパターン](http://docs.seleniumhq.org/docs/06_test_design_considerations.jsp#page-object-design-pattern)を実装する必要があります。ページオブジェクトパターンでは、ウェブページをクラスとして、ページ上のDOM要素をプロパティとして表現し、いくつかの基本的なインタラクションをメソッドして持ちます。
 ページオブジェクトはテストの柔軟なアーキテクチャを作りこむ際にとても重要です。複雑なCSSやXPathロケーターをテストにハードコードするのではなく、ページオブジェクトクラスに移動してください。
 
-Codeception can generate a PageObject class for you with command:
 Codeceptionは次のコマンドでページオブジェクトクラスを生成することができます：
 
 ```bash
@@ -291,7 +290,7 @@ $I->see('Bill Evans Profile', 'h1');
 
 ```php
 <?php
-class UserCest 
+class UserCest
 {    
     function showUserProfile(AcceptanceTester $I, \Page\Login $loginPage)
     {
@@ -311,7 +310,7 @@ DIコンテナは任意の既知のクラスを必要とするどのようなオ
 そのようなケースでは足りないアクションやアサーションコマンドをカスタムモジュールに定義するのが良いアイディアで、それをヘルパーと呼びます。ヘルパーは`tests/_support/Helper`ディレクトリーで見つけることができます。
 
 <div class="alert alert-info">
-すでにAcceptanceTesterクラスにカスタムなログインメソッドを作成する方法については学びました。ユーザーが簡単にログインできるように、標準モジュールのアクションを使用してそれをひとまとめにしました。ヘルパーは標準モジュールとは関係のない、**新しいアクション**を作る（もしくは内部的に使用する）ことができます。
+すでにAcceptanceTesterクラスにカスタムなログインメソッドを作成する方法については学びました。ユーザーが簡単にログインできるように、標準モジュールのアクションを使用してそれをひとまとめにしました。ヘルパーは標準モジュールとは関係のない、**新しいアクション** を作る（もしくは内部的に使用する）ことができます。
 </div>
 
 
@@ -530,7 +529,7 @@ I click "All pages"
 
 ```php
 <?php
-class Db extends \Codeception\Module 
+class Db extends \Codeception\Module
 {
     protected $requiredFields = ['dsn', 'user', 'password'];
 ?>
@@ -599,7 +598,7 @@ class MyExtendedSelenium extends \Codeception\Module\WebDriver  {
 <?php
 namespace Helper;
 
-class MyExtendedSelenium extends \Codeception\Module\WebDriver 
+class MyExtendedSelenium extends \Codeception\Module\WebDriver
 {
     // disable all inherited actions
     public static $includeInheritedActions = false;
@@ -621,7 +620,7 @@ class MyExtendedSelenium extends \Codeception\Module\WebDriver
 <?php
 namespace Helper;
 
-class SecondDb extends \Codeception\Module\Db 
+class SecondDb extends \Codeception\Module\Db
 {
     public static $includeInheritedActions = false;
 
