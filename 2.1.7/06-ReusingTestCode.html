@@ -55,7 +55,7 @@
 たとえば、<code>tests/acceptance.suite.yml</code>を見てください。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">AcceptanceTester</span>
 <span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span> 
         <span class="pi">-</span> <span class="s">PhpBrowser</span><span class="pi">:</span>
             <span class="s">url</span><span class="pi">:</span> <span class="s">http://localhost</span>
         <span class="pi">-</span> <span class="s">Db</span>
@@ -102,11 +102,11 @@
         <span class="nv">$I</span> <span class="o">=</span> <span class="nv">$this</span><span class="p">;</span>
         <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/login'</span><span class="p">);</span>
         <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">'#loginForm'</span><span class="p">,</span> <span class="p">[</span>
-            <span class="s1">'login'</span> <span class="o">=&gt;</span> <span class="nv">$name</span><span class="p">,</span>
+            <span class="s1">'login'</span> <span class="o">=&gt;</span> <span class="nv">$name</span><span class="p">,</span> 
             <span class="s1">'password'</span> <span class="o">=&gt;</span> <span class="nv">$password</span>
         <span class="p">]);</span>
         <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="s1">'.navbar'</span><span class="p">);</span>
-    <span class="p">}</span>
+    <span class="p">}</span> 
 <span class="p">}</span>
 <span class="cp">?&gt;</span>
 </code></pre></div>
@@ -173,13 +173,13 @@ StepObject was created <span class="k">in</span> /tests/acceptance/_support/Step
 </code></pre></div>
 <p>上と同じように、Cest形式を利用する場合は、DIコンテナによってステップオブジェクトは自動的にインスタンス化されます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">class</span> <span class="nc">UserCest</span>
-<span class="p">{</span>
+<span class="k">class</span> <span class="nc">UserCest</span> 
+<span class="p">{</span>    
     <span class="k">function</span> <span class="nf">showUserProfile</span><span class="p">(</span><span class="nx">\Step\Acceptance\Admin</span> <span class="nv">$I</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">loginAsAdmin</span><span class="p">();</span>
         <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/admin/profile'</span><span class="p">);</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Admin Profile'</span><span class="p">,</span> <span class="s1">'h1'</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Admin Profile'</span><span class="p">,</span> <span class="s1">'h1'</span><span class="p">);</span>        
     <span class="p">}</span>
 <span class="p">}</span>
 <span class="cp">?&gt;</span>
@@ -189,10 +189,11 @@ StepObject was created <span class="k">in</span> /tests/acceptance/_support/Step
 <h2>ページオブジェクト</h2>
 
 <p>受入テストと機能テストにおいて、異なるテストにわたって共通のアクションを再利用可能とするだけではなく、ボタンやリンク、フォームの入力欄についても同じように再利用できるようにする必要があるでしょう。
-そのようなケースでは、テスト自動化エンジニアの間では広く使われている<a href="http://docs.seleniumhq.org/docs/06_test_design_considerations.jsp#page-object-design-pattern">ページオブジェクトパターン</a>を実装する必要があります。ページオブジェクトパターンでは、ウェブページをクラスとして、ページ上のDOM要素をプロパティとして表現し、いくつかの基本的なインタラクションをメソッドして持ちます。
+そのようなケースでは、テスト自動化エンジニアの間では広く使われている<a href="http://code.google.com/p/selenium/wiki/PageObjects">ページオブジェクトパターン</a>を実装する必要があります。ページオブジェクトパターンでは、ウェブページをクラスとして、ページ上のDOM要素をプロパティとして表現し、いくつかの基本的なインタラクションをメソッドして持ちます。
 ページオブジェクトはテストの柔軟なアーキテクチャを作りこむ際にとても重要です。複雑なCSSやXPathロケーターをテストにハードコードするのではなく、ページオブジェクトクラスに移動してください。</p>
 
-<p>Codeceptionは次のコマンドでページオブジェクトクラスを生成することができます：</p>
+<p>Codeception can generate a PageObject class for you with command:
+Codeceptionは次のコマンドでページオブジェクトクラスを生成することができます：</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:pageobject Login
 </code></pre></div>
 <p>これにより、<code>tests/_pages</code>内に<code>LoginPage</code>クラスが作成されます。基本のページオブジェクトはいくつかのスタブを持った空クラス以上の何ものでもありません。
@@ -258,7 +259,7 @@ StepObject was created <span class="k">in</span> /tests/acceptance/_support/Step
         <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="nx">self</span><span class="o">::</span><span class="nv">$loginButton</span><span class="p">);</span>
 
         <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
-    <span class="p">}</span>
+    <span class="p">}</span>    
 <span class="p">}</span>
 <span class="cp">?&gt;</span>
 </code></pre></div>
@@ -275,13 +276,13 @@ StepObject was created <span class="k">in</span> /tests/acceptance/_support/Step
 </code></pre></div>
 <p>もしシナリオ駆動のテストをCest形式で記述している場合（これは推奨されるアプローチです）は、ページオブジェクトを手動で作成する処理をCodeceptionに任せることができます。テストでどのようなオブジェクトを必要とするか指定すれば、CodeceptionはDIコンテナを使ってそれを作成しようとします。ページオブジェクトの場合、テストメソッドのパラメーターとしてクラスを宣言してください：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">class</span> <span class="nc">UserCest</span>
-<span class="p">{</span>
+<span class="k">class</span> <span class="nc">UserCest</span> 
+<span class="p">{</span>    
     <span class="k">function</span> <span class="nf">showUserProfile</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">,</span> <span class="nx">\Page\Login</span> <span class="nv">$loginPage</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nv">$loginPage</span><span class="o">-&gt;</span><span class="na">login</span><span class="p">(</span><span class="s1">'bill evans'</span><span class="p">,</span> <span class="s1">'debby'</span><span class="p">);</span>
         <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/profile'</span><span class="p">);</span>
-        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Bill Evans Profile'</span><span class="p">,</span> <span class="s1">'h1'</span><span class="p">);</span>
+        <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Bill Evans Profile'</span><span class="p">,</span> <span class="s1">'h1'</span><span class="p">);</span>        
     <span class="p">}</span>
 <span class="p">}</span>
 <span class="cp">?&gt;</span>
@@ -294,7 +295,7 @@ StepObject was created <span class="k">in</span> /tests/acceptance/_support/Step
 そのようなケースでは足りないアクションやアサーションコマンドをカスタムモジュールに定義するのが良いアイディアで、それをヘルパーと呼びます。ヘルパーは<code>tests/_support/Helper</code>ディレクトリーで見つけることができます。</p>
 
 <div class="alert alert-info">
-すでにAcceptanceTesterクラスにカスタムなログインメソッドを作成する方法については学びました。ユーザーが簡単にログインできるように、標準モジュールのアクションを使用してそれをひとまとめにしました。ヘルパーは標準モジュールとは関係のない、**新しいアクション** を作る（もしくは内部的に使用する）ことができます。
+すでにAcceptanceTesterクラスにカスタムなログインメソッドを作成する方法については学びました。ユーザーが簡単にログインできるように、標準モジュールのアクションを使用してそれをひとまとめにしました。ヘルパーは標準モジュールとは関係のない、**新しいアクション**を作る（もしくは内部的に使用する）ことができます。
 </div>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">namespace</span> <span class="nx">Helper</span><span class="p">;</span>
@@ -425,7 +426,7 @@ Seleniumと直接的にやり取りするための<code>Facebook\WebDriver\Remot
 
     <span class="c1">// HOOK: after suite
 </span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_afterSuite</span><span class="p">()</span> <span class="p">{</span>
-    <span class="p">}</span>
+    <span class="p">}</span>    
 
     <span class="c1">// HOOK: before each step
 </span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_beforeStep</span><span class="p">(</span><span class="nx">\Codeception\Step</span> <span class="nv">$step</span><span class="p">)</span> <span class="p">{</span>
@@ -451,6 +452,7 @@ Seleniumと直接的にやり取りするための<code>Facebook\WebDriver\Remot
 <p><code>_</code>ではじまるメソッドはアクタークラスに追加されないことに注意してください。これはpublicとして定義されますが、内部的な目的のために使用するためのものです。</p>
 
 <h3>デバッグ</h3>
+
 <p>すでに触れたように、<code>_failed</code>フックは失敗したテストをデバッグするのに役に立ちます。現在のテストの状態を保存しユーザーに表示する機会を提供しますが、これに限ったことではありません。</p>
 
 <p>各モジュールはデバッグ中に役立つであろう内部的な値を出力することができます。
@@ -463,7 +465,7 @@ PhpBrowserモジュールでの使用例がこちらです：</p>
     <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">debugSection</span><span class="p">(</span><span class="s1">'Request'</span><span class="p">,</span> <span class="nv">$params</span><span class="p">);</span>
     <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">client</span><span class="o">-&gt;</span><span class="na">request</span><span class="p">(</span><span class="nv">$method</span><span class="p">,</span> <span class="nv">$uri</span><span class="p">,</span> <span class="nv">$params</span><span class="p">);</span>
     <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">debug</span><span class="p">(</span><span class="s1">'Response Code: '</span> <span class="o">.</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">client</span><span class="o">-&gt;</span><span class="na">getStatusCode</span><span class="p">());</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span>    
 </code></pre></div>
 <p>このテストをデバッグモードでPhpBrowserモジュールとともに実行すると、次のようなものが表示されるでしょう：</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">I click <span class="s2">"All pages"</span>
@@ -476,7 +478,7 @@ PhpBrowserモジュールでの使用例がこちらです：</p>
 
 <p>必須のパラメーターはモジュールクラスの<code>$requiredFields</code>プロパティで定義する必要があります。Dbモジュールでの例を見てみましょう。：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">class</span> <span class="nc">Db</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span>
+<span class="k">class</span> <span class="nc">Db</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span> 
 <span class="p">{</span>
     <span class="k">protected</span> <span class="nv">$requiredFields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'dsn'</span><span class="p">,</span> <span class="s1">'user'</span><span class="p">,</span> <span class="s1">'password'</span><span class="p">];</span>
 <span class="cp">?&gt;</span>
@@ -487,9 +489,9 @@ PhpBrowserモジュールでの使用例がこちらです：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">class</span> <span class="nc">WebDriver</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span>
 <span class="p">{</span>
-    <span class="k">protected</span> <span class="nv">$requiredFields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'browser'</span><span class="p">,</span> <span class="s1">'url'</span><span class="p">];</span>
+    <span class="k">protected</span> <span class="nv">$requiredFields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'browser'</span><span class="p">,</span> <span class="s1">'url'</span><span class="p">];</span>    
     <span class="k">protected</span> <span class="nv">$config</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'host'</span> <span class="o">=&gt;</span> <span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="s1">'port'</span> <span class="o">=&gt;</span> <span class="s1">'4444'</span><span class="p">];</span>
-<span class="cp">?&gt;</span>
+<span class="cp">?&gt;</span>    
 </code></pre></div>
 <p>ホストとポートのパラメーターはスイートの設定で再定義できます。それらの値は設定ファイルの<code>modules:config</code>セクションにあります。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
@@ -530,7 +532,7 @@ PhpBrowserモジュールでの使用例がこちらです：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">namespace</span> <span class="nx">Helper</span><span class="p">;</span>
 
-<span class="k">class</span> <span class="nc">MyExtendedSelenium</span> <span class="k">extends</span> <span class="nx">\Codeception\Module\WebDriver</span>
+<span class="k">class</span> <span class="nc">MyExtendedSelenium</span> <span class="k">extends</span> <span class="nx">\Codeception\Module\WebDriver</span> 
 <span class="p">{</span>
     <span class="c1">// disable all inherited actions
 </span>    <span class="k">public</span> <span class="k">static</span> <span class="nv">$includeInheritedActions</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
@@ -549,7 +551,7 @@ PhpBrowserモジュールでの使用例がこちらです：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="k">namespace</span> <span class="nx">Helper</span><span class="p">;</span>
 
-<span class="k">class</span> <span class="nc">SecondDb</span> <span class="k">extends</span> <span class="nx">\Codeception\Module\Db</span>
+<span class="k">class</span> <span class="nc">SecondDb</span> <span class="k">extends</span> <span class="nx">\Codeception\Module\Db</span> 
 <span class="p">{</span>
     <span class="k">public</span> <span class="k">static</span> <span class="nv">$includeInheritedActions</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
 
@@ -597,7 +599,7 @@ PhpBrowserモジュールでの使用例がこちらです：</p>
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2016-04-19 17:02:01 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.1.8">Codeception 2.1.8</a></p>
+        <p>Last updated: 2016-04-05 15:55:07 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.1.7">Codeception 2.1.7</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
