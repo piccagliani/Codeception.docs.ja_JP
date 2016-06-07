@@ -42,9 +42,9 @@ I see 'Welcome, Davert!'
 $ php codecept.phar generate:scenarios
 ```
 
-作成されたシナリオは___output__ディレクトリーにテキストファイルとして格納されます。
+作成されたシナリオは__output__ディレクトリーにテキストファイルとして格納されます。
 
-**このシナリオテストはシンプルなPHP BrowserでもSelenium WebDriverを使ったブラウザーでも実行することができます。**まずはPHP Browserで受け入れテストを書いて行きましょう。
+**このシナリオテストはシンプルなPHP BrowserでもSelenium WebDriverを使ったブラウザーでも実行することができます。** まずはPHP Browserで受け入れテストを書いて行きましょう。
 
 ## PHP Browser
 
@@ -72,7 +72,7 @@ modules:
         - \Helper\Acceptance
 ```
 
-それでは、__tests/acceptance__ディレクトリーに'Cept'ファイルを作成してください。ファイル名は__SigninCept.php__とします。
+それでは、 __tests/acceptance__ ディレクトリーに'Cept'ファイルを作成してください。ファイル名は __SigninCept.php__ とします。
 最初の行に以下のように書きます。
 
 ```php
@@ -469,9 +469,23 @@ $I->see('Hello all!', '.message');
 
 この場合には、2つ目のウィンドウでfriendオブジェクトが`does`メソッドを使用していくつかの行動をしました。
 
+テストが終了する前にウェブページを閉じたい場合、leave()を使ってください。また、friendオブジェクトのロールを指定することもできます：
+
+```php
+<?php
+
+$nickAdmin = $I->haveFriend('nickAdmin', adminStep::class);
+$nickAdmin->does(function(adminStep $I) {
+    // Admin does ...
+});
+$nickAdmin->leave();
+?>
+```
+
+
 ### クリーンアップ
 
-テストをしている中で、あなたの行動はサイト上のデータを変えてしまうかもしれません。2度同じデータを生成したり、アップデートしようとしてテストは失敗する事になるでしょう。この問題を避けるために、データベースはそれぞれのテストごとに再構築する必要があります。Codeceptionはそのために`Db`モジュールを提供しています。テストを通過した後にデータベースのdumpをロードします。データベースの再構築を機能させるためには、データベースをdumpしてsqlファイルを作成し、__/tests/_data__ディレクトリーに配置してください。Codeceptionのglobalの設定にデータベースへの接続情報とパスをセットしてください。
+テストをしている中で、あなたの行動はサイト上のデータを変えてしまうかもしれません。2度同じデータを生成したり、アップデートしようとしてテストは失敗する事になるでしょう。この問題を避けるために、データベースはそれぞれのテストごとに再構築する必要があります。Codeceptionはそのために`Db`モジュールを提供しています。テストを通過した後にデータベースのdumpをロードします。データベースの再構築を機能させるためには、データベースをdumpしてsqlファイルを作成し、 __/tests/_data__ ディレクトリーに配置してください。Codeceptionのglobalの設定にデータベースへの接続情報とパスをセットしてください。
 
 ```yaml
 # in codeception.yml:
@@ -497,7 +511,7 @@ codecept_debug($I->grabTextFrom('#name'));
 ```
 
 
-テストの失敗ごとに、最後に表示されていたページのスナップショットを__tests/_output__ディレクトリーに保存します。PhpBrowserはHTMLのコードを保存し、WebDriverはページのスクリーンショットを保存します。
+テストの失敗ごとに、最後に表示されていたページのスナップショットを __tests/_output__ ディレクトリーに保存します。PhpBrowserはHTMLのコードを保存し、WebDriverはページのスクリーンショットを保存します。
 
 テストによって開かれたウェブページを調査したくなるときがあると思います。そのような場合にはWebDriverモジュールの[pauseExecution](http://codeception.com/docs/modules/WebDriver#pauseExecution)メソッドを利用することができます。
 
