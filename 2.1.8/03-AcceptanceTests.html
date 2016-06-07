@@ -68,9 +68,9 @@ I see <span class="s1">'Welcome, Davert!'</span>
 <p>そのような自然言語への翻訳は、コマンドによって行われます:</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:scenarios
 </code></pre></div>
-<p>作成されたシナリオは<strong>output</strong>ディレクトリーにテキストファイルとして格納されます。</p>
+<p>作成されたシナリオは<em>__output</em>_ディレクトリーにテキストファイルとして格納されます。</p>
 
-<p><strong>このシナリオテストはシンプルなPHP BrowserでもSelenium WebDriverを使ったブラウザーでも実行することができます。</strong> まずはPHP Browserで受け入れテストを書いて行きましょう。</p>
+<p><strong>このシナリオテストはシンプルなPHP BrowserでもSelenium WebDriverを使ったブラウザーでも実行することができます。</strong>まずはPHP Browserで受け入れテストを書いて行きましょう。</p>
 
 <h2>PHP Browser</h2>
 
@@ -97,7 +97,7 @@ PHP Browserの利点は、PHPとcURLだけでどんな環境でも実行でき�
             <span class="s">url</span><span class="pi">:</span> 
         <span class="pi">-</span> <span class="s">\Helper\Acceptance</span>
 </code></pre></div>
-<p>それでは、 <strong>tests/acceptance</strong> ディレクトリーに&#39;Cept&#39;ファイルを作成してください。ファイル名は <strong>SigninCept.php</strong> とします。
+<p>それでは、<strong>tests/acceptance</strong>ディレクトリーに&#39;Cept&#39;ファイルを作成してください。ファイル名は<strong>SigninCept.php</strong>とします。
 最初の行に以下のように書きます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
@@ -417,19 +417,9 @@ Codeceptionは複数のテスト間でCookieを共有することができるた
 </code></pre></div>
 <p>この場合には、2つ目のウィンドウでfriendオブジェクトが<code>does</code>メソッドを使用していくつかの行動をしました。</p>
 
-<p>テストが終了する前にウェブページを閉じたい場合、leave()を使ってください。また、friendオブジェクトのロールを指定することもできます：</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-
-<span class="nv">$nickAdmin</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveFriend</span><span class="p">(</span><span class="s1">'nickAdmin'</span><span class="p">,</span> <span class="nx">adminStep</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
-<span class="nv">$nickAdmin</span><span class="o">-&gt;</span><span class="na">does</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="nx">adminStep</span> <span class="nv">$I</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// Admin does ...
-</span><span class="p">});</span>
-<span class="nv">$nickAdmin</span><span class="o">-&gt;</span><span class="na">leave</span><span class="p">();</span>
-<span class="cp">?&gt;</span>
-</code></pre></div>
 <h3>クリーンアップ</h3>
 
-<p>テストをしている中で、あなたの行動はサイト上のデータを変えてしまうかもしれません。2度同じデータを生成したり、アップデートしようとしてテストは失敗する事になるでしょう。この問題を避けるために、データベースはそれぞれのテストごとに再構築する必要があります。Codeceptionはそのために<code>Db</code>モジュールを提供しています。テストを通過した後にデータベースのdumpをロードします。データベースの再構築を機能させるためには、データベースをdumpしてsqlファイルを作成し、 <strong>/tests/_data</strong> ディレクトリーに配置してください。Codeceptionのglobalの設定にデータベースへの接続情報とパスをセットしてください。</p>
+<p>テストをしている中で、あなたの行動はサイト上のデータを変えてしまうかもしれません。2度同じデータを生成したり、アップデートしようとしてテストは失敗する事になるでしょう。この問題を避けるために、データベースはそれぞれのテストごとに再構築する必要があります。Codeceptionはそのために<code>Db</code>モジュールを提供しています。テストを通過した後にデータベースのdumpをロードします。データベースの再構築を機能させるためには、データベースをdumpしてsqlファイルを作成し、<strong>/tests/_data</strong>ディレクトリーに配置してください。Codeceptionのglobalの設定にデータベースへの接続情報とパスをセットしてください。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># in codeception.yml:</span>
 <span class="s">modules</span><span class="pi">:</span>
     <span class="s">config</span><span class="pi">:</span>
@@ -448,13 +438,13 @@ Codeceptionは複数のテスト間でCookieを共有することができるた
 <span class="nx">codecept_debug</span><span class="p">(</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabTextFrom</span><span class="p">(</span><span class="s1">'#name'</span><span class="p">));</span>
 <span class="cp">?&gt;</span>
 </code></pre></div>
-<p>テストの失敗ごとに、最後に表示されていたページのスナップショットを <strong>tests/_output</strong> ディレクトリーに保存します。PhpBrowserはHTMLのコードを保存し、WebDriverはページのスクリーンショットを保存します。</p>
+<p>テストの失敗ごとに、最後に表示されていたページのスナップショットを<strong>tests/_output</strong>ディレクトリーに保存します。PhpBrowserはHTMLのコードを保存し、WebDriverはページのスクリーンショットを保存します。</p>
 
 <p>テストによって開かれたウェブページを調査したくなるときがあると思います。そのような場合にはWebDriverモジュールの<a href="http://codeception.com/docs/modules/WebDriver#pauseExecution">pauseExecution</a>メソッドを利用することができます。</p>
 
 <p><a href="http://codeception.com/addons#CodeceptionExtensionRecorder">Recorder extension</a>を利用することにより、テストをステップごとに記録し、実行の様子をスライドショー形式で確認することもできます。</p>
 
-<h2>まとめ</h2>
+まとめ</h2>
 
 <p>CodeceptionとPhpBrowserで受け入れテストを書くことは、良いスタートです。フレームワークで作られたサイトと同じように、Joomla、Drupal、WordPressのサイトも簡単にテストできます。受け入れテストを書くことはPHPでのテスターの行動を説明するようなものです。可読性に長け、とても書きやすいです。テストを実行するごとにデータベースの再構築を忘れないように。</p>
 
@@ -488,7 +478,7 @@ Codeceptionは複数のテスト間でCookieを共有することができるた
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2016-06-07 17:58:40 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.1.9">Codeception 2.1.9</a></p>
+        <p>Last updated: 2016-04-19 17:02:01 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.1.8">Codeception 2.1.8</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
