@@ -14,7 +14,10 @@ Codeceptionの[公式ドキュメント](https://github.com/Codeception/Codecept
 ということなので、guidesのみを対象としています。
 
 ## ChangeLog
-- [2.1.9](http://piccagliani.github.io/Codeception.docs.ja_JP/)
+- [2.1.10](http://piccagliani.github.io/Codeception.docs.ja_JP/)
+  - 2016-06-07公開
+  - 変更ファイルなし
+- [2.1.9](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.9/)
   - 2016-06-07公開
   - 変更ファイル
     - 03-AcceptanceTests.md
