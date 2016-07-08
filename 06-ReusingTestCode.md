@@ -464,7 +464,7 @@ Seleniumと直接的にやり取りするための`Facebook\WebDriver\RemoteWebD
 
     // HOOK: after suite
     public function _afterSuite() {
-    }    
+    }
 
     // HOOK: before each step
     public function _beforeStep(\Codeception\Step $step) {
