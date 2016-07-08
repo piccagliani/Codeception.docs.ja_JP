@@ -15,14 +15,14 @@ Codeceptionは簡単にテストを作成する、すばらしいジェネレー
 以下のようなコマンドで生成されます。
 
 ```bash
-$ php codecept.phar generate:phpunit unit Example
+php codecept generate:phpunit unit Example
 ```
 
 Codeceptionは一般的な単体テストのアドオンを備えています、それでは試してみましょう。
 Codeceptionの単体テストを作成するには別のコマンドが必要です。
 
 ```bash
-$ php codecept.phar generate:test unit Example
+php codecept generate:test unit Example
 ```
 
 どちらのテストも`tests/unit`ディレクトリーに新しく`ExampleTest`ファイルを作成します。
@@ -33,7 +33,7 @@ $ php codecept.phar generate:test unit Example
 <?php
 use Codeception\Util\Stub;
 
-class ExampleTest extends \Codeception\TestCase\Test
+class ExampleTest extends \Codeception\Test\Unit
 {
    /**
     * @var UnitTester
@@ -50,7 +50,6 @@ class ExampleTest extends \Codeception\TestCase\Test
     {
     }
 }
-?>
 ```
 
 このクラスは、はじめから`_before`と`_after`のメソッドが定義されています。それらは各テスト前にテスト用のオブジェクトを作成し、終了後に削除するのに使用できます。
@@ -71,13 +70,13 @@ modules:
         - \Helper\Unit
 ```
 
-### 従来の単体テスト
+## 従来の単体テスト
 
 Codeceptionの単体テストは、PHPUnitで書かれているのとまったく同じように書かれています。：
 
 ```php
 <?php
-class UserTest extends \Codeception\TestCase\Test
+class UserTest extends \Codeception\Test\Unit
 {
     public function testValidation()
     {
@@ -93,61 +92,9 @@ class UserTest extends \Codeception\TestCase\Test
         $this->assertTrue($user->validate(['username']));           
     }
 }
-?>
 ```
 
-### BDD Specテスト
-
-テストを書くときは、アプリケーションにおける一定の変化のためにテストを準備する必要があります。テストは読みやすく維持されやすくするべきです。あなたのアプリケーションの仕様が変わったら、同じようにテストもアップデートされるべきです。ドキュメントのテストにおいてチーム内部で話し合いが持たれなかったのならば、新しい機能の導入によってテストが影響を受けるということを理解していくのに壁があるでしょう。
-
-そのため、アプリケーションを単体テストで網羅するだけでなく、テスト自体を説明的に保っておくことはとても重要な事です。私たちは、シナリオ駆動の受け入れテストと機能テストでこれを実践しています。そして、単体テストや結合テストにおいても同様にこれを実践するべきです。
-
-この場合において、単体テスト内部の仕様を書いている[Specify](https://github.com/Codeception/Specify)（pharパッケージに含まれている）というスタンドアロンのプロジェクトを用意しています。
-
-```php
-<?php
-class UserTest extends \Codeception\TestCase\Test
-{
-    use \Codeception\Specify;
-
-    private $user;
-
-    public function testValidation()
-    {
-        $this->user = User::create();
-
-        $this->specify("username is required", function() {
-            $this->user->username = null;
-            $this->assertFalse($this->user->validate(['username']));
-        });
-
-        $this->specify("username is too long", function() {
-            $this->user->username = 'toolooooongnaaaaaaameeee';
-            $this->assertFalse($this->user->validate(['username']));
-        });
-
-        $this->specify("username is ok", function() {
-            $this->user->username = 'davert';
-            $this->assertTrue($this->user->validate(['username']));
-        });
-    }
-}
-?>
-```
-
-`specify`のコードブロックを使用する事で、テストを細かい単位で説明することができます。このことはチームの全員にとってテストがとても見やすく、理解しやすい状態にしてくれます。
-
-`specify`ブロックの内部にあるコードは独立しています。上記の例だと、`$this->user`（他のどんなオブジェクトやプロパティでも）への変更は他のコードブロックに反映されないでしょう。
-
-あなたはBDD-styleのアサーションをするために、[Codeception\Verify](https://github.com/Codeception/Verify)も追加するかもしれません。もし、あなたが`assert`の呼び出しの中で、引数のどちらが期待している値で、どちらが実際の値なのかをよく混同してしまうなら、この小さなライブラリーはとてもすばらしく可読性に長けたアサーションを追加します。
-
-```php
-<?php
-verify($user->getName())->equals('john');
-?>
-```
-
-## モジュールを使う
+### モジュールを使う
 
 シナリオ駆動の機能テストや受け入れテストの中で、あなたはアクタークラスのメソッドにアクセスできました。もし結合テストを書く場合は、データベースをテストする`Db`モジュールが役に立つかもしれません。
 
@@ -178,9 +125,8 @@ function testSavingUser()
     $user->setSurname('Davis');
     $user->save();
     $this->assertEquals('Miles Davis', $user->getFullName());
-    $this->tester->seeInDatabase('users', array('name' => 'Miles', 'surname' => 'Davis'));
+    $this->tester->seeInDatabase('users', ['name' => 'Miles', 'surname' => 'Davis']);
 }
-?>
 ```
 
 単体テストでデータベース機能を有効にするためには、unit.suite.yml設定ファイルにて有効なモジュール一覧に`Db`モジュールが含まれていることを確認してください。
@@ -219,14 +165,12 @@ function testUserNameCanBeChanged()
     $this->tester->seeRecord('users', ['name' => 'bill']);
     $this->tester->dontSeeRecord('users', ['name' => 'miles']);
 }
-?>
 ```
 
 ActiveRecordパターンで実装されたORMを持つすべてのフレームワークにおいて、とても良く似たアプローチをとることができます。
 それらはYii2やPhalconで、同じように動作する`haveRecord`、`seeRecord`、`dontSeeRecord`を持っています。機能テスト用のアクションを利用しないよう、`part: ORM`を指定してインクルードしてください。
 
-In case you are using Symfony2 with Doctrine you may not enable Symfony2 itself but use only Doctrine2 only:
-DoctrineとともにSymfony2を利用するケースでは、Symfony2そのものは有効とせず、Doctrine2のみを利用するようにしてください。：
+DoctrineとともにSymfonyを利用するケースでは、Symfonyそのものは有効とせず、Doctrine2のみを利用するようにしてください。：
 
 ```yaml
 class_name: UnitTester
@@ -234,11 +178,11 @@ modules:
     enabled:
         - Asserts
         - Doctrine2:
-            depends: Symfony2
+            depends: Symfony
         - \Helper\Unit
 ```
 
-このようにすることで、Doctrineはデータベースへの接続確立のためにSymfony2を使いながら、Doctrine2モジュールのメソッドを利用することができます。このケースではテストは次のようになります。：
+このようにすることで、Doctrineはデータベースへの接続確立のためにSymfonyを使いながら、Doctrine2モジュールのメソッドを利用することができます。このケースではテストは次のようになります。：
 
 ```php
 <?php
@@ -258,11 +202,10 @@ function testUserNameCanBeChanged()
     $this->tester->seeInRepository('Acme\DemoBundle\Entity\User', ['name' => 'bill']);
     $this->tester->dontSeeInRepository('Acme\DemoBundle\Entity\User', ['name' => 'miles']);
 }
-?>
 ```
 
 どちらの例においても、テスト間におけるデータの永続化について心配する必要はありません。
-Doctrine2、Laravel4、どちらのモジュールにおいてもテストの終了時に作成されたデータはクリーンアップされます。
+Doctrine2、Laravel5、どちらのモジュールにおいてもテストの終了時に作成されたデータはクリーンアップされます。
 これは、トランザクションでテストをラッピングし、その後、それをロールバックすることによって行われます。
 
 ### モジュールにアクセスする
@@ -275,23 +218,71 @@ Codeceptionはこのスイートにおいて、すべてのモジュールに定
 <?php
 /** @var Doctrine\ORM\EntityManager */
 $em = $this->getModule('Doctrine2')->em;
-?>
 ```
 
-もし`Symfony2`を使うなら、このようにSymfonyのコンテナにアクセスします：
+もし`Symfony`を使うなら、このようにSymfonyのコンテナにアクセスします：
 
 ```php
 <?php
 /** @var Symfony\Component\DependencyInjection\Container */
-$container = $this->getModule('Symfony2')->container;
-?>
+$container = $this->getModule('Symfony')->container;
 ```
 
 有効化されているモジュールのすべてのPublicプロパティについても同じようにアクセスすることができます。アクセス可能なプロパティはモジュールリファレンスに列挙されています。
 
-### Cest
+## BDD Specテスト
 
-`PHPUnit_Framework_TestCase`を継承したテストケースの代わりに、Codeception仕様のCest形式を使用できるでしょう。他のどのクラスも継承する必要はありません。このクラスのすべてのパブリックなメソッドがテストです。
+テストを書くときは、アプリケーションにおける一定の変化のためにテストを準備する必要があります。テストは読みやすく維持されやすくするべきです。あなたのアプリケーションの仕様が変わったら、同じようにテストもアップデートされるべきです。ドキュメントのテストにおいてチーム内部で話し合いが持たれなかったのならば、新しい機能の導入によってテストが影響を受けるということを理解していくのに壁があるでしょう。
+
+そのため、アプリケーションを単体テストで網羅するだけでなく、テスト自体を説明的に保っておくことはとても重要な事です。私たちは、シナリオ駆動の受け入れテストと機能テストでこれを実践しています。そして、単体テストや結合テストにおいても同様にこれを実践するべきです。
+
+この場合において、単体テスト内部の仕様を書いている[Specify](https://github.com/Codeception/Specify)（pharパッケージに含まれている）というスタンドアロンのプロジェクトを用意しています。
+
+```php
+<?php
+class UserTest extends \Codeception\Test\Unit
+{
+    use \Codeception\Specify;
+
+    private $user;
+
+    public function testValidation()
+    {
+        $this->user = User::create();
+
+        $this->specify("username is required", function() {
+            $this->user->username = null;
+            $this->assertFalse($this->user->validate(['username']));
+        });
+
+        $this->specify("username is too long", function() {
+            $this->user->username = 'toolooooongnaaaaaaameeee';
+            $this->assertFalse($this->user->validate(['username']));
+        });
+
+        $this->specify("username is ok", function() {
+            $this->user->username = 'davert';
+            $this->assertTrue($this->user->validate(['username']));
+        });
+    }
+}
+```
+
+`specify`のコードブロックを使用する事で、テストを細かい単位で説明することができます。このことはチームの全員にとってテストがとても見やすく、理解しやすい状態にしてくれます。
+
+`specify`ブロックの内部にあるコードは分離されています。上記の例だと、`$this->user`（他のどんなオブジェクトやプロパティでも）への変更は他のコードブロックに反映されないでしょう。Specifyは分離されたスコープ間でオブジェクトを保存する際の手段として、ディープコピーとシャローコピーを使用します。ディープコピーを使用した場合はメモリ消費量の増加が、シャローコピーを利用した場合はスコープを完全に分離できない、という欠点があります。テストで使用する前に、[Specify](https://github.com/Codeception/Specify)がどのように動作するのか、そしてどのように設定を行うのか
+理解してください。
+
+あなたはBDD-styleのアサーションをするために、[Codeception\Verify](https://github.com/Codeception/Verify)も追加するかもしれません。もし、あなたが`assert`の呼び出しの中で、引数のどちらが期待している値で、どちらが実際の値なのかをよく混同してしまうなら、この小さなライブラリーはとてもすばらしく可読性に長けたアサーションを追加します。
+
+```php
+<?php
+verify($user->getName())->equals('john');
+```
+
+## Cest
+
+`PHPUnit_Framework_TestCase`を継承したテストケースの代わりに、Codeception特有のCest形式を使用できるでしょう。他のどのクラスも継承する必要はありません。このクラスのすべてのパブリックなメソッドがテストです。
 
 上記の例をシナリオ駆動の形式でこのように書きなおすことができます：
 
@@ -314,7 +305,6 @@ class UserCest
         $t->seeInDatabase('users', ['name' => 'Miles', 'surname' => 'Davis']);
     }
 }
-?>
 ```
 
 `$t`変数でアクセスしているであろう、UnitTesterクラスのいつものアサーションを追加する`Asserts`モジュールを単体テストのために追加するかもしれません。
@@ -339,7 +329,16 @@ Cestはアサーション用の関数、モックやスタブを作成する関�
 しかしながらCest形式は関心を分離するという点で優れています。テストコードは`UnitTester`オブジェクトによって提供されるサポートコードと干渉しません。単体/結合テストに必要となる、すべての追加アクションは`Helper\Unit`クラスに実装するようにしてください。
 </div>
 
-### スタブ
+例外をチェックをするためには`Asserts`モジュールの`expectException`メソッドを使うことができます。PHPUnitの同様のメソッドとは異なり、このメソッドはテスト内部でスローされた例外をアサートします。次のコードは例外の発生処理をクロージャーに内包しています。
+
+```php
+<?php
+$t->expectException(new Exception, {
+   throw new Exception;
+});
+```
+
+## スタブ
 
 Codeceptionは、スタブを簡単に作成するPHPUnitモックフレームワークの小さいラッパーを提供しています。`\Codeception\Util\Stub`を追加して、ダミーオブジェクトの作成を始めてください。
 
@@ -349,7 +348,6 @@ Codeceptionは、スタブを簡単に作成するPHPUnitモックフレーム�
 <?php
 $user = Stub::make('User', ['getName' => 'john']);
 $name = $user->getName(); // 'john'
-?>
 ```
 
 スタブはPHPUnitのモックフレームワークから生成されます。[Mockery](https://github.com/padraic/mockery)（[Mockery module](https://github.com/Codeception/MockeryModule)とセット）、[AspectMock](https://github.com/Codeception/AspectMock)、など他のものを代わりに使用することもできます。

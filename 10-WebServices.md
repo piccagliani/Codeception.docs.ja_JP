@@ -5,14 +5,14 @@ CodeceptionはWebサイトのテストと同じ方法で、Webサービスをテ
 新しくテストスイートを作成するところからはじめましょう。これは`bootstrap`コマンドでは提供されていません。テストスイートの名前は**api**とし、`ApiTester`クラスを使いましょう。
 
 ```bash
-$ php codecept.phar generate:suite api
+$ php codecept generate:suite api
 ```
 
 ここにAPIのテストを記述していきます。
 
 ## REST
 
-REST方式のWebサービスは、HTTPの標準的なメソッドである`GET`、`POST`、`PUT`、`DELETE`を介してアクセスされます。これにより、ユーザーはWebサービスからエンティティを受け取り、操作することができます。WebサービスへのアクセスにはHTTPクライアントが必要であるため、`PhpBrowser`やいずれかのフレームワーク用モジュールのセットアップを行う必要があります。Webサーバーを無視し、Webサービスを内部的にテストするために、たとえば、Symfony2で実装されたアプリケーションであれば、`Symfony2`モジュールを使用します。
+REST方式のWebサービスは、HTTPの標準的なメソッドである`GET`、`POST`、`PUT`、`DELETE`を介してアクセスされます。これにより、ユーザーはWebサービスからエンティティを受け取り、操作することができます。WebサービスへのアクセスにはHTTPクライアントが必要であるため、`PhpBrowser`やいずれかのフレームワーク用モジュールのセットアップを行う必要があります。Webサーバーを無視し、Webサービスを内部的にテストするために、たとえば、Symfony2で実装されたアプリケーションであれば、`Symfony`モジュールを使用します。
 
 `api.suite.yml`にモジュールの設定を行います。
 
@@ -20,9 +20,9 @@ REST方式のWebサービスは、HTTPの標準的なメソッドである`GET`�
 class_name: ApiTester
 modules:
     enabled:
-		- REST:
-			url: http://serviceapp/api/v1/
-			depends: PhpBrowser
+        - REST:
+            url: http://serviceapp/api/v1/
+            depends: PhpBrowser
 ```
 
 この設定に従ってRESTモジュールは`PhpBrowser`に接続するでしょう。Webサービスによっては、XMLまたはJSONレスポンスを扱うことができます。Codeceptionはどちらの形式もうまく扱いますが、もしいずれかが必要でない場合、明示的にモジュールがJSONやXMLを利用するよう指定することができます。
@@ -31,27 +31,27 @@ modules:
 class_name: ApiTester
 modules:
     enabled:
-		- REST:
-			url: http://serviceapp/api/v1/
-			depends: PhpBrowser
-			part: Json
+        - REST:
+            url: http://serviceapp/api/v1/
+            depends: PhpBrowser
+            part: Json
 ```
 
-APIテストは機能テストとして、そしてSymfony2、Laravel4、Laravel5、Zend、または他のフレームワークモジュールを使って実行することができます。そのためには設定ファイルを少し更新する必要があります：
+APIテストは機能テストとして、そしてSymfony、Laravel5、Zend、または他のフレームワークモジュールを使って実行することができます。そのためには設定ファイルを少し更新する必要があります：
 
 ``` yaml
 class_name: ApiTester
 modules:
     enabled:
-		- REST:
-			url: /api/v1/
-			depends: Laravel5
+        - REST:
+            url: /api/v1/
+            depends: Laravel5
 ```
 
 新しいテストスイートを設定できたら、最初のサンプルテストを作りましょう：
 
 ```bash
-$ php codecept.phar generate:cept api CreateUser
+$ php codecept generate:cept api CreateUser
 ```
 
 これを`CreateUserCept.php`と呼ぶこととします。REST APIを介したユーザーの作成をテストするために使用します。
@@ -65,11 +65,12 @@ $I->wantTo('create a user via API');
 $I->amHttpAuthenticated('service_user', '123456');
 $I->haveHttpHeader('Content-Type', 'application/x-www-form-urlencoded');
 $I->sendPOST('/users', ['name' => 'davert', 'email' => 'davert@codeception.com']);
-$I->seeResponseCodeIs(200);
+$I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
 $I->seeResponseIsJson();
 $I->seeResponseContains('{"result":"ok"}');
-?>
 ```
+
+`seeResponseCodeIs`と`dontSeeResponseCodeIs`メソッドでレスポンスコードのチェックをする際に、数値の代わりに`Codeception\Util\HttpCode`に定義されているHTTPコード定数を使うことができます。
 
 ### JSONレスポンスのテスト
 
@@ -81,30 +82,28 @@ $I->seeResponseContains('{"result":"ok"}');
 $I->seeResponseContainsJson(['result' => 'ok']);
 // it can match tree-like structures as well
 $I->seeResponseContainsJson([
-	'user' => [
-			'name' => 'davert',
-			'email' => 'davert@codeception.com',
-			'status' => 'inactive'
-	]
+  'user' => [
+      'name' => 'davert',
+      'email' => 'davert@codeception.com',
+      'status' => 'inactive'
+  ]
 ]);
-?>
 ```
 
 レスポンスに対して、より複雑な検証を行いたい場合があると思います。そのためには [ヘルパー](http://codeception.com/docs/06-ReusingTestCode#Helpers)クラスに独自のメソッドを記述します。最後のJSONレスポンスにアクセスするためには、`REST`モジュールの`response`プロパティーを使用します。次に示す`seeResponseIsHtml`メソッドで説明しましょう。
 （訳注：「ヘルパー」のリンク先は正しくは[こちら](http://codeception.com/docs/06-ReusingTestCode#Modules-and-Helpers)）
 
 ```php
-<?php
 namespace Helper;
+
 class Api extends \Codeception\Module
 {
-	public function seeResponseIsHtml()
-	{
-		$response = $this->getModule('REST')->response;
-        \PHPUnit_Framework_Assert::assertRegex('~^<!DOCTYPE HTML(.*?)<html>.*?<\/html>~m', $response);
-	}
+  public function seeResponseIsHtml()
+  {
+    $response = $this->getModule('REST')->response;
+    $this->assertRegExp('~^<!DOCTYPE HTML(.*?)<html>.*?<\/html>~m', $response);
+  }
 }
-?>
 ```
 
 同じ方法で、リクエストパラメーターや、ヘッダー情報を取得することができます。
@@ -120,10 +119,10 @@ APIのテストにおいて、受け取ったデータの検証だけでなく�
 $I = new ApiTester($scenario);
 $I->wantTo('validate structure of GitHub api responses');
 $I->sendGET('/users');
+$I->seeResponseCodeIs(HttpCode::OK); // 200
 $I->seeResponseIsJson();
 $I->seeResponseJsonMatchesJsonPath('$[0].user.login');
 $I->seeResponseJsonMatchesXpath('//user/login');
-?>
 ```
 
 レスポンス内のフィールドの型を検証する必要がある場合、より詳細な確認が可能です。
@@ -132,6 +131,7 @@ JSONレスポンスの構造を定義する[seeResponseMatchesJsonType](http://c
 ```php
 <?php
 $I->sendGET('/users/1');
+$I->seeResponseCodeIs(HttpCode::OK); // 200
 $I->seeResponseIsJson();
 $I->seeResponseMatchesJsonType([
     'id' => 'integer',
@@ -141,7 +141,6 @@ $I->seeResponseMatchesJsonType([
     'created_at' => 'string:date',
     'is_active' => 'boolean'
 ]);
-?>
 ```
 
 Codeceptionは、[容易に学習・拡張](http://codeception.com/docs/modules/REST#seeResponseMatchesJsonType)できるよう、このシンプルで軽量な定義フォーマットを使用しています。
@@ -158,16 +157,16 @@ use Codeception\Util\Xml as XmlUtils;
 $I = new ApiTester($scenario);
 $I->wantTo('validate structure of GitHub api responses');
 $I->sendGET('/users.xml');
+$I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
 $I->seeResponseIsXml();
 $I->seeXmlResponseMatchesXpath('//user/login');
 $I->seeXmlResponseIncludes(XmlUtils::toXml(
-		'user' => [
-			'name' => 'davert',
-			'email' => 'davert@codeception.com',
-			'status' => 'inactive'
-	]
+    'user' => [
+      'name' => 'davert',
+      'email' => 'davert@codeception.com',
+      'status' => 'inactive'
+  ]
 ));
-?>
 ```
 
 XML構造をきれいな方法で構築することのできるXmlUtilsクラスを使っています。`toXml`メソッドは文字列もしくは配列をとり、\DOMDocumentインスタンスを返します。もしXMLに属性が含まれていいる関係によりPHPの配列で表現できない場合は、[XmlBuilder](http://codeception.com/docs/reference/XmlBuilder)を使ってXMLを作成することができます。次のセクションでもう少し見てみましょう。
@@ -186,9 +185,9 @@ SOAP方式のWebサービスは通常、より複雑になります。[SOAPサ�
 class_name: ApiTester
 modules:
     enabled:
-		- SOAP:
-			depends: PhpBrowser
-			endpoint: http://serviceapp/api/v1/
+    - SOAP:
+      depends: PhpBrowser
+      endpoint: http://serviceapp/api/v1/
 ```
 
 SOAPリクエストには認証や支払いのようなアプリケーション固有の情報を含みます。この情報はXMLリクエストの`<soap:Header>`要素に含まれるSOAPヘッダーによって提供されます。もしこのようなヘッダーを送信したい場合、`haveSoapHeader`メソッドを使用することができます。たとえば次のようになります。
@@ -196,7 +195,6 @@ SOAPリクエストには認証や支払いのようなアプリケーション�
 ```php
 <?php
 $I->haveSoapHeader('Auth', array('username' => 'Miles', 'password' => '123456'));
-?>
 ```
 
 このコードは次のXMLヘッダーを生成します。
@@ -205,8 +203,8 @@ $I->haveSoapHeader('Auth', array('username' => 'Miles', 'password' => '123456'))
 ```xml
 <soap:Header>
 <Auth>
-	<username>Miles</username>
-	<password>123456</password>
+  <username>Miles</username>
+  <password>123456</password>
 </Auth>
 </soap:Header>
 ```
@@ -216,7 +214,6 @@ $I->haveSoapHeader('Auth', array('username' => 'Miles', 'password' => '123456'))
 ```php
 <?php
 $I->sendSoapRequest('CreateUser', '<name>Miles Davis</name><email>miles@davis.com</email>');
-?>
 ```
 
 この呼び出しは次のXMLに変換されます。
@@ -224,8 +221,8 @@ $I->sendSoapRequest('CreateUser', '<name>Miles Davis</name><email>miles@davis.co
 ```xml
 <soap:Body>
 <ns:CreateUser>
-	<name>Miles Davis</name>
-	<email>miles@davis.com</email>
+  <name>Miles Davis</name>
+  <email>miles@davis.com</email>
 </ns:CreateUser>
 </soap:Body>
 ```
@@ -239,7 +236,6 @@ $I->seeSoapResponseEquals('<?xml version="1.0"?><error>500</error>');
 $I->seeSoapResponseIncludes('<result>1</result>');
 $I->seeSoapResponseContainsStructure('<user><name></name><email></email>');
 $I->seeSoapResponseContainsXPath('//result/user/name[@id=1]');
-?>
 ```
 
 もし長いXMLを記述したくない場合、[XmlBuilder](http://codeception.com/docs/reference/XmlBuilder)クラスの利用を考えてみてください。これはjQueryのようなスタイルで複雑なXMLを構築するのに役に立ちます。
@@ -253,12 +249,11 @@ $I = new ApiTester($scenario);
 $I->wantTo('create user');
 $I->haveSoapHeader('Session', array('token' => '123456'));
 $I->sendSoapRequest('CreateUser', Xml::build()
-	->user->email->val('miles@davis.com'));
+  ->user->email->val('miles@davis.com'));
 $I->seeSoapResponseIncludes(Xml::build()
-	->result->val('Ok')
-		->user->attr('id', 1)
+  ->result->val('Ok')
+    ->user->attr('id', 1)
 );
-?>
 ```
 
 `XmlBuilder`を使うか、プレーンなXMLを利用するかは、どちらでも構いません。`XmlBuilder`も同様にXML文字列を返します。
@@ -270,13 +265,12 @@ $I->seeSoapResponseIncludes(Xml::build()
 namespace Helper;
 class Api extends \Codeception\Module {
 
-	public function seeResponseIsValidOnSchema($schema)
-	{
-		$response = $this->getModule('SOAP')->response;
-		$this->assertTrue($response->schemaValidate($schema));
-	}
+  public function seeResponseIsValidOnSchema($schema)
+  {
+    $response = $this->getModule('SOAP')->response;
+    $this->assertTrue($response->schemaValidate($schema));
+  }
 }
-?>
 ```
 
 ## まとめ

@@ -9,40 +9,18 @@ CMSやフレームワークをアプリケーションに取り入れていて�
 どんな時でも、あなたのウェブサイトにテストを加えるということは良い考えだと言えるでしょう。
 少なくとも、最後の変更からアプリケーションがしっかりと機能していることに確信が持てるでしょう。
 
-## シナリオサンプル
+## サンプルシナリオ
 
 おそらく、最初に実行したいテストはサインインする機能でしょう。そのようなテストを書くためには、基本的なPHPとHTMLの知識が必要です。
 
 ```php
 <?php
-$I = new AcceptanceTester($scenario);
-$I->wantTo('sign in');
 $I->amOnPage('/login');
 $I->fillField('username', 'davert');
 $I->fillField('password', 'qwerty');
 $I->click('LOGIN');
 $I->see('Welcome, Davert!');
-?>
 ```
-
-このシナリオは、おそらく非技術者の人でも読めます。Codeceptionはシナリオを平易な英語に変換し、'自然言語化'することさえできます:
-
-```bash
-I WANT TO SIGN IN
-I am on page '/login'
-I fill field 'username', 'davert'
-I fill field 'password', 'qwerty'
-I click 'LOGIN'
-I see 'Welcome, Davert!'
-```
-
-そのような自然言語への翻訳は、コマンドによって行われます:
-
-``` bash
-$ php codecept.phar generate:scenarios
-```
-
-作成されたシナリオは__output__ディレクトリーにテキストファイルとして格納されます。
 
 **このシナリオテストはシンプルなPHP BrowserでもSelenium WebDriverを使ったブラウザーでも実行することができます。** まずはPHP Browserで受け入れテストを書いて行きましょう。
 
@@ -72,37 +50,14 @@ modules:
         - \Helper\Acceptance
 ```
 
-それでは、 __tests/acceptance__ ディレクトリーに'Cept'ファイルを作成してください。ファイル名は __SigninCept.php__ とします。
+それでは、`tests/acceptance`ディレクトリーに'Cept'ファイルを作成してください。ファイル名は`SigninCept.php`とします。
 最初の行に以下のように書きます。
 
 ```php
 <?php
 $I = new AcceptanceTester($scenario);
-$I->wantTo('sign in with valid account');
-?>
+$I->wantTo('sign in');
 ```
-
-`wantTo`という部分はシナリオを簡潔に説明しています。
-他にもBDDのようなCodeceptionのシナリオを書くための有用なコメント追加メソッドがあります。GherkinでBDDのシナリオを書いたことがある人なら、以下のようにフィーチャーを書くことができます。
-
-```bash
-As an Account Holder
-I want to withdraw cash from an ATM
-So that I can get money when the bank is closed
-```
-
-Codeceptionでは以下のように書きます:
-
-```php
-<?php
-$I = new AcceptanceTester($scenario);
-$I->am('Account Holder');
-$I->wantTo('withdraw cash from an ATM');
-$I->lookForwardTo('get money when the bank is closed');
-?>
-```
-
-ストーリーの前提を説明した上で、シナリオを書き始めましょう。
 
 この `$I`オブジェクトは、すべての動作を記述するために使われます。`$I`オブジェクトのメソッドは`PhpBrowser`モジュールから取得されています。
 簡単にそれを説明します：
@@ -110,12 +65,11 @@ $I->lookForwardTo('get money when the bank is closed');
 ```php
 <?php
 $I->amOnPage('/login');
-?>
 ```
 
-常に`am`アクションは、最初の状態を記述するように想定しています。`amOnPage`アクションは__/login__ページが最初の状態だと設定しています。
+`am`と`have`からはじまるすべてのアクションは、初期状態を記述することを想定しています。`amOnPage`アクションはテストが`/login`ページから始まることを設定しています。
 
-`PhpBrowser`では、リンクのクリックとフォームを埋めることができます。これらは、おそらく最も多い動作だと思います。
+`PhpBrowser`を使って、リンクをクリックしたり、フォームに入力することができます。これらは、最も良く使われるアクションだと思います。
 
 #### クリック
 
@@ -131,7 +85,6 @@ $I->click('#login a');
 $I->click('//a[@id=login]');
 // 第二引数としてコンテキストを使用する場合
 $I->click('Login', '.nav');
-?>
 ```
 
 Codeceptionは、テキストやname属性、CSSセレクター、XPathのどれかで要素を検索しようとします。
@@ -150,21 +103,13 @@ locatorの種類を配列として渡すことで、指定することもでき�
 // locatorの種類で指定する場合
 $I->click(['link' => 'Login']);
 $I->click(['class' => 'btn']);
-?>
 ```
 
-リンクをクリックする前に、本当にリンクが存在するかどうかチェックすることもできます。
-その場合`seeLink`メソッドを使用します。
+複雑はXPathロケーターを生成する際に便利な[`Codeception\Util\Locator`](http://codeception.com/docs/reference/Locator)という特別なクラスがあります。たとえば次のように、テーブルの最終行にある要素のクリックを簡単に行えます：
 
 ```php
-<?php
-// 実際にリンクが存在するかチェックする
-$I->seeLink('Login');
-$I->seeLink('Login','/login');
-$I->seeLink('#login a','/login');
-?>
+$I->click('Edit' , \Codeception\Util\Locator::elementAt('//table/tr', -1));
 ```
-
 
 #### フォーム
 
@@ -198,7 +143,6 @@ $I->fillField('Name', 'Miles');
 $I->fillField('user[email]','miles@davis.com');
 $I->selectOption('Gender','Male');
 $I->click('Update');
-?>
 ```
 
 それぞれのフィールドをラベルで検索するためには、labelタグに`for`属性を書く必要があります。
@@ -213,7 +157,6 @@ $I->submitForm('#update_form', array('user' => array(
      'email' => 'Davis',
      'gender' => 'm'
 )));
-?>
 ```
 
 `submitForm`メソッドはユーザーの行動をエミュレートしてはいませんが、フォームが適切にフォーマットされていない時に、非常に有効です。
@@ -235,7 +178,6 @@ $I->submitForm('#update_form', array('user' => array(
      'gender' => 'm',
 	 'submitButton' => 'Update'
 )));
-?>
 ```
 
 #### アサーション
@@ -252,10 +194,9 @@ $I->see('Thank you, Miles');
 // この要素は'notice'というクラス属性を持っています
 $I->see('Thank you, Miles', '.notice');
 // XPathを使用することもできます
-$I->see('Thank you, Miles', "descendant-or-self::*[contains(concat(' ', normalize-space(@class), ' '), ' notice ')]");
+$I->see('Thank you, Miles', "//table/tr[2]");
 // このメッセージがページに無いことをチェックしています
 $I->dontSee('Form is filled incorrectly');
-?>
 ```
 
 特定の要素がページに存在する（あるいは存在しない）ことをチェックできます。
@@ -264,7 +205,6 @@ $I->dontSee('Form is filled incorrectly');
 <?php
 $I->seeElement('.notice');
 $I->dontSeeElement('.error');
-?>
 ```
 
 私達は、他にもチェックを実行するために役立つメソッドを用意しています。それらがすべて`see`というプレフィックスから始まっていることに注目してください。
@@ -275,7 +215,6 @@ $I->seeInCurrentUrl('/user/miles');
 $I->seeCheckboxIsChecked('#agree');
 $I->seeInField('user[name]', 'Miles');
 $I->seeLink('Login');
-?>
 ```
 
 #### 条件付きアサーション
@@ -288,10 +227,23 @@ $I->seeLink('Login');
 $I->canSeeInCurrentUrl('/user/miles');
 $I->canSeeCheckboxIsChecked('#agree');
 $I->cantSeeInField('user[name]', 'Miles');
-?>
 ```
 
 それぞれの失敗したアサーションはテスト結果に示されますが、アサーションが失敗することでテストが止まることは無いでしょう。
+
+#### コメント
+
+長いシナリオにおいては、どのアクションを実行しようとしていて、その結果何を期待しているのか、説明するべきです。
+`amGoingTo`、`expect`、`expectTo`といったコマンドはテストをよりわかりやすくするために役立ちます。
+
+```php
+<?php
+$I->amGoingTo('submit user form with invalid values');
+$I->fillField('user[email]', 'miles');
+$I->click('Update');
+$I->expect('the form is not submitted');
+$I->see('Form is filled incorrectly');
+```
 
 #### グラバー
 
@@ -306,7 +258,6 @@ $I->click('Login');
 $I->fillField('email', 'miles@davis.com');
 $I->fillField('password', $password);
 $I->click('Log in!');
-?>
 ```
 
 グラバーは現在のページから1つの値を取得できるメソッドです。
@@ -316,22 +267,6 @@ $I->click('Log in!');
 $token = $I->grabTextFrom('.token');
 $password = $I->grabTextFrom("descendant::input/descendant::*[@id = 'password']");
 $api_key = $I->grabValueFrom('input[name=api]');
-?>
-```
-
-#### コメント
-
-長いシナリオ内では、これから実行しようとしている行動とそれによって得られる結果を説明するべきです。
-`amGoingTo`, `expect`, `expectTo`というメソッドは、よりわかりやすいテストを作成する助けとなります。
-
-```php
-<?php
-$I->amGoingTo('submit user form with invalid values');
-$I->fillField('user[email]', 'miles');
-$I->click('Update');
-$I->expect('the form is not submitted');
-$I->see('Form is filled incorrectly');
-?>
 ```
 
 #### クッキー、URL、タイトル、その他
@@ -343,15 +278,14 @@ $I->see('Form is filled incorrectly');
 $I->setCookie('auth', '123345');
 $I->grabCookie('auth');
 $I->seeCookie('auth');
-?>
 ```
+
 ページのタイトルを扱うためのメソッド:
 
 ```php
 <?php
 $I->seeInTitle('Login');
 $I->dontSeeInTitle('Register');
-?>
 ```
 
 URLを扱うためのメソッド:
@@ -362,7 +296,6 @@ $I->seeCurrentUrlEquals('/login');
 $I->seeCurrentUrlMatches('~$/users/(\d+)~');
 $I->seeInCurrentUrl('user/1');
 $user_id = $I->grabFromCurrentUrl('~$/user/(\d+)/~');
-?>
 ```
 
 ## Selenium WebDriver
@@ -393,9 +326,7 @@ Seleniumを使用して受け入れテストを実行するならば、Firefox�
 ```php
 <?php
 $I->seeElement('#modal');
-?>
 ```
-
 
 #### Wait
 
@@ -408,43 +339,11 @@ $I->seeElement('#modal');
 <?php
 $I->waitForElement('#agree_button', 30); // secs
 $I->click('#agree_button');
-?>
 ```
 
 この場合には、agree buttonが表示されるまで待機し、表示されたらクリックします。30秒経過しても表示されなかったときは、テストは失敗します。他にも使える`wait`メソッドがあります。
 
-詳細なリファレンスはCodeception's [WebDriver module documentation](http://codeception.com/docs/modules/WebDriver)を参照してください。
-
-### セッションのスナップショット
-
-ユーザーセッションを複数のテストに渡って保持したい、ということはよくあることです。
-もしテスト用ユーザーを認証する必要がある場合、それぞれのテストの開始時にログインフォームを埋めることでそれを行うことができます。
-これらのステップにかかる時間、特に（それ自体が遅い）Seleniumを使ったテストにおいては、この時間は問題になるかもしれません。
-Codeceptionは複数のテスト間でCookieを共有することができるため、一度ログインしたユーザーは他のテストでも認証状態を保つことができます。
-
-デモのため、`test_login`関数を記述してテストの中で使ってみましょう：
-
-``` php
-<?php
-function test_login($I)
-{
-     // もしスナップショットが存在した場合、ログインをスキップする
-     if ($I->loadSessionSnapshot('login')) return;
-     // ログインする
-     $I->amOnPage('/login');
-     $I->fillField('name', 'jon');
-     $I->fillField('password', '123345');
-     $I->click('Login');
-     // スナップショットを保存する
-     $I->saveSessionSnapshot('login');
-}
-// テストで使う:
-$I = new AcceptanceTester($scenario);
-test_login($I);
-?>
-```
-
-上で示した`test_login`関数は、`AcceptanceTester`クラス内に実装することを推奨します。
+詳細なリファレンスはCodeceptionの [WebDriverモジュールのドキュメント](http://codeception.com/docs/modules/WebDriver)を参照してください。
 
 ### 複数セッションのテスト
 
@@ -452,8 +351,6 @@ Codeceptionは同時に複数のセッションを実行できます。サイト
 
 ```php
 <?php
-$I = new AcceptanceTester($scenario);
-$I->wantTo('try multi session');
 $I->amOnPage('/messages');
 $nick = $I->haveFriend('nick');
 $nick->does(function(AcceptanceTester $I) {
@@ -464,7 +361,6 @@ $nick->does(function(AcceptanceTester $I) {
 });
 $I->wait(3);
 $I->see('Hello all!', '.message');
-?>
 ```
 
 この場合には、2つ目のウィンドウでfriendオブジェクトが`does`メソッドを使用していくつかの行動をしました。
@@ -479,13 +375,34 @@ $nickAdmin->does(function(adminStep $I) {
     // Admin does ...
 });
 $nickAdmin->leave();
-?>
 ```
 
+### クラウドテスティング
+
+Selenium WebDriverは、テストを異なるプラットフォーム上の実際のブラウザー内で実行することができます。ただ、環境によっては再現が難しいものもあり、特にWindows XPがインストールされた環境が手元にない場合、Windows XP上のインターネットエクスプローラー6～8を使ったテストは困難です。クラウドテスティングサービスが便利なのはこのような点においてです。[SauceLabs](https://saucelabs.com)や[BrowserStack](https://www.browserstack.com/)、[その他](http://codeception.com/docs/modules/WebDriver#Cloud-Testing)のサービスは、オンデマンドでSelenium Serverや必要となるブラウザーがセットアップされた仮想マシンを作成することができます。テストはクラウドのリモートマシン上で実行され、ローカルファイルへのアクセスはクラウドテスティングサービスが提供する **Tunnel** と呼ばれる特別なアプリケーションによって行われます。Tunnelはセキュリティーで保護されたプロトコル上で動作し、クラウドで実行されるブラウザーは、ローカルウェブサーバーに接続することができます。
+
+クラウドテスティングサービスは標準的なWebDriverプロトコルで動作するため、その設定は非常に簡単です。[WebDriverモジュールの設定](http://codeception.com/docs/modules/WebDriver#Cloud-Testing)を行うだけです：
+
+* 接続先ホストの指定（クラウドサービスに依存）
+* 認証情報（あなたのアカウントを使ってください）
+* ブラウザー
+* OS
+
+認証情報は[params](http://codeception.com/docs/06-ModulesAndHelpers#Dynamic-Configuration-With-Params) を使って設定することを推奨しています。
+
+注意点として、クラウドテスティングサービスは無料ではありません。料金体系を調査して、あなたのニーズにあったものを選定してください。また、ローカルサーバーとクラウド間のping値が高すぎる場合には動作が非常に遅くなるため、受け入れテストのランダムな失敗を引き起こします。
+
+### AngularJSのテスト
+
+モダンなSPAでは、サーバーに代わりブラウザーがユーザーインターフェースを作成します。伝統的なウェブアプリケーションとは異なり、ユーザーの操作によってウェブページは再読み込みされません。すべてのサーバーとのやり取りは非同期通信を用いたjavascript内で完結します。しかしながら、SPAのテストは困難な作業になる可能性があります。「描画が完了したかどうか」のような、アプリケーションの状態に関する情報が何もない可能性があります。このようなケースでできることとしては、`wait*` メソッドを多用することや、javascriptを実行してアプリケーションの状態をチェックすることです。
+
+AngularJSのバージョン1.xで構築されたアプリケーション向けに、（Angularアプリの公式テスティングツールである）Protactorをベースとした[AngularJSモジュール](http://codeception.com/docs/modules/AngularJS)を実装しました。内部的には、前のアクションが完了する前にステップの実行を一時停止し、AngularJS APIを利用してアプリケーションの状態をチェックする、ということを行っています。
+
+AngularJSモジュールはWebDriverを継承していますので、WebDriverのすべての設定オプションを利用可能です。
 
 ### クリーンアップ
 
-テストをしている中で、あなたの行動はサイト上のデータを変えてしまうかもしれません。2度同じデータを生成したり、アップデートしようとしてテストは失敗する事になるでしょう。この問題を避けるために、データベースはそれぞれのテストごとに再構築する必要があります。Codeceptionはそのために`Db`モジュールを提供しています。テストを通過した後にデータベースのdumpをロードします。データベースの再構築を機能させるためには、データベースをdumpしてsqlファイルを作成し、 __/tests/_data__ ディレクトリーに配置してください。Codeceptionのglobalの設定にデータベースへの接続情報とパスをセットしてください。
+テストをしている中で、あなたの行動はサイト上のデータを変えてしまうかもしれません。2度同じデータを生成したり、アップデートしようとしてテストは失敗する事になるでしょう。この問題を避けるために、データベースはそれぞれのテストごとに再構築する必要があります。Codeceptionはそのために`Db`モジュールを提供しています。テストを通過した後にデータベースのdumpをロードします。データベースの再構築を機能させるためには、データベースをdumpしてsqlファイルを作成し、`/tests/_data`ディレクトリーに配置してください。Codeceptionのglobalの設定にデータベースへの接続情報とパスをセットしてください。
 
 ```yaml
 # in codeception.yml:
@@ -507,11 +424,9 @@ Codeceptionモジュールは実行中に価値のある情報を出力できま
 ```php
 <?php
 codecept_debug($I->grabTextFrom('#name'));
-?>
 ```
 
-
-テストの失敗ごとに、最後に表示されていたページのスナップショットを __tests/_output__ ディレクトリーに保存します。PhpBrowserはHTMLのコードを保存し、WebDriverはページのスクリーンショットを保存します。
+テストの失敗ごとに、最後に表示されていたページのスナップショットを`tests/_output`ディレクトリーに保存します。PhpBrowserはHTMLのコードを保存し、WebDriverはページのスクリーンショットを保存します。
 
 テストによって開かれたウェブページを調査したくなるときがあると思います。そのような場合にはWebDriverモジュールの[pauseExecution](http://codeception.com/docs/modules/WebDriver#pauseExecution)メソッドを利用することができます。
 

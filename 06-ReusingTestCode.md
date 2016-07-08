@@ -14,7 +14,6 @@ $I->amOnPage('/');
 $I->see('Hello');
 $I->seeInDatabase('users', ['id' => 1]);
 $I->seeFileFound('running.lock');
-?>
 ```
 
 これは異なるエンティティで動作します。ウェブページはPhpBrowserモジュールをロードすることができ、データベースのアサーションはDbモジュールを使用し、ファイルの状態はFilesystemモジュールで確認することができます。
@@ -60,10 +59,12 @@ class AcceptanceTester extends \Codeception\Actor
     */
 
 }
-?>
 ```
 
 最も重要な箇所は`_generated\AcceptanceTesterActions`トレイトで、有効化されたモジュールへのプロキシとして機能します。それは、どのモジュールがどのアクションを実行するのか、そしてパラメーターとして何を渡すのか、知っています。このトレイトは`codecept build`を実行することによって作成され、モジュールや設定ファイルが変更されるたびに再作成されます。
+
+### 認証
+
 さまざまな箇所で利用されるアクションはアクタークラス内に定義することを推奨します。そのようなケースの良い例としては、受入テストや機能テストにて積極的に利用されるであろう、`login`アクションが挙げられます。
 
 ``` php
@@ -84,7 +85,6 @@ class AcceptanceTester extends \Codeception\Actor
         $I->see($name, '.navbar');
     }
 }
-?>
 ```
 
 これでテストで`login`メソッドを利用することができます：
@@ -93,10 +93,41 @@ class AcceptanceTester extends \Codeception\Actor
 <?php
 $I = new AcceptanceTester($scenario);
 $I->login('miles', '123456');
-?>
 ```
 
 しかしながら、すべての再利用のためのアクションを1つのアクタークラスに定義することは、[単一責任の原則](http://en.wikipedia.org/wiki/Single_responsibility_principle)の破壊につながる可能性があります。
+
+### セッションのスナップショット
+
+もしテスト用ユーザーを認証する必要がある場合、それぞれのテストの開始時にログインフォームを入力させることでそれを行うことができます。
+これらのステップにかかる時間、特に（それ自体が遅い）Seleniumを使ったテストにおいては、この時間は問題になるかもしれません。
+
+Codeceptionは複数のテスト間でCookieを共有することができるため、一度ログインしたユーザーは他のテストでも認証状態を保つことができます。
+
+さきほどの`login`メソッドを、初回ログイン時のみ一度だけ実行し、その後はクッキーからセッションを復元するように改善してみましょう。
+
+``` php
+<?php
+    public function login($name, $password)
+    {
+        $I = $this;
+        // if snapshot exists - skipping login
+        if ($I->loadSessionSnapshot('login')) {
+            return;
+        }
+        // logging in
+        $I->amOnPage('/login');
+        $I->submitForm('#loginForm', [
+            'login' => $name,
+            'password' => $password
+        ]);
+        $I->see($name, '.navbar');
+         // saving snapshot
+        $I->saveSessionSnapshot('login');
+    }
+
+```
+セッションの復元は（`Codeception\Lib\Interfaces\SessionSnapshot`インタフェースを実装している）`WebDriver`と`PhpBrowser`モジュールでのみ動作することに注意してください。
 
 ## ステップオブジェクト
 
@@ -105,13 +136,13 @@ $I->login('miles', '123456');
 コマンドプロンプト上で、テストスイートを指定し、作成したいメソッド名を渡すことで、ジェネレーターを使って管理画面用のステップオブジェクトを作成することができます。
 
 ```bash
-$ php codecept.phar generate:stepobject acceptance Admin
+php codecept generate:stepobject acceptance Admin
 ```
 
 アクション名を入力するよう促されますが、これはオプションです。ここでは1つ入力し、エンターキーを押します。すべての必要なアクションを指定し終えたら、何も入力せずに改行することでステップオブジェクトが作成されます。
 
 ```bash
-$ php codecept.phar generate:stepobject acceptance Admin
+php codecept generate:stepobject acceptance Admin
 Add action to StepObject class (ENTER to exit): loginAsAdmin
 Add action to StepObject class (ENTER to exit):
 StepObject was created in /tests/acceptance/_support/Step/Acceptance/Admin.php
@@ -130,7 +161,6 @@ class Admin extends \AcceptanceTester
         $I = $this;
     }
 }
-?>
 ```
 
 このように、クラスはとてもシンプルなものです。`AcceptanceTester`クラスを継承しているため、クラス内部ですべての`AcceptanceTester`のメソッドとプロパティを利用することができます。
@@ -152,7 +182,6 @@ class Member extends \AcceptanceTester
         $I->click('Login');
     }
 }
-?>
 ```
 
 テストでは、`AcceptanceTester`のかわりに`Step\Acceptance\Admin`をインスタンス化うることでステップオブジェクトを使うことができます。
@@ -163,7 +192,6 @@ use Step\Acceptance\Admin as AdminTester;
 
 $I = new AdminTester($scenario);
 $I->loginAsAdmin();
-?>
 ```
 
 上と同じように、Cest形式を利用する場合は、DIコンテナによってステップオブジェクトは自動的にインスタンス化されます。
@@ -179,7 +207,6 @@ class UserCest
         $I->see('Admin Profile', 'h1');        
     }
 }
-?>
 ```
 
 もし複雑なテストシナリオがある場合、1つのテストのなかで複数のステップオブジェクトを使用してかまいません。アクタークラス（この場合はAcceptanceTesterです）にあまりに多くのアクションを追加していると感じたときは、そのうちのいくつかを別々のステップオブジェクトに移動することを考えてみてください。
@@ -193,7 +220,7 @@ class UserCest
 Codeceptionは次のコマンドでページオブジェクトクラスを生成することができます：
 
 ```bash
-$ php codecept.phar generate:pageobject Login
+php codecept generate:pageobject Login
 ```
 
 これにより、`tests/_pages`内に`LoginPage`クラスが作成されます。基本のページオブジェクトはいくつかのスタブを持った空クラス以上の何ものでもありません。
@@ -213,7 +240,6 @@ class Login
     public static $passwordField = '#mainForm input[name=password]';
     public static $loginButton = '#mainForm input[type=submit]';
 }
-?>
 ```
 
 そして、ページオブジェクトはテストの中で次のように使用されます：
@@ -229,7 +255,6 @@ $I->fillField(LoginPage::$usernameField, 'bill evans');
 $I->fillField(LoginPage::$passwordField, 'debby');
 $I->click(LoginPage::$loginButton);
 $I->see('Welcome, bill');
-?>
 ```
 このとおり、あなたはログインページのマークアップを気兼ねなく変更することができ、このページを対象とするすべてのテストに含まれるロケーターはLoginPageクラスのプロパティに従って更新されるでしょう。
 
@@ -269,7 +294,6 @@ class Login
         return $this;
     }    
 }
-?>
 ```
 
 そして、これがテストの中でこのページオブジェクトがどのように使われるかの例です。
@@ -283,7 +307,6 @@ $loginPage = new LoginPage($I);
 $loginPage->login('bill evans', 'debby');
 $I->amOnPage('/profile');
 $I->see('Bill Evans Profile', 'h1');
-?>
 ```
 
 もしシナリオ駆動のテストをCest形式で記述している場合（これは推奨されるアプローチです）は、ページオブジェクトを手動で作成する処理をCodeceptionに任せることができます。テストでどのようなオブジェクトを必要とするか指定すれば、CodeceptionはDIコンテナを使ってそれを作成しようとします。ページオブジェクトの場合、テストメソッドのパラメーターとしてクラスを宣言してください：
@@ -299,341 +322,9 @@ class UserCest
         $I->see('Bill Evans Profile', 'h1');        
     }
 }
-?>
 ```
 
 DIコンテナは任意の既知のクラスを必要とするどのようなオブジェクトでも作成することができます。たとえば、`Page\Login`は`AcceptanceTester`を必要としたので、`Page\Login`のコンストラクタにそれが注入されましたし、ページオブジェクトは作成されてメソッドの引数に渡されました。Codeceptionがテストのためにどのオブジェクトを作成すればよいか知るために、必要とするオブジェクトの型を明示的に指定してください。依存性の注入については次の章で解説します。
-
-## ヘルパー
-
-上の例はただアクションを1つのグループにしただけでした。カスタムアクションが必要となったときはどうなるのでしょうか？
-そのようなケースでは足りないアクションやアサーションコマンドをカスタムモジュールに定義するのが良いアイディアで、それをヘルパーと呼びます。ヘルパーは`tests/_support/Helper`ディレクトリーで見つけることができます。
-
-<div class="alert alert-info">
-すでにAcceptanceTesterクラスにカスタムなログインメソッドを作成する方法については学びました。ユーザーが簡単にログインできるように、標準モジュールのアクションを使用してそれをひとまとめにしました。ヘルパーは標準モジュールとは関係のない、**新しいアクション** を作る（もしくは内部的に使用する）ことができます。
-</div>
-
-
-```php
-<?php
-namespace Helper;
-// here you can define custom functions for FunctionalTester
-
-class Functional extends \Codeception\Module
-{
-}
-?>
-```
-
-アクションについてもすべてはとてもシンプルです。すべてのアクションはPublicなメソッドとして定義します。任意のpublicメソッドを記述し、`build`コマンドを実行すれば、FunctionalTesterクラスに新しいメソッドが追加されることを確認できるでしょう。
-
-<div class="alert alert-info">
-`_`からはじまるpublicメソッドは隠しメソッドとして扱われ、アクタークラスへは追加されません。
-</div>
-
-アサーションは少し特殊です。まずはじめに、すべてのアサーションは`see`または`dontSee`を接頭辞とすることを推奨します。
-
-次のようにアサーションをネーミングします：
-
-```php
-<?php
-$I->seePageReloaded();
-$I->seeClassIsLoaded($classname);
-$I->dontSeeUserExist($user);
-?>
-```
-そして、テストの中で使います：
-
-```php
-<?php
-$I->seePageReloaded();
-$I->seeClassIsLoaded('FunctionalTester');
-$I->dontSeeUserExist($user);
-?>
-```
-
-モジュール内ではアサーションをassertXXXメソッドを使って定義することができます。モジュールはすべてのPHPUnitのアサーションが読み込んでいませんが、それらすべてを活用するために`PHPUnit_Framework_Assert`クラスの静的メソッドを利用できます。
-
-```php
-<?php
-
-function seeClassExist($class)
-{
-    $this->assertTrue(class_exists($class));
-    // or
-    \PHPUnit_Framework_Assert::assertTrue(class_exists($class));
-}
-?>
-```
-
-ヘルパー内でこれらのアサーションを利用できます：
-
-```php
-<?php
-
-function seeCanCheckEverything($thing)
-{
-    $this->assertTrue(isset($thing), "this thing is set");
-    $this->assertFalse(empty($any), "this thing is not empty");
-    $this->assertNotNull($thing, "this thing is not null");
-    $this->assertContains("world", $thing, "this thing contains 'world'");
-    $this->assertNotContains("bye", $thing, "this thing doesn`t contain 'bye'");
-    $this->assertEquals("hello world", $thing, "this thing is 'Hello world'!");
-    // ...
-}
-?>
-```
-
-### 衝突の解消
-
-同じ名前のアクションを含むモジュールが2つ存在した場合、何がおきるでしょうか？
-Codeceptionはモジュールの順序によってアクションをオーバーライドすることができます。
-2つ目のモジュールのアクションは読み込まれ、はじめのものは無視されます。
-モジュールの順序はスイート設定により定義されます。
-
-しかしながら、いくつかのモジュールは互いに衝突するかもしれません。最も優先されるモジュールがなんであるか混乱するのをを避けるために、フレームワークモジュール、PhpBrowserモジュール、そしてWebDriverモジュールは一緒に使うことができません。モジュールの`_conflicts`メソッドはどのクラスまたはインターフェイスが衝突するか指定するために使われます。Codeceptionはもし条件に一致するモジュールが有効出る場合、例外を投げます。
-
-### ほかのモジュールへの接続
-
-他のモジュールの内部データや関数にアクセスすることができます。たとえば、あたなのモジュールは他のモジュールのレスポンスや内部アクションにアクセスする必要がある場合があります。
-モジュールは`getModule`メソッドを通して互いにやり取りすることができます。もし必要なモジュールが読み込まれていない場合、例外が投げられることに注意してください。
-
-データベースの再接続を行うモジュールを実装していることを想像してください。それはDbモジュールのdbhコネクションを使って行うことになります。
-
-```php
-<?php
-
-function reconnectToDatabase() {
-    $dbh = $this->getModule('Db')->dbh;
-    $dbh->close();
-    $dbh->open();
-}
-?>
-```
-
-`getModule`メソッドを使うことで、要求したモジュールのすべてのpublicなメソッドとプロパティにアクセスできるようになります。この`dbh`プロパティは他のモジュールから利用できるようpublicとして定義されました。
-
-標準モジュールの機能を拡張したい場合は、そのモジュールに接続してpublicなプロパティとメソッドを使うカスタムアクションやアサーションを作成してください。
-
-モジュールにはヘルパークラス内での利用を想定したメソッドも含まれています。それらのメソッドは`_`ではじまり、アクタークラスでは利用できず、モジュールと拡張機能からのみアクセスすることができます。
-
-モジュールの内部を使った独自のアクションを記述するためには、それらのメソッドを使う必要があります。
-
-```php
-<?php
-function seeNumResults($num)
-{
-    // retrieving webdriver session
-    /**@var $table \Facebook\WebDriver\WebDriverElement */
-    $elements = $this->getModule('WebDriver')->_findElements('#result');
-    $this->assertNotEmpty($elements);
-    $table = reset($elements);
-    $this->assertEquals('table', $table->getTagName());
-    $results = $table->findElements('tr');
-    // asserting that table contains exactly $num rows
-    $this->assertEquals($num, count($results));
-}
-?>
-```
-
-この例では、モジュールの構築元となるSelenium WebDriverのクライアントである<a href="https://github.com/facebook/php-webdriver">facebook/php-webdriver</a>のAPIを使用しています。
-Seleniumと直接的にやり取りするための`Facebook\WebDriver\RemoteWebDriver`インスタンスにアクセスするため、`webDriver`プロパティを利用することもできます。
-
-### フック
-
-各モジュールは実行中のテストで発生するイベントを処理することができます。テストの開始前や終了後にモジュールを実行することができます。これは起動/クリーンアップのアクションのために便利です。
-テストが失敗した場合の特別な振る舞いを定義することもできます。これは問題のデバッグに役立つでしょう。
-たとえば、PhpBrowserモジュールはテストが失敗した場合に現在のページを`tests/_output`ディレクトリーに保存します。
-
-ここに列挙するすべてのフックは`\Codeception\Module`で定義されています。あなたのモジュールの中で自由に再定義してください。
-
-```php
-<?php
-
-    // HOOK: used after configuration is loaded
-    public function _initialize() {
-    }
-
-    // HOOK: on every Actor class initialization
-    public function _cleanup() {
-    }
-
-    // HOOK: before each suite
-    public function _beforeSuite($settings = array()) {
-    }
-
-    // HOOK: after suite
-    public function _afterSuite() {
-    }
-
-    // HOOK: before each step
-    public function _beforeStep(\Codeception\Step $step) {
-    }
-
-    // HOOK: after each step
-    public function _afterStep(\Codeception\Step $step) {
-    }
-
-    // HOOK: before test
-    public function _before(\Codeception\TestCase $test) {
-    }
-
-    // HOOK: after test
-    public function _after(\Codeception\TestCase $test) {
-    }
-
-    // HOOK: on fail
-    public function _failed(\Codeception\TestCase $test, $fail) {
-    }
-?>
-```
-
-`_`ではじまるメソッドはアクタークラスに追加されないことに注意してください。これはpublicとして定義されますが、内部的な目的のために使用するためのものです。
-
-### デバッグ
-
-すでに触れたように、`_failed`フックは失敗したテストをデバッグするのに役に立ちます。現在のテストの状態を保存しユーザーに表示する機会を提供しますが、これに限ったことではありません。
-
-各モジュールはデバッグ中に役立つであろう内部的な値を出力することができます。
-たとえば、PhpBrowserモジュールは新しいページに移動するたびにレスポンスコードと現在のURLを出力します。
-このように、モジュールはブラックボックスではありません。彼らはテスト中に何が発生したのかあなたに見せようとします。これはテストのデバッグにかかる苦痛を軽減します。
-
-追加の情報を表示するためには、モジュールの`debug`と`debugSection`メソッドを使います。
-PhpBrowserモジュールでの使用例がこちらです：
-
-
-```php
-<?php
-    $this->debugSection('Request', $params);
-    $this->client->request($method, $uri, $params);
-    $this->debug('Response Code: ' . $this->client->getStatusCode());
-?>    
-```
-
-このテストをデバッグモードでPhpBrowserモジュールとともに実行すると、次のようなものが表示されるでしょう：
-
-```bash
-I click "All pages"
-* Request (GET) http://localhost/pages {}
-* Response code: 200
-```
-
-
-
-### 設定
-
-モジュールとヘルパーはスイート設定もしくはグローバルな`codeception.yml`によって設定されます。
-
-必須のパラメーターはモジュールクラスの`$requiredFields`プロパティで定義する必要があります。Dbモジュールでの例を見てみましょう。：
-
-
-```php
-<?php
-class Db extends \Codeception\Module
-{
-    protected $requiredFields = ['dsn', 'user', 'password'];
-?>
-```
-
-次回、あなたがこれらの値を設定せずにスイートを開始した場合、例外が投げられます。
-
-オプションのパラメーターには、デフォルト値を設定する必要があります。`$config`プロパティはオプションのパラメーターと同様に、それらの値を定義するために使用されます。WebDriverモジュールでは、Seleniumのデフォルトのサーバーアドレスとポートを使用しています。
-
-```php
-<?php
-class WebDriver extends \Codeception\Module
-{
-    protected $requiredFields = ['browser', 'url'];    
-    protected $config = ['host' => '127.0.0.1', 'port' => '4444'];
-?>    
-```
-
-ホストとポートのパラメーターはスイートの設定で再定義できます。それらの値は設定ファイルの`modules:config`セクションにあります。
-
-```yaml
-modules:
-    enabled:
-        - WebDriver:
-            url: 'http://mysite.com/'
-            browser: 'firefox'
-        - Db:
-            cleanup: false
-            repopulate: false
-```
-
-オプションと必須のパラメーターは`$config`プロパティからアクセスすることができます。その値を取得するには、`$this->config['parameter']`を使ってください。
-
-### 動的設定
-
-もし実行時にモジュールを再設定したければ、モジュールの`_reconfigure`メソッドを使用してください。
-それをヘルパークラスから呼び出し、変更したいすべてのフィールドに渡すことができます。
-
-```php
-<?php
-$this->getModule('WebDriver')->_reconfigure(array('browser' => 'chrome'));
-?>
-```
-
-テスト終了時に、変更した設定はオリジナルの値に戻されます。
-
-### 追加オプション
-
-標準モジュールの機能を拡張する別の方法は、モジュールを継承してヘルパーを作成することです。
-
-```php
-<?php
-namespace Helper;
-
-class MyExtendedSelenium extends \Codeception\Module\WebDriver  {
-}
-?>
-```
-
-このヘルパー内で、実装されているメソッドを自身の実装で置き換えます。
-テストセッションの開始と終了をカスタマイズする際のオプションである`_before`と`_after`フックも置き換えることができます。
-
-親クラスのメソッドが子クラスで使用すべきでない場合、それらを無効にすることができます。Codeceptionにはいくつかのオプションがあります。
-
-```php
-<?php
-namespace Helper;
-
-class MyExtendedSelenium extends \Codeception\Module\WebDriver
-{
-    // disable all inherited actions
-    public static $includeInheritedActions = false;
-
-    // include only "see" and "click" actions
-    public static $onlyActions = array('see','click');
-
-    // exclude "seeElement" action
-    public static $excludeActions = array('seeElement');
-}
-?>
-```
-
-`$includeInheritedActions`をfalseに設定することで、親メソッドのエイリアスを作成する機能を追加します。
-これはモジュール間の衝突を解決します。`Db`モジュールを、`Db`を継承した`SecondDbHelper`モジュールとして使いたいとします。
-その際、両方のモジュールにある`seeInDatabase`メソッドをどのように使用するのでしょうか？以下を見てみてください。
-
-```php
-<?php
-namespace Helper;
-
-class SecondDb extends \Codeception\Module\Db
-{
-    public static $includeInheritedActions = false;
-
-    public function seeInSecondDb($table, $data)
-    {
-        $this->seeInDatabase($table, $data);
-    }
-}
-?>
-```
-
-`$includeInheritedActions`をfalseに設定することで、生成されたアクターに親クラスのメソッドを含まないのです。
-ヘルパークラスでは継承したメソッドを、引き続き使用することが可能です。
 
 ## まとめ
 
