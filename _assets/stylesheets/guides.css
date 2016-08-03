@@ -232,10 +232,12 @@ Full-Width Styles
 }
 
 #toc .toc-h3 {
+    font-size: 14px;
     padding-left: 15px;
 }
 
 #toc .toc-h4 {
+    font-size: 12px;
     padding-left: 30px;
 }
 
