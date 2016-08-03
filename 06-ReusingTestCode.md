@@ -127,7 +127,7 @@ Codeceptionは複数のテスト間でCookieを共有することができるた
     }
 
 ```
-セッションの復元は（`Codeception\Lib\Interfaces\SessionSnapshot`インタフェースを実装している）`WebDriver`と`PhpBrowser`モジュールでのみ動作することに注意してください。
+セッションの復元は（`Codeception\Lib\Interfaces\SessionSnapshot`インタフェースを実装している）`WebDriver`モジュールでのみ動作することに注意してください。
 
 ## ステップオブジェクト
 
