@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Codeception.docs.ja : Codeception docs japanese translation">
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/guides.css">
+
+    <title>Codeception.docs.ja</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="container inner">
+        <a id="forkme_banner" href="https://github.com/piccagliani/Codeception.docs.ja_JP">View on GitHub</a>
+
+        <h1 id="project_title"><a href="index.html">Codeception.docs.ja</a></h1>
+        <h2 id="project_tagline">Codeception docs japanese translation</h2>
+
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="container">
+    <div class="row">
+        <section id="main_content" class="col-md-9">
+            <h1>継続的インテグレーション</h1>
+
+<p>テストスイートを準備して実行できるようになると、テストを定期的に実行することに興味を持つでしょう。もし、コード変更のたび、もしくは少なくとも1日1回テストが実行されることを確認できれば、デグレが発生していないと考えて間違いありません。テストを定期的に実行することで、システムを安定させることができます。ところが、開発者は手動ですべてのテストを実行することに対してまったく魅力を感じませんし、テストを実行する前に本番にコードを反映することを忘れるかもしれません・・・。解決策は非常にシンプルで、テスト実行は自動化されるべきなのです。開発者のローカル環境でテストを実行するより、チームでテスト実行用の専用サーバーを用意する方がよいです。そうすれば、全員のテストが実行されることやどのコミットでデグレったのかを確認することができ、テストが通ったものもにをデプロイすることができます。</p>
+
+<p>ここにはたくさんの継続的インテグレーションサーバーが登場します。Codeceptionをそれらとともにセットアップするための基本的なステップをリストアップしてみます。もしお使いのCIが記載されていない場合は、類推することでアイデアを得られるでしょう。また、記載のない他のCIに対する手順を追加することで、このガイドを充実するためのお手伝いをお願いします。</p>
+
+<h2>Jenkins</h2>
+
+<p><img src="http://codeception.com/images/jenkins/Jenk1.png" alt="Jenkins"></p>
+
+<p><a href="http://jenkins-ci.org/">Jenkins</a> は業界で最も有名なオープンソースのソリューションです。セットアップが簡単で、さまざまなプラグインを適用することで容易にカスタマイズできます。</p>
+
+<p><img src="http://codeception.com/images/jenkins/Jenk2.png" alt="Create new job in Jenkins"></p>
+
+<h3>Jenkinsを準備する</h3>
+
+<p>次のプラグインをインストールすることをおすすめします:</p>
+
+<ul>
+<li><strong>Git Plugin</strong> - Gitリポジトリーからテストをビルドするため</li>
+<li><strong>Green Balls</strong> - ビルド成功をグリーンで表示するため</li>
+<li><strong>xUnit Plugin</strong>, <strong>jUnit Plugin</strong> - CodeceptionのXMLレポートを処理して表示するため</li>
+<li><strong>HTML Publisher Plugin</strong> - CodeceptionのHTMLレポートを処理するため</li>
+<li><strong>AnsiColor</strong> - 色付きのコンソール出力を表示するため</li>
+</ul>
+
+<p><img src="http://codeception.com/images/jenkins/Jenk3.png" alt="Jenkins Plugins"></p>
+
+<h3>基本セットアップ</h3>
+
+<p>最初にビルドするプロジェクトを作成する必要があります。好みに応じて、定期的なビルドかGitHubへのプッシュをトリガーとするビルド（GitHubプラグインが必要）をセットアップすることができます。</p>
+
+<p>ビルド手順を定義します。最もシンプルなのは次のようになります：</p>
+<div class="highlight"><pre><code class="language-" data-lang="">php codecept run
+</code></pre></div>
+<p><img src="http://codeception.com/images/jenkins/Jenk5.png" alt="Jenkins Codeception Build Step"></p>
+
+<p>これで最初のジョブを開始して実行の進捗を確認できるようになります。もしテストに失敗すると次のようなコンソール出力となります：</p>
+
+<p><img src="http://codeception.com/images/jenkins/Jenk6.png" alt="Jenkins Console Output"></p>
+
+<h3>XMLレポート</h3>
+
+<p>ただし、ビルドに失敗するたびにコンソール出力を調べることはしたくありません。特にJenkinsは内部のビルド結果を収集してWEBインターフェースに表示できます。CodeceptionはJUnitのXML形式で結果をエクスポートすることができます。XMLレポートを生成するためにはCodeceptionの実行コマンドに<code>--xml</code>オプションを付与する必要があります。Codeceptionは各ステップのテストステータスや失敗したテストに対するスタックトレースを含んだ<code>result.xml</code>を出力するでしょう。</p>
+
+<p>では、XMLを生成するようにビルド手順を更新しましょう：</p>
+<div class="highlight"><pre><code class="language-" data-lang="">php codecept run --xml
+</code></pre></div>
+<p>そして出力されるXMLを収集するようJenkinsを設定します。これはビルド後の処理の一部として行うことができます。<em>Publish xUnit test result report</em> アクションを追加してPHPUnitレポートで使用するように設定しましょう。</p>
+
+<p><img src="http://codeception.com/images/jenkins/Jenk7.png" alt="Use PHPUnit xUnit builder for Jenkins"></p>
+
+<p>そして、PHPUnit形式のXMLレポートへのパスを指定する必要があります。Codeceptionを標準的にセットアップしている場合、出力されるXMLにマッチするよう<code>tests/_output/*.xml</code>をパターンとして指定してください。では、プロジェクトを保存して再ビルドします。</p>
+
+<p><img src="http://codeception.com/images/jenkins/Jenk8.png" alt="Jenkins Result Trend"></p>
+
+<p>これですべてのビルドの結果を成功および失敗したテストの割合を示すトレンドグラフが表示されます。また、実行されたすべてのテストとその統計が表に記載されているページへと遷移するための <strong>Latest Test Result</strong> リンクが表示されます。</p>
+
+<h3>HTMLレポート</h3>
+
+<p>実行されたステップのより詳細を得たい場合は、HTMLレポートを生成し、Jenkinsで表示することができます。</p>
+<div class="highlight"><pre><code class="language-" data-lang="">php codecept run --html
+</code></pre></div>
+<p>生成されたHTMLファイルを表示するためにはHTML Publisherプラグインが必要です。XMLレポートで行ったのと同じように、ビルド後の処理に追加してください。</p>
+
+<p><img src="http://codeception.com/images/jenkins/Jenk9.png" alt="Jenkins Codeception HTML Setup"></p>
+
+<p>Jenkinsは<code>tests/_output/</code>にある<code>report.html</code>を探します。そして、Jenkinsは各ビルドのHTMLレポートを表示するでしょう。</p>
+
+<p><img src="http://codeception.com/images/jenkins/Jenki10.png" alt="Jenkins HTML Report">
+<img src="http://codeception.com/images/jenkins/Jenki11.png" alt="Jenkins Codeception HTML Results"></p>
+
+<h2>TeamCity</h2>
+
+<p><img src="https://codeception.com/images/teamcity.png" alt="TeamCity"></p>
+
+<p>TeamCityはJetBrains社が提供するホスト型のソリューションです。TeamCityはテスト結果の解析に独自のレポーター形式を使用するため、セットアップには少しコツがいります。バージョン5.x以降のPHPUnitはその形式に対応しているため、Codeceptionも同様に対応しています。必要なことはCodeceptionがカスタムレポーターを使用するように設定することです。デフォルトで、代替出力を提供するための<code>--report</code>オプションがあります。<code>codeception.yml</code>設定でレポータークラスを変更することができます：</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">reporters</span><span class="pi">:</span>
+  <span class="s">report</span><span class="pi">:</span> <span class="s">PHPUnit_Util_Log_TeamCity</span>  
+</code></pre></div>
+<p>より良いレポーティングのための代替として、サードパーティの<a href="https://github.com/neronmoon/TeamcityCodeception">TeamCity拡張機能</a>を利用することができます。</p>
+
+<p>ビルドするプロジェクトを作成したら、Codeceptionのビルド手順を定義します</p>
+<div class="highlight"><pre><code class="language-" data-lang="">php codecept run --report
+</code></pre></div>
+<p><img src="https://codeception.com/images/teamcity/build.png" alt="build step"></p>
+
+<p>最初のビルドが実行されれば、TeamCityのインターフェースで詳細なレポートを確認してください：</p>
+
+<p><img src="https://codeception.com/images/teamcity/report.png" alt="report"></p>
+
+<h2>TravisCI</h2>
+
+<p><img src="https://codeception.com/images/travis.png" alt="Travis CI"></p>
+
+<p>Travis CIはGitHubとの連携に優れた有名なCIサービスです。Codeception自体のテストはTravis CIを使用しています。設定にあたっては何も特別なことはありません。travis設定の一番下に次の行を追加します
+：</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">php codecept run</span>
+</code></pre></div>
+<p>より詳細は設定についてはCodeceptionの<a href="https://github.com/Codeception/Codeception/blob/master/.travis.yml"><code>.travis.yml</code></a>が参考になるでしょう。
+TravisはXMLやHTMLレポートを可視化する機能を提供していないため、コンソール出力以外の形式でレポートを確認することはできません。しかしながら、Codeceptionは詳細はエラー出力を伴うイケてるコンソール出力を行います。</p>
+
+<h2>GitLab</h2>
+
+<p>[本家執筆中]</p>
+
+<h2>まとめ</h2>
+
+<p>開発に継続的インテグレーションシステムを導入することを強くおすすめします。Codeceptionはのインストールは簡単で、あらゆるCIで動作します。しかしながら、それぞれには考慮しなければならない違いがあります。CIシステムが期待する形式での出力を行うために、異なるレポーターを使用することができます。</p>
+
+        </section>
+        <nav id="nav" class="col-md-3">
+            <h1>ガイド</h1>
+            <div class="well">
+                <ol>
+                    <li><a href="01-Introduction.html">イントロダクション</a></li>
+                    <li><a href="02-GettingStarted.html">はじめに</a></li>
+                    <li><a href="03-AcceptanceTests.html">受け入れテスト</a></li>
+                    <li><a href="04-FunctionalTests.html">機能テスト</a></li>
+                    <li><a href="05-UnitTests.html">単体テスト</a></li>
+                    <li><a href="06-ModulesAndHelpers.html">モジュールとヘルパー</a></li>
+                    <li><a href="06-ReusingTestCode.html">テストコードの再利用</a></li>
+                    <li><a href="07-AdvancedUsage.html">高度な使用法</a></li>
+                    <li><a href="07-BDD.html">振舞駆動開発</a></li>
+                    <li><a href="08-Customization.html">カスタマイズ</a></li>
+                    <li><a href="09-Data.html">データを取り扱う</a></li>
+                    <li><a href="10-WebServices.html">Webサービスをテストする</a></li>
+                    <li><a href="11-Codecoverage.html">コードカバレッジ</a></li>
+                    <li><a href="12-ContinuousIntegration.html">継続的インテグレーション</a></li>
+                    <li><a href="12-ParallelExecution.html">並列実行</a></li>
+                </ol>
+            </div>
+            <h1>目次</h1>
+            <div id="toc" class="well">
+            </div>
+        </nav>
+    </div>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="container inner">
+        <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
+        <p>Last updated: 2016-08-03 09:55:35 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.2.2">Codeception 2.2.2</a></p>
+        <div id="contributors"></div>
+    </footer>
+</div>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-59804278-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+<script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="javascripts/toc.min.js"></script>
+<script src="javascripts/contributors.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#toc').toc({
+            'selectors': 'h2,h3,h4',
+            'container': '#main_content',
+            'anchorName': function(i, heading, prefix) {
+                return prefix + i;
+            }
+        });
+    });
+</script>
+</body>
+</html>

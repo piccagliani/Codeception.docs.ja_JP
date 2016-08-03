@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Codeception.docs.ja : Codeception docs japanese translation">
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/guides.css">
+
+    <title>Codeception.docs.ja</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="container inner">
+        <a id="forkme_banner" href="https://github.com/piccagliani/Codeception.docs.ja_JP">View on GitHub</a>
+
+        <h1 id="project_title"><a href="index.html">Codeception.docs.ja</a></h1>
+        <h2 id="project_tagline">Codeception docs japanese translation</h2>
+
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="container">
+    <div class="row">
+        <section id="main_content" class="col-md-9">
+            <h1>Behavior Driven Development</h1>
+
+<p>Behavior Driven Development is a popular methodology of software development. It is considered to be an extension to TDD, and is much inspired by Agile practices. The main idea of choosing BDD for development process is breaking communication barer between business and technical teams. BDD encourages usage of automated testing to make all documented features of a project to be tested from the very beginning. This is why it is common to talk about BDD in the context of a test frameworks (like Codeception). However, BDD is much beyond the testing at all, and is more about managing the development process.</p>
+
+<h2>What is Behavior Driven Development</h2>
+
+<p>BDD was introduced by <a href="https://dannorth.net/introducing-bdd/">Dan North</a>. He described it as:</p>
+
+<blockquote>
+<p>outside-in, pull-based, multiple-stakeholder, multiple-scale, high-automation, agile methodology. It describes a cycle of interactions with well-defined outputs, resulting in the delivery of working, tested software that matters.</p>
+</blockquote>
+
+<p>BDD has its own evolution from the days it was born, started by replacing &quot;test&quot; to &quot;should&quot; in unit tests, and moving towards powerful tools like Cucumber and Behat, which made user stories (human readable text) to be executed as an acceptance test.</p>
+
+<p>The idea of story BDD can be narrowed to:</p>
+
+<ul>
+<li>describe features in a scenario with a formal text</li>
+<li>use examples to make abstract things concrete</li>
+<li>implement each step of a scenario for testing</li>
+<li>write actual code implementing the feature</li>
+</ul>
+
+<p>By writing every feature in User Story format that is automatically executable as a test we ensure that: business, developers, QAs and managers are in the same boat.</p>
+
+<p>BDD encourages exploration and debate in order to formalize the requirements and the features that needs to be implemented by requesting to write the User Stories in a way that everyone can understand.</p>
+
+<p>By making tests to be a part of User Story, BDD allows non-technical personnel to write (or edit) Acceptance tests.</p>
+
+<p>With this procedure we also ensure that everyone in a team knows what has been developed, what has not, what has been tested and what has not.</p>
+
+<h3>Ubiquitous Language</h3>
+
+<p>The ubiquitous language is always referred as <em>common</em> language. That is it&#39;s main benefit. It is not a couple of our business specification&#39;s words, and not a couple of developer&#39;s technical terms. It is a common words and terms that can be understood by people for whom we are building the software and should be understood by developers. Establishing correct communication between this two groups people is vital for building successful project that will fit the domain and fulfill all business needs.</p>
+
+<p>Each feature of a product should be born from a talk between</p>
+
+<ul>
+<li>business (analysts, product owner)</li>
+<li>developers</li>
+<li>QAs</li>
+</ul>
+
+<p>which are known in BDD as &quot;three amigos&quot;.</p>
+
+<p>Such talks should produce written stories. There should be an actor that doing some things, the feature that should be fulfilled within the story and the result achieved.</p>
+
+<p>We can try to write such simple story:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">As a customer I want to buy several products
+I put first product with 600 $ price to my cart
+And then another one with 1000 $ price
+When I go to checkout process
+I should see that total number of products I want to buy is 2
+And my order amount is 1600 $
+</code></pre></div>
+<p>As we can see this simple story highlights core concepts that are called <em>contracts</em>. We should fulfill those contracts to model software correctly. But how we can verify that those contracts are being satisfied? <a href="http://cucumber.io">Cucumber</a> introduced a special language for such stories called <strong>Gherkin</strong>. Same story transformed to Gherkin will look like this:</p>
+<div class="highlight"><pre><code class="language-gherkin" data-lang="gherkin"><span class="kd">Feature</span><span class="p">:</span> checkout process
+  In order to buy products
+  As a customer
+  I want to be able to buy several products
+
+  <span class="kn">Scenario</span><span class="p">:</span>
+    <span class="nf">Given</span> I have product with 600 $ price in my cart
+    <span class="nf">And</span> I have product with 1000 $ price
+    <span class="nf">When</span> I go to checkout process
+    <span class="nf">Then</span> I should see that total number of products is 2
+    <span class="nf">And</span> my order amount is 1600 $
+</code></pre></div>
+<p>Cucumber, Behat, and sure, <strong>Codeception</strong> can execute this scenario step by step as an automated test.
+Every step in this scenario requires a code which defines .</p>
+
+<h2>Gherkin</h2>
+
+<p>Let&#39;s learn some more about Gherkin format and then we will see how to execute it with Codeception:</p>
+
+<h3>Features</h3>
+
+<p>Whenever you start writing a story you are describing a specific feature of an application, with a set of scenarios and examples describing this feature.</p>
+
+<p>Feature file is written in Gherkin format. Codeception can generate a feature file for you.
+We will assume that we will use scenarios in feature files for acceptance tests, so feature files to be placed in <code>acceptance</code> suite directory:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">php codecept g:feature acceptance checkout
+</code></pre></div>
+<p>Generated template will look like this:</p>
+<div class="highlight"><pre><code class="language-gherkin" data-lang="gherkin"><span class="kd">Feature</span><span class="p">:</span> checkout
+  In order to ...
+  As a ...
+  I need to ...
+
+  <span class="kn">Scenario</span><span class="p">:</span> try checkout
+</code></pre></div>
+<p>This template can be fulfilled by setting actor and goals:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">Feature: checkout
+  In order to buy product
+  As a customer
+  I need to be able to checkout the selected products
+</code></pre></div>
+<p>Next, we will describe this feature by writing examples for it</p>
+
+<h4>Scenarios</h4>
+
+<p>Scenarios are live examples of feature usage. Inside a feature file it should be written inside a <em>Feature</em> block. Each scenario should contain its title:</p>
+<div class="highlight"><pre><code class="language-gherkin" data-lang="gherkin"><span class="kd">Feature</span><span class="p">:</span> checkout
+  In order to buy product
+  As a customer
+  I need to be able to checkout the selected products
+
+<span class="kn">Scenario</span><span class="p">:</span> order several products
+</code></pre></div>
+<p>Scenarios are written in step-by-step manner using Given-When-Then approach. At start, scenario should describe its context with <strong>Given</strong> keyword:</p>
+<div class="highlight"><pre><code class="language-gherkin" data-lang="gherkin">  <span class="nf">Given</span> I have product with 600 $ price in my cart
+  <span class="nf">And</span> I have product with 1000 $ price in my cart
+</code></pre></div>
+<p>Here we also use word <strong>And</strong> to extend the Given and not to repeat it in each line.</p>
+
+<p>This is how we described the initial conditions. Next, we perform some action. We use <strong>When</strong> keyword for it:</p>
+<div class="highlight"><pre><code class="language-gherkin" data-lang="gherkin">  <span class="nf">When</span> I go to checkout process
+</code></pre></div>
+<p>And in the end we are verifying our expectation using <strong>Then</strong> keyword. The action changed the initial given state, and produced some results. Let&#39;s check that those results are what we actually expect.</p>
+<div class="highlight"><pre><code class="language-gherkin" data-lang="gherkin">  <span class="nf">Then</span> I should see that total number of products is 2
+  <span class="nf">And</span> my order amount is 1600 $
+</code></pre></div>
+<p>We can test this scenario by executing it in dry-run mode. In this mode test won&#39;t be executed (actually, we didn&#39;t define any step for it, so it won&#39;t be executed in any case).</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>codecept dry-run acceptance checkout.feature
+</code></pre></div><div class="highlight"><pre><code class="language-bash" data-lang="bash">checkout: order several products
+Signature: checkout:order several products
+Test: tests/acceptance/checkout.feature:order several products
+Scenario --
+ In order to buy product
+ As a customer
+ I need to be able to checkout the selected products
+ Given i have product with 600 <span class="nv">$ </span>price <span class="k">in </span>my cart
+ And i have product with 1000 <span class="nv">$ </span>price <span class="k">in </span>my cart
+ When i go to checkout process
+ Then i should see that total number of products is 2
+ And my order amount is 1600 <span class="err">$</span>
+
+ INCOMPLETE
+Step definition <span class="k">for</span> <span class="sb">`</span>I have product with 600 <span class="nv">$ </span>price <span class="k">in </span>my cart<span class="sb">`</span> not found <span class="k">in </span>contexts
+Step definition <span class="k">for</span> <span class="sb">`</span>I have product with 1000 <span class="nv">$ </span>price<span class="sb">`</span> not found <span class="k">in </span>contexts
+Step definition <span class="k">for</span> <span class="sb">`</span>I go to checkout process<span class="sb">`</span> not found <span class="k">in </span>contexts
+Step definition <span class="k">for</span> <span class="sb">`</span>I should see that total number of products is 2<span class="sb">`</span> not found <span class="k">in </span>contexts
+Step definition <span class="k">for</span> <span class="sb">`</span>my order amount is 1600 <span class="nv">$`</span> not found <span class="k">in </span>contexts
+Run gherkin:snippets to define missing steps
+</code></pre></div>
+<p>Besides the scenario steps listed we got the notification that our steps are not defined yet.
+We can define them easily by executing <code>gherkin:snippets</code> command for the given suite:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">codecept gherkin:snippets acceptance
+</code></pre></div>
+<p>This will produce code templates for all undefined steps in all feature files of this suite.
+Our next step will be to define those steps and transforming feature-file into valid test.</p>
+
+<h3>Step Definitions</h3>
+
+<p>To match steps from a feature file to PHP code we use annotation which are added to class methods.
+By default Codeception expects that all methods marked with <code>@Given</code>, <code>@When</code>, <code>@Then</code> annotation.
+Each annotation should contain a step string.</p>
+<div class="highlight"><pre><code class="language-" data-lang="">/** @Given I am logged as admin */
+</code></pre></div>
+<p>Steps can also be matched with regex expressions. This way we can make more flexible steps</p>
+<div class="highlight"><pre><code class="language-" data-lang="">/** @Given /I am (logged|authorized) as admin/  */
+</code></pre></div>
+<p>Please note that regular expressions should start and end with <code>/</code> char. Regex is also used to match parameters and pass them as arguments into methods.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="sd">/** @Given /I am (?:logged|authorized) as "(\w+)"/  */</span>
+<span class="k">function</span> <span class="nf">amAuthorized</span><span class="p">(</span><span class="nv">$role</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// logged or authorized does not matter to us
+</span>  <span class="c1">// so we added ?: for this capture group
+</span><span class="p">}</span>
+</code></pre></div>
+<p>Parameters can be also passed in non-regex strings using &quot;:&quot; params placeholder.</p>
+<div class="highlight"><pre><code class="language-" data-lang="">/** @Given I am logged in as :role */
+</code></pre></div>
+<p>This will match any word (passed in double quotes) or a number passed:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">Given I am logged in as "admin"
+Given I am logged in as 1
+</code></pre></div>
+<p>Steps are defined in Context files. Default context is an actor class, i.e. for acceptance testing suite default context is <code>AcceptanceTester</code> class. However, you can define steps in any classes and include them as contexts. It is useful to define steps in StepObject and PageObject classes.</p>
+
+<p>To list all defined steps run <code>gherkin:steps</code> command:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">codecept gherkin:steps
+</code></pre></div>
+<h2>Testing Behavior</h2>
+
+<p>As it was mentioned, feature files is not just a user story.
+By writing features in formal language called Gherkin we can execute those scenarios as automated tests.
+There is no restrictions in the way how those scenarios are supposed to be tested. Tests can be executed at functional, acceptance, or domain level. However, we will concentrate on acceptance or UI tests in current guide.</p>
+
+<h3>Acceptance Testing</h3>
+
+<p>As we generated snippets for missing steps with <code>gherkin:snippets</code> command, we will define them in <code>AcceptanceTester</code> file.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">AcceptanceTester</span> <span class="k">extends</span> <span class="nx">\Codeception\Actor</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">_generated\AcceptanceTesterActions</span><span class="p">;</span>
+
+    <span class="sd">/**
+     * @Given I have product with :num1 $ price in my cart
+     */</span>
+     <span class="k">public</span> <span class="k">function</span> <span class="nf">iHaveProductWithPriceInMyCart</span><span class="p">(</span><span class="nv">$num1</span><span class="p">)</span>
+     <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nx">\Codeception\Exception\Incomplete</span><span class="p">(</span><span class="s2">"Step `I have product with :num1 $ price in my cart` is not defined"</span><span class="p">);</span>
+     <span class="p">}</span>
+
+    <span class="sd">/**
+     * @When I go to checkout process
+     */</span>
+     <span class="k">public</span> <span class="k">function</span> <span class="nf">iGoToCheckoutProcess</span><span class="p">()</span>
+     <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nx">\Codeception\Exception\Incomplete</span><span class="p">(</span><span class="s2">"Step `I go to checkout process` is not defined"</span><span class="p">);</span>
+     <span class="p">}</span>
+
+    <span class="sd">/**
+     * @Then I should see that total number of products is :num1
+     */</span>
+     <span class="k">public</span> <span class="k">function</span> <span class="nf">iShouldSeeThatTotalNumberOfProductsIs</span><span class="p">(</span><span class="nv">$num1</span><span class="p">)</span>
+     <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nx">\Codeception\Exception\Incomplete</span><span class="p">(</span><span class="s2">"Step `I should see that total number of products is :num1` is not defined"</span><span class="p">);</span>
+     <span class="p">}</span>
+
+    <span class="sd">/**
+     * @Then my order amount is :num1 $
+     */</span>
+     <span class="k">public</span> <span class="k">function</span> <span class="nf">myOrderAmountIs</span><span class="p">(</span><span class="nv">$num1</span><span class="p">)</span>
+     <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nx">\Codeception\Exception\Incomplete</span><span class="p">(</span><span class="s2">"Step `my order amount is :num1 $` is not defined"</span><span class="p">);</span>
+     <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>By default they throw Incomplete exceptions to ensure test with missing steps won&#39;t be accidentally marked as successful. We will need to implement those steps. As we are in acceptance suite we are probably using <a href="http://codeception.com/docs/modules/PhpBrowser">PHPBrowser</a> or <a href="http://codeception.com/docs/modules/WebDriver">WebDriver</a> modules. This means that we can use their methods inside Tester file, as we do with writing tests using <code>$I-&gt;</code>. You can use <code>amOnPage</code>, <code>click</code>, <code>see</code> methods inside a step definitions, so each Gherkin scenario step to be extended with basic Codeception steps. Let&#39;s show how it can be implemented in our case:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">AcceptanceTester</span> <span class="k">extends</span> <span class="nx">\Codeception\Actor</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">_generated\AcceptanceTesterActions</span><span class="p">;</span>
+
+    <span class="sd">/**
+     * @Given I have product with :num1 $ price in my cart
+     */</span>
+     <span class="k">public</span> <span class="k">function</span> <span class="nf">iHaveProductWithPriceInMyCart</span><span class="p">(</span><span class="nv">$num1</span><span class="p">)</span>
+     <span class="p">{</span>
+        <span class="c1">// haveRecord method is available in Laravel, Phalcon, Yii modules
+</span>        <span class="nv">$productId</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">haveRecord</span><span class="p">(</span><span class="s1">'Product'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'randomProduct'</span><span class="o">.</span><span class="nb">uniqid</span><span class="p">(),</span> <span class="s1">'price'</span> <span class="o">=&gt;</span> <span class="nv">$num1</span><span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s2">"/item/</span><span class="nv">$productId</span><span class="s2">"</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Order'</span><span class="p">);</span>
+     <span class="p">}</span>
+
+    <span class="sd">/**
+     * @When I go to checkout process
+     */</span>
+     <span class="k">public</span> <span class="k">function</span> <span class="nf">iGoToCheckoutProcess</span><span class="p">()</span>
+     <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/checkout'</span><span class="p">);</span>
+     <span class="p">}</span>
+
+    <span class="sd">/**
+     * @Then I should see that total number of products is :num1
+     */</span>
+     <span class="k">public</span> <span class="k">function</span> <span class="nf">iShouldSeeThatTotalNumberOfProductsIs</span><span class="p">(</span><span class="nv">$num1</span><span class="p">)</span>
+     <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="nv">$num2</span><span class="p">,</span> <span class="s1">'.products-count'</span><span class="p">);</span>
+     <span class="p">}</span>
+
+    <span class="sd">/**
+     * @Then my order amount is :num1 $
+     */</span>
+     <span class="k">public</span> <span class="k">function</span> <span class="nf">myOrderAmountIs</span><span class="p">(</span><span class="nv">$num1</span><span class="p">)</span>
+     <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="nv">$num1</span><span class="p">,</span> <span class="s1">'.total'</span><span class="p">);</span>
+     <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>To make testing more effective we assumed that we are using one of the ActiveRecord frameworks like Laravel, Yii, or Phalcon so we are able to dynamically create records in database with <code>haveRecord</code> method. After that we are opening browser and testing our web pages to see that after selecting those products we really see the price was calculated correctly.</p>
+
+<p>We can dry-run (or run) our feature file to see that Given/When/Then are expanded with substeps:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"> Given i have product with 600 <span class="nv">$ </span>price <span class="k">in </span>my cart
+   I have record <span class="s1">'Product'</span>,<span class="o">{</span><span class="s2">"name"</span>:<span class="s2">"randomProduct571fad4f88a04"</span>,<span class="s2">"price"</span>:<span class="s2">"600"</span><span class="o">}</span>
+   I am on page <span class="s2">"/item/1"</span>
+   I click <span class="s2">"Order"</span>
+ And i have product with 1000 <span class="nv">$ </span>price <span class="k">in </span>my cart
+   I have record <span class="s1">'Product'</span>,<span class="o">{</span><span class="s2">"name"</span>:<span class="s2">"randomProduct571fad4f88b14"</span>,<span class="s2">"price"</span>:<span class="s2">"1000"</span><span class="o">}</span>
+   I am on page <span class="s2">"/item/2"</span>
+   I click <span class="s2">"Order"</span>
+ When i go to checkout process
+   I am on page <span class="s2">"/checkout"</span>
+ Then i should see that total number of products is 2
+   I see <span class="s2">"2"</span>,<span class="s2">".products-count"</span>
+ And my order amount is 1600 <span class="err">$</span>
+   I see <span class="s2">"1600"</span>,<span class="s2">".total"</span>
+</code></pre></div>
+<p>This way feature file runs just the same as any other Codeception test. Substeps give us detailed information of how the scenario is being executed.</p>
+
+<p>One of the criticism for testing with Gherkin was that only technical team were aware of how the test scenario is executed. This could have lead to false-positive tests. Developers could have used empty steps for scenarios (or irrelevant ones) and produced invalid tests for valid scenarios. Codeception brings communication to a next level, everyone in a team can understand what happens on a lower (technical) level. Scenario expanding to substeps shows the actual test execution process. Anyone in a team can read the output, and invest their efforts into improving the test suite.</p>
+
+<h2>Advanced Gherkin</h2>
+
+<p>Let&#39;s improve our BDD suite by using the advanced features of Gherkin language.</p>
+
+<h3>Background</h3>
+
+<p>If a group of scenarios have the same initial steps, let&#39;s that for dashboard we need always need to be logged in as administrator. We can use <em>Background</em> section to do the required preparations and not to repeat same steps across scenarios.</p>
+<div class="highlight"><pre><code class="language-gherkin" data-lang="gherkin"><span class="kd">Feature</span><span class="p">:</span> Dashboard
+  In order to view current state of business
+  As an owner
+  I need to be able to see reports on dashboard
+
+  <span class="kn">Background</span><span class="p">:</span>
+    <span class="nf">Given</span> I am logged in as administrator
+    <span class="nf">And</span> I open dashboard page
+</code></pre></div>
+<p>Steps in background are defined the same way as in scenarios.</p>
+
+<h3>Tables</h3>
+
+<p>Scenarios can become more descriptive when you represent repeating data as tables. Instead of writing several steps &quot;I have product with :num1 $ price in my cart&quot; we can have one step with multiple values in it.</p>
+<div class="highlight"><pre><code class="language-gherkin" data-lang="gherkin">  <span class="nf">Given</span> i have products in my cart
+    <span class="p">|</span> <span class="nv">name</span>         <span class="p">|</span> <span class="nv">category</span>    <span class="p">|</span> <span class="nv">price</span>  <span class="p">|</span>
+    <span class="p">|</span> <span class="n">Harry</span> <span class="n">Potter</span> <span class="p">|</span> <span class="n">Books</span>       <span class="p">|</span> <span class="n">5</span>      <span class="p">|</span>
+    <span class="p">|</span> <span class="n">iPhone</span> <span class="n">5</span>     <span class="p">|</span> <span class="n">Smartphones</span> <span class="p">|</span> <span class="n">1200</span>   <span class="p">|</span>
+    <span class="p">|</span> <span class="n">Nuclear</span> <span class="n">Bomb</span> <span class="p">|</span> <span class="n">Weapons</span>     <span class="p">|</span> <span class="n">100000</span> <span class="p">|</span>
+</code></pre></div>
+<p>Tables is a recommended ways to pass arrays into test scenarios.
+Inside a step definition data is stored in argument passed as <code>\Behat\Gherkin\Node\TableNode</code> instance.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+    <span class="sd">/**
+     * @Given i have products in my cart
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">iHaveProductsInCart</span><span class="p">(</span><span class="nx">\Behat\Gherkin\Node\TableNode</span> <span class="nv">$products</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// iterate over all rows
+</span>        <span class="k">foreach</span> <span class="p">(</span><span class="nv">$node</span><span class="o">-&gt;</span><span class="na">getRows</span><span class="p">()</span> <span class="k">as</span> <span class="nv">$index</span> <span class="o">=&gt;</span> <span class="nv">$row</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nv">$index</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// first row to define fields
+</span>                <span class="nv">$keys</span> <span class="o">=</span> <span class="nv">$row</span><span class="p">;</span>
+                <span class="k">continue</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">haveRecord</span><span class="p">(</span><span class="s1">'Product'</span><span class="p">,</span> <span class="nb">array_combine</span><span class="p">(</span><span class="nv">$keys</span><span class="p">,</span> <span class="nv">$row</span><span class="p">));</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre></div>
+<h3>Examples</h3>
+
+<p>In case scenarios represent the same logic but differ on data, we can use <em>Scenario Outline</em> to provide different examples for the same behavior. Scenario outline is just like a basic scenario with some values replaced with placeholders, which are filled from a table. Each set of values is executed as a different test.</p>
+<div class="highlight"><pre><code class="language-gherkin" data-lang="gherkin">  <span class="kn">Scenario Outline</span><span class="p">:</span> order discount
+    <span class="nf">Given</span> I have product with price <span class="nv">&lt;price&gt;</span> $ in my cart
+    <span class="nf">And</span> discount for orders greater than 20 $ is 10 %
+    <span class="nf">When</span> I go to checkout
+    <span class="nf">Then</span> I should see overall price is <span class="s">"&lt;total&gt;"</span> $
+
+    <span class="nn">Examples</span><span class="p">:</span>
+      <span class="p">|</span> <span class="nv">price</span> <span class="p">|</span> <span class="nv">total</span> <span class="p">|</span>
+      <span class="p">|</span> <span class="n">10</span>    <span class="p">|</span> <span class="n">10</span>    <span class="p">|</span>
+      <span class="p">|</span> <span class="n">20</span>    <span class="p">|</span> <span class="n">20</span>    <span class="p">|</span>
+      <span class="p">|</span> <span class="n">21</span>    <span class="p">|</span> <span class="n">18.9</span>  <span class="p">|</span>
+      <span class="p">|</span> <span class="n">30</span>    <span class="p">|</span> <span class="n">27</span>    <span class="p">|</span>
+      <span class="p">|</span> <span class="n">50</span>    <span class="p">|</span> <span class="n">45</span>    <span class="p">|</span>
+</code></pre></div>
+<h3>Long Strings</h3>
+
+<p>Text values inside a scenarios can be set inside a <code>&quot;&quot;&quot;</code> block:</p>
+<div class="highlight"><pre><code class="language-gherkin" data-lang="gherkin">  <span class="nf">Then</span> i see in file <span class="s">"codeception.yml"</span>
+<span class="s">"""
+paths:
+    tests: tests
+    log: tests/_output
+    data: tests/_data
+    helpers: tests/_support
+    envs: tests/_envs
+"""</span>
+</code></pre></div>
+<p>This string is passed as a standard PHP string parameter</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+    <span class="sd">/**
+     * @Then i see in file :filename
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">seeInFile</span><span class="p">(</span><span class="nv">$fileName</span><span class="p">,</span> <span class="nv">$fileContents</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// note: module "Asserts" is enabled in this suite
+</span>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">file_exists</span><span class="p">(</span><span class="nv">$fileName</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">fail</span><span class="p">(</span><span class="s2">"File </span><span class="nv">$fileName</span><span class="s2"> not found"</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="nb">file_get_contents</span><span class="p">(</span><span class="nv">$fileName</span><span class="p">),</span> <span class="nv">$fileContents</span><span class="p">);</span>
+    <span class="p">}</span>
+</code></pre></div>
+<h3>Tags</h3>
+
+<p>Gherkin scenarios and features can contain tags marked with <code>@</code>. Tags are equal to groups in Codeception.
+This way if you define a feature with <code>@important</code> tag, you can execute it inside <code>important</code> group by running:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">codecept run -g important
+</code></pre></div>
+<p>Tag should be placed before <em>Scenario:</em> or before <em>Feature:</em> keyword. In the last case all scenarios of that feature will be added to corresponding group.</p>
+
+<h2>Configuration</h2>
+
+<p>As we mentioned earlier, steps should be defined inside context classes. By default all the steps are defined inside an Actor class, for instance, <code>AcceptanceTester</code>. However, you can include more contexts. This can be configured inside global <code>codeception.yml</code> or suite configuration file:</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">gherkin</span><span class="pi">:</span>
+    <span class="s">contexts</span><span class="pi">:</span>
+        <span class="s">default</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="s">AcceptanceTester</span>
+            <span class="pi">-</span> <span class="s">AdditionalSteps</span>
+</code></pre></div>
+<p><code>AdditionalSteps</code> file should be accessible by autoloader and can be created by <code>Codeception\Lib\Di</code>. This means that practically any class can be a context. If a class receives an actor class in constructor or in <code>_inject</code> method, DI can inject it into it.</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">AdditionalSteps</span>
+<span class="p">{</span>
+  <span class="k">protected</span> <span class="nv">$I</span><span class="p">;</span>
+
+  <span class="k">function</span> <span class="nf">__construct</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span>
+  <span class="p">{</span>
+      <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">I</span> <span class="o">=</span> <span class="nv">$I</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="sd">/**
+   * @When I do something
+   */</span>
+  <span class="k">function</span> <span class="nf">additionalActions</span><span class="p">()</span>
+  <span class="p">{</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>This way PageObjects, Helpers and StepObjects can become contexts as well. But more preferable to include context classes by their tags or roles.</p>
+
+<p>If you have <code>Step\Admin</code> class which defines only admin steps, it is a good idea to use it as context for all features containing with &quot;As an admin&quot;. In this case &quot;admin&quot; is a role and we can configure it to use additional context.</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">gherkin</span><span class="pi">:</span>
+    <span class="s">contexts</span><span class="pi">:</span>
+        <span class="s">role</span><span class="pi">:</span>
+            <span class="s">admin</span><span class="pi">:</span>
+                <span class="pi">-</span> <span class="s2">"</span><span class="s">Step</span><span class="err">\</span><span class="s">Admin"</span>
+</code></pre></div>
+<p>Contexts can be attached to tags as well. This may be useful if you want to redefine steps for some scenarios. Let&#39;s say we want to bypass login steps for some scenarios loading already defined session. In this case we can create <code>Step\FastLogin</code> class with redefined step &quot;I am logged in as&quot;.</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">gherkin</span><span class="pi">:</span>
+    <span class="s">contexts</span><span class="pi">:</span>
+        <span class="s">tag</span><span class="pi">:</span>
+            <span class="s">fastlogin</span><span class="pi">:</span>
+                <span class="pi">-</span> <span class="s2">"</span><span class="s">Step</span><span class="err">\</span><span class="s">FastLogin"</span>
+</code></pre></div>
+<h2>Migrating From Behat</h2>
+
+<p>While Behat is a great tool for Behavior Driven Development, you still may prefer to use Codeception as your primary testing framework. In case you want to unify all your tests (unit/functional/acceptance), and make them be executed with one runner, Codeception is a good choice. Also Codeception provides rich set of well-maintained modules for various testing backends like Selenium Webdriver, Symfony, Laravel, etc.</p>
+
+<p>If you decided to run your features with Codeception, we recommend to start with symlinking your <code>features</code> directory into one of the test suites:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">ln -s <span class="nv">$PWD</span>/features tests/acceptance
+</code></pre></div>
+<p>Then you will need to implement all step definitions. Run <code>gherkin:snippets</code> to generate stubs for them.
+By default it is recommended to place step definitions into actor class (Tester) and use its methods for steps implementation.</p>
+
+<h2>Tests vs Features</h2>
+
+<p>It is common to think that BDD scenario is equal to test. But it&#39;s actually not. Not every test should be described as a feature. Not every test is written to test real business value. For instance, regression tests or negative scenario tests are not bringing any value to business. Business analysts don&#39;t care about scenario reproducing bug #13, or what error message is displayed when user tries to enter wrong password on login screen. Writing all the tests inside a feature files creates informational overflow.</p>
+
+<p>In Codeception you can combine tests written in Gherkin format with tests written in Cept/Cest/Test formats. This way you can keep your feature files compact with minimal set of scenarios, and write regular tests to cover all cases.</p>
+
+<p>Corresponding features and tests can be attached to the same group. And what is more interesting, you can make tests to depend on feature scenarios. Let&#39;s say we have <code>login.feature</code> file with &quot;Log regular user&quot; scenario in it. In this case you can specify that every test which requires login to pass to depend on &quot;Log regular user&quot; scenario:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">@depends login:Log regular user
+</code></pre></div>
+<p>Inside <code>@depends</code> block you should use test signature. Execute your feature with <code>dry-run</code> to see  signatures for all scenarios in it. By marking tests with <code>@depends</code> you ensure that this test won&#39;t be executed before the test it depends on.</p>
+
+<h2>Conclusions</h2>
+
+<p>If you like the concept of Behavior Driven Development or prefer to keep test scenarios in human readable format, Codeception allows you to write and execute scenarios in Gherkin. Feature files is just another test format inside Codeception, so it can be combined with Cept and Cest files inside the same suite. Steps definitions of your scenarios can use all the power of Codeception modules, PageObjects, and StepObjects.  </p>
+
+        </section>
+        <nav id="nav" class="col-md-3">
+            <h1>ガイド</h1>
+            <div class="well">
+                <ol>
+                    <li><a href="01-Introduction.html">イントロダクション</a></li>
+                    <li><a href="02-GettingStarted.html">はじめに</a></li>
+                    <li><a href="03-AcceptanceTests.html">受け入れテスト</a></li>
+                    <li><a href="04-FunctionalTests.html">機能テスト</a></li>
+                    <li><a href="05-UnitTests.html">単体テスト</a></li>
+                    <li><a href="06-ModulesAndHelpers.html">モジュールとヘルパー</a></li>
+                    <li><a href="06-ReusingTestCode.html">テストコードの再利用</a></li>
+                    <li><a href="07-AdvancedUsage.html">高度な使用法</a></li>
+                    <li><a href="07-BDD.html">振舞駆動開発</a></li>
+                    <li><a href="08-Customization.html">カスタマイズ</a></li>
+                    <li><a href="09-Data.html">データを取り扱う</a></li>
+                    <li><a href="10-WebServices.html">Webサービスをテストする</a></li>
+                    <li><a href="11-Codecoverage.html">コードカバレッジ</a></li>
+                    <li><a href="12-ContinuousIntegration.html">継続的インテグレーション</a></li>
+                    <li><a href="12-ParallelExecution.html">並列実行</a></li>
+                </ol>
+            </div>
+            <h1>目次</h1>
+            <div id="toc" class="well">
+            </div>
+        </nav>
+    </div>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="container inner">
+        <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
+        <p>Last updated: 2016-08-03 09:55:35 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.2.2">Codeception 2.2.2</a></p>
+        <div id="contributors"></div>
+    </footer>
+</div>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-59804278-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+<script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="javascripts/toc.min.js"></script>
+<script src="javascripts/contributors.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#toc').toc({
+            'selectors': 'h2,h3,h4',
+            'container': '#main_content',
+            'anchorName': function(i, heading, prefix) {
+                return prefix + i;
+            }
+        });
+    });
+</script>
+</body>
+</html>

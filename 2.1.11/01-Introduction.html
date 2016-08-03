@@ -63,6 +63,7 @@
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Sign Up'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">submitForm</span><span class="p">(</span><span class="s1">'#signup'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'username'</span> <span class="o">=&gt;</span> <span class="s1">'MilesDavis'</span><span class="p">,</span> <span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s1">'miles@davis.com'</span><span class="p">]);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Thank you for Signing Up!'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <h4>長所</h4>
 
@@ -100,6 +101,7 @@ Codeceptionはいくつかの人気なPHPフレームワークとのコネクタ
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Thank you for Signing Up!'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeEmailSent</span><span class="p">(</span><span class="s1">'miles@davis.com'</span><span class="p">,</span> <span class="s1">'Thank you for registration'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s1">'miles@davis.com'</span><span class="p">]);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <h4>長所</h4>
 
@@ -137,6 +139,7 @@ Codeceptionはいくつかの人気なPHPフレームワークとのコネクタ
     <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">'Miles Davis'</span><span class="p">,</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">getFullName</span><span class="p">());</span>
     <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">unitTester</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Miles'</span><span class="p">,</span> <span class="s1">'surname'</span> <span class="o">=&gt;</span> <span class="s1">'Davis'</span><span class="p">]);</span>
 <span class="p">}</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <h4>長所</h4>
 
@@ -170,15 +173,12 @@ Codeceptionはいくつかの人気なPHPフレームワークとのコネクタ
                     <li><a href="03-AcceptanceTests.html">受け入れテスト</a></li>
                     <li><a href="04-FunctionalTests.html">機能テスト</a></li>
                     <li><a href="05-UnitTests.html">単体テスト</a></li>
-                    <li><a href="06-ModulesAndHelpers.html">モジュールとヘルパー</a></li>
                     <li><a href="06-ReusingTestCode.html">テストコードの再利用</a></li>
                     <li><a href="07-AdvancedUsage.html">高度な使用法</a></li>
-                    <li><a href="07-BDD.html">振舞駆動開発</a></li>
                     <li><a href="08-Customization.html">カスタマイズ</a></li>
                     <li><a href="09-Data.html">データを取り扱う</a></li>
                     <li><a href="10-WebServices.html">Webサービスをテストする</a></li>
                     <li><a href="11-Codecoverage.html">コードカバレッジ</a></li>
-                    <li><a href="12-ContinuousIntegration.html">継続的インテグレーション</a></li>
                     <li><a href="12-ParallelExecution.html">並列実行</a></li>
                 </ol>
             </div>
@@ -193,7 +193,7 @@ Codeceptionはいくつかの人気なPHPフレームワークとのコネクタ
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2016-08-03 09:55:35 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.2.2">Codeception 2.2.2</a></p>
+        <p>Last updated: 2016-07-08 09:54:50 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.1.11">Codeception 2.1.11</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

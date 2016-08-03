@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Codeception.docs.ja : Codeception docs japanese translation">
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/guides.css">
+
+    <title>Codeception.docs.ja</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="container inner">
+        <a id="forkme_banner" href="https://github.com/piccagliani/Codeception.docs.ja_JP">View on GitHub</a>
+
+        <h1 id="project_title"><a href="index.html">Codeception.docs.ja</a></h1>
+        <h2 id="project_tagline">Codeception docs japanese translation</h2>
+
+        <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/piccagliani/Codeception.docs.ja_JP/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="container">
+    <div class="row">
+        <section id="main_content" class="col-md-9">
+            <h1>モジュールとヘルパー</h1>
+
+<p>Codeceptionは、記述するすべてのテストスイートに対して快適なテスト環境を作成するために、モジュールを使用します。</p>
+
+<p>テスターオブジェクトによって行われるすべてのアクションとアサーションはモジュールに定義されています。独自のアクションやアサーションをカスタムモジュールに記述することによって、あなた専用のアクションとアサーションを備えたテストスイートに拡張することができます。</p>
+
+<p>次のテストを見てみましょう：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Hello'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">));</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeFileFound</span><span class="p">(</span><span class="s1">'running.lock'</span><span class="p">);</span>
+
+</code></pre></div>
+<p>このコードの実行には異なるエンティティが使用されます：PhpBrowserモジュールによってウェブページが読み込まれ、データベースのアサーションにはDbモジュールを使用し、そしてFilesystemモジュールによってファイルの状態がチェックされます。</p>
+
+<p>モジュールはスイート設定によりアクタークラスに取り付けられます。
+例えば、次の<code>tests/functional.suite.yml</code>を見てください：</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">FunctionalTester</span>
+<span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">PhpBrowser</span><span class="pi">:</span>
+            <span class="s">url</span><span class="pi">:</span> <span class="s">http://localhost</span>
+        <span class="pi">-</span> <span class="s">Db</span><span class="pi">:</span>
+            <span class="s">dsn</span><span class="pi">:</span> <span class="s2">"</span><span class="s">mysql:host=localhost;dbname=testdb"</span>
+        <span class="pi">-</span> <span class="s">Filesystem</span>
+</code></pre></div>
+<p>FunctionalTesterクラスはモジュールに定義されているメソッドを持っています。しかしメソッドは実際にクラスの中に含まれてるわけではなく、むしろプロキシのように動作しています。FunctionalTesterクラスはどのモジュールがそのアクションを実行するのかを知っており、そしてパラメータを渡すのです。使用しているIDEにFunctionalTesterの持っているすべてのメソッドを認識させるためには、<code>codecept build</code>コマンドを使ってください。このコマンドは有効化されているモジュールからメソッドのシグネチャを生成し、アクターにインクルードされるトレイトに保存します。この例では、<code>tests/support/_generated/FunctionalTesterActions.php</code>ファイルが生成されるでしょう。
+Codeceptionはデフォルトで、スイート設定が変更されるたびに自動的にトレイトを再ビルドします。</p>
+
+<h2>標準モジュール</h2>
+
+<p>Codeceptionには異なる目的や環境に対するテストを実行するのに役立つ、バンドルされたモジュールが多くあります。モジュールのアイディアは、開発者やQAエンジニアが車輪の再発明にではなくテストに集中できるよう、一般的なアクションを共通化することです。個々のモジュールはテストの一部分しか提供しませんが、複数のモジュールを組み合わせることでアプリケーションをすべてのレベルでテストするための強力な仕組みを手に入れることができます。</p>
+
+<p>受け入れテスト向けの<code>WebDriver</code>モジュール、ポピュラーなPHPフレームワーク用のモジュール、ブラウザーの実行をエミュレートする<code>PHPBrowser</code>モジュール、APIをテストするための<code>REST</code>モジュール、など、さらに多くのモジュールがあります。モジュールはCodeceptionの最も価値のあるものであると考えられます。モジュールは、最高のテスト体験を提供するため、そしてあらゆるニーズに柔軟に応えるため、継続的に改善されています。</p>
+
+<h3>モジュールのコンフリクト</h3>
+
+<p>モジュールは互いにコンフリクトする可能性があります。モジュールが<code>Codeception\Lib\Interfaces\ConflictsWithModule</code>を実装している場合、他モジュールとで使用されるコンフリクトのルールが宣言されます。たとえば、WebDriverモジュールは<code>Codeception\Lib\Interfaces\Web</code>インターフェースを実装しているすべてのモジュールとコンフリクトします。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php">public function _conflicts()
+{
+    return 'Codeception\Lib\Interfaces\Web';
+}
+</code></pre></div>
+<p>この仕組みによって、同一のコンフリクトするインタフェースを共有する2つのモジュールを使用した場合には、例外が発生します。</p>
+
+<p>混乱を避けるために、<strong>Framework、PhpBrowser、そしてWebDriverモジュール</strong> を一緒に使用することはできません。たとえば、<code>amOnPage</code>メソッドはそれらすべてのモジュールに存在し、実際にどのモジュールのものが実行されるのかわからなくなります。受け入れテストを行うのであれば、WebDriverとPHPBrowserの両方ではなく、どちらかをセットアップしてください。機能テストを行う場合は、フレームワークモジュールのうち、どれか一つを有効にしてください。</p>
+
+<p>コンフリクトするモジュールに依存するモジュールを使用した場合は、設定で依存するモジュールを指定してください。<code>WebDriver</code>モジュールを、<code>PhpBrowser</code>を通してサーバーとやり取りをする<code>REST</code>モジュールと共に使用したい場合があります。そのような場合、設定は次のようになります：</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">WebDriver</span><span class="pi">:</span>
+            <span class="s">browser</span><span class="pi">:</span> <span class="s">firefox</span>
+            <span class="s">url</span><span class="pi">:</span> <span class="s">http://localhost</span>
+        <span class="pi">-</span> <span class="s">REST</span><span class="pi">:</span>
+            <span class="s">url</span><span class="pi">:</span> <span class="s">http://localhost/api/v1</span>
+            <span class="s">depends</span><span class="pi">:</span> <span class="s">PhpBrowser</span>
+
+</code></pre></div>
+<p>この設定によりウェブサイトをブラウザーで動作している最中にサーバー上のAPIに対してGET/POSTリクエストを送信できるようになります。</p>
+
+<p>ただ単にコンフリクトするモジュールの一部のパーツのみロードたいという場合は、次の章を参照してください。</p>
+
+<h3>モジュールパーツ</h3>
+
+<p><em>パーツ</em> セクションを持つモジュールは、部分的にロードすることができます。この方法により<code>$I</code>オブジェクトはモジュールの特定のパーツに含まれるアクションのみを持つようになります。部分的にロードされたモジュールは、モジュール同士のコンフリクトを回避する目的でも使用することができます。</p>
+
+<p>例えば、Laravel5モジュールにはデータベース関連のアクションが含まれるORMパーツがあります。PhpBrowserをテスト用に、Laravel + ORMをデータベースへの接続およびデータチェック用に、有効化することができます。</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">PhpBrowser</span><span class="pi">:</span>
+            <span class="s">url</span><span class="pi">:</span> <span class="s">http://localhost</span>
+        <span class="pi">-</span> <span class="s">Laravel5</span><span class="pi">:</span>
+            <span class="s">part</span><span class="pi">:</span> <span class="s">ORM</span>            
+</code></pre></div>
+<p>同名のアクションはロードされないため、モジュールのコンフリクトは発生しません。</p>
+
+<p>同じように、RESTモジュールには<code>Xml</code>と<code>Json</code>のパーツがあります。もし、レスポンス形式がJSONのみであるRESTサービスをテストする場合、JSONパーツのみを有効とすることができます：</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">ApiTester</span>
+<span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">REST</span><span class="pi">:</span>
+            <span class="s">url</span><span class="pi">:</span> <span class="s">http://serviceapp/api/v1/</span>
+            <span class="s">depends</span><span class="pi">:</span> <span class="s">PhpBrowser</span>
+            <span class="s">part</span><span class="pi">:</span> <span class="s">Json</span>    
+</code></pre></div>
+<h2>ヘルパー</h2>
+
+<p>Codeceptionはメインリポジトリからのみのモジュールに制限されているわけではありません。間違いなく、あなたのプロジェクトは独自のアクションをテストスイートに追加する必要があるでしょう。<code>bootstrap</code>コマンドを実行することにより、Codeceptionは新規作成される３つのテストスイートそれぞれにダミーモジュールを生成します。これらのカスタムモジュールは&#39;ヘルパー&#39;と呼ばれ、<code>tests/_support</code>ディレクトリ内に置かれます。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">namespace</span> <span class="nx">Helper</span><span class="p">;</span>
+<span class="c1">// here you can define custom functions for FunctionalTester
+</span>
+<span class="k">class</span> <span class="nc">Functional</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+</code></pre></div>
+<p>アクションに関して言えば、すべてが非常にシンプルです。あなたが定義するすべてのアクションはpublicなfunctionです。何かしらのpublicメソッドを書き、<code>build</code>コマンドを実行すれば、FunctionalTesterクラスに新しい関数が追加されたことを確認できます。</p>
+
+<div class="alert alert-info">
+publicメソッドが`_`から始まる場合は隠しメソッドとして扱われ、アクタークラスには追加されません。
+</div>
+
+<p>アサーションは少し注意が必要です。まず始めに、すべてのアサートアクションの接頭語を<code>see</code>もしくは<code>dontSee</code>とすることを推奨します。</p>
+
+<p>たとえばこのようになります：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seePageReloaded</span><span class="p">();</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeClassIsLoaded</span><span class="p">(</span><span class="nv">$classname</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSeeUserExist</span><span class="p">(</span><span class="nv">$user</span><span class="p">);</span>
+
+</code></pre></div>
+<p>これをテストで使用します：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seePageReloaded</span><span class="p">();</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeClassIsLoaded</span><span class="p">(</span><span class="s1">'FunctionalTester'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSeeUserExist</span><span class="p">(</span><span class="nv">$user</span><span class="p">);</span>
+
+</code></pre></div>
+<p>モジュール内のassertXXXメソッドを使ってアサーションを定義することができます。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+
+<span class="k">function</span> <span class="nf">seeClassExist</span><span class="p">(</span><span class="nv">$class</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nb">class_exists</span><span class="p">(</span><span class="nv">$class</span><span class="p">));</span>
+<span class="p">}</span>
+
+</code></pre></div>
+<p>ヘルパー内でこれらのアサーションを使うことができます：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+
+<span class="k">function</span> <span class="nf">seeCanCheckEverything</span><span class="p">(</span><span class="nv">$thing</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$thing</span><span class="p">),</span> <span class="s2">"this thing is set"</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertFalse</span><span class="p">(</span><span class="k">empty</span><span class="p">(</span><span class="nv">$any</span><span class="p">),</span> <span class="s2">"this thing is not empty"</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertNotNull</span><span class="p">(</span><span class="nv">$thing</span><span class="p">,</span> <span class="s2">"this thing is not null"</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertContains</span><span class="p">(</span><span class="s2">"world"</span><span class="p">,</span> <span class="nv">$thing</span><span class="p">,</span> <span class="s2">"this thing contains 'world'"</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertNotContains</span><span class="p">(</span><span class="s2">"bye"</span><span class="p">,</span> <span class="nv">$thing</span><span class="p">,</span> <span class="s2">"this thing doesn`t contain 'bye'"</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s2">"hello world"</span><span class="p">,</span> <span class="nv">$thing</span><span class="p">,</span> <span class="s2">"this thing is 'Hello world'!"</span><span class="p">);</span>
+    <span class="c1">// ...
+</span><span class="p">}</span>
+
+</code></pre></div>
+<h3>他モジュールへのアクセス</h3>
+
+<p>他のモジュールから内部データや関数にアクセスすることも可能です。たとえば、あなたのモジュールはレスポンス内容やモジュールの内部アクションにアクセスする必要がある場合があります。</p>
+
+<p>モジュールは<code>getModule</code>メソッドを通じて相互にやり取りすることができます。このメソッドは必要なモジュールがロードされていない場合、例外を投げることを覚えておいてください。</p>
+
+<p>データベースに再接続するモジュールを書いていると想定してみましょう。そのモジュールはDbモジュールのコネクションハンドラーを使用するとします。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+
+<span class="k">function</span> <span class="nf">reconnectToDatabase</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nv">$dbh</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'Db'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">dbh</span><span class="p">;</span>
+    <span class="nv">$dbh</span><span class="o">-&gt;</span><span class="na">close</span><span class="p">();</span>
+    <span class="nv">$dbh</span><span class="o">-&gt;</span><span class="na">open</span><span class="p">();</span>
+<span class="p">}</span>
+
+</code></pre></div>
+<p><code>getModule</code>関数を使うと、リクエストしたモジュール内のすべてのpublicメソッドやプロパティにアクセスできます。<code>dbh</code>プロパティは他のモジュールで利用できるよう、publicとして定義されています。</p>
+
+<p>また、モジュールにはヘルパーメソッドでの使用のために用意されているメソッドも含まれています。これらのメソッドは<code>_</code>から始まり、アクタークラス内では使用することができないため、モジュールおよび拡張機能からのみアクセスすることができます。</p>
+
+<p>モジュールの内部構造を使用した独自のアクションを記述する際にそれらのメソッドを使ってください。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">function</span> <span class="nf">seeNumResults</span><span class="p">(</span><span class="nv">$num</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// retrieving webdriver session
+</span>    <span class="sd">/**@var $table \Facebook\WebDriver\WebDriverElement */</span>
+    <span class="nv">$elements</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'WebDriver'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">_findElements</span><span class="p">(</span><span class="s1">'#result'</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertNotEmpty</span><span class="p">(</span><span class="nv">$elements</span><span class="p">);</span>
+    <span class="nv">$table</span> <span class="o">=</span> <span class="nb">reset</span><span class="p">(</span><span class="nv">$elements</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="s1">'table'</span><span class="p">,</span> <span class="nv">$table</span><span class="o">-&gt;</span><span class="na">getTagName</span><span class="p">());</span>
+    <span class="nv">$results</span> <span class="o">=</span> <span class="nv">$table</span><span class="o">-&gt;</span><span class="na">findElements</span><span class="p">(</span><span class="s1">'tr'</span><span class="p">);</span>
+    <span class="c1">// asserting that table contains exactly $num rows
+</span>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="nv">$num</span><span class="p">,</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$results</span><span class="p">));</span>
+<span class="p">}</span>
+
+</code></pre></div>
+<p>この例では、モジュールの構築元となるSelenium WebDriverのクライアントである<a href="https://github.com/facebook/php-webdriver">facebook/php-webdriver</a>ライブラリのAPIを使用しています。
+Seleniumと直接的に対話するための<code>Facebook\WebDriver\RemoteWebDriver</code>インスタンスにアクセスするため、<code>webDriver</code>プロパティを利用することもできます。</p>
+
+<h3>モジュールの継承</h3>
+
+<p>もしモジュールにアクセスすることで必要な柔軟性を得られない場合は、ヘルパークラスでモジュールを継承することができます：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">namespace</span> <span class="nx">Helper</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">MyExtendedSelenium</span> <span class="k">extends</span> <span class="nx">\Codeception\Module\WebDriver</span>  <span class="p">{</span>
+<span class="p">}</span>
+
+</code></pre></div>
+<p>このヘルパーでは親クラスのメソッドを独自の実装で置き換えることができます。
+テストセッションの開始と終了をカスタマイズする際のオプションである<code>_before</code>と<code>_after</code>フックについても置き換えることができます。</p>
+
+<p>もし、親クラスのいくつかのメソッドが子クラスで使用されるべきでない場合は無効にすることができます。それにはいくつかの方法があります：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">namespace</span> <span class="nx">Helper</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">MyExtendedSelenium</span> <span class="k">extends</span> <span class="nx">\Codeception\Module\WebDriver</span>
+<span class="p">{</span>
+    <span class="c1">// disable all inherited actions
+</span>    <span class="k">public</span> <span class="k">static</span> <span class="nv">$includeInheritedActions</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+    <span class="c1">// include only "see" and "click" actions
+</span>    <span class="k">public</span> <span class="k">static</span> <span class="nv">$onlyActions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'see'</span><span class="p">,</span><span class="s1">'click'</span><span class="p">];</span>
+
+    <span class="c1">// exclude "seeElement" action
+</span>    <span class="k">public</span> <span class="k">static</span> <span class="nv">$excludeActions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'seeElement'</span><span class="p">];</span>
+<span class="p">}</span>
+
+</code></pre></div>
+<p><code>$includeInheritedActions</code>にfalseを設定することで、親メソッドのエイリアスを作成する機能を追加します。
+これはモジュール同士のコンフリクトを解決します。<code>Db</code>モジュールを、<code>Db</code>を継承した<code>SecondDbHelper</code>モジュールとして使いたいとします。その際、両方のモジュールにある<code>seeInDatabase</code>メソッドをどのように使用するのでしょうか？以下を見てみてください。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">namespace</span> <span class="nx">Helper</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">SecondDb</span> <span class="k">extends</span> <span class="nx">\Codeception\Module\Db</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="nv">$includeInheritedActions</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">seeInSecondDb</span><span class="p">(</span><span class="nv">$table</span><span class="p">,</span> <span class="nv">$data</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="nv">$table</span><span class="p">,</span> <span class="nv">$data</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div>
+<p><code>$includeInheritedActions</code>をfalseに設定することで、生成されたアクターには親クラスのメソッドを含まなくなりｍす。</p>
+
+<h3>フック</h3>
+
+<p>各モジュールは実行中のテストで発生するイベントを処理することができます。テストの開始前や終了後にモジュールを実行することができます。これは起動/クリーンアップ処理のために有用です。テストが失敗した場合の特別な振る舞いを定義することもできます。これは問題のデバッグに役立つでしょう。
+たとえば、PhpBrowserモジュールはテストが失敗した場合に現在のページを<code>tests/_output</code>ディレクトリーに保存します。</p>
+
+<p>ここに列挙するすべてのフックは<code>\Codeception\Module</code>で定義されています。あなたのモジュールの中で自由に再定義してください。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+
+    <span class="c1">// HOOK: used after configuration is loaded
+</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_initialize</span><span class="p">()</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// HOOK: on every Actor class initialization
+</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_cleanup</span><span class="p">()</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// HOOK: before each suite
+</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_beforeSuite</span><span class="p">(</span><span class="nv">$settings</span> <span class="o">=</span> <span class="k">array</span><span class="p">())</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// HOOK: after suite
+</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_afterSuite</span><span class="p">()</span> <span class="p">{</span>
+    <span class="p">}</span>    
+
+    <span class="c1">// HOOK: before each step
+</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_beforeStep</span><span class="p">(</span><span class="nx">\Codeception\Step</span> <span class="nv">$step</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// HOOK: after each step
+</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_afterStep</span><span class="p">(</span><span class="nx">\Codeception\Step</span> <span class="nv">$step</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// HOOK: before test
+</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_before</span><span class="p">(</span><span class="nx">\Codeception\TestInterface</span> <span class="nv">$test</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// HOOK: after test
+</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_after</span><span class="p">(</span><span class="nx">\Codeception\TestInterface</span> <span class="nv">$test</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// HOOK: on fail
+</span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">_failed</span><span class="p">(</span><span class="nx">\Codeception\TestInterface</span> <span class="nv">$test</span><span class="p">,</span> <span class="nv">$fail</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+</code></pre></div>
+<p><code>_</code>ではじまるメソッドはアクタークラスに追加されないことに注意してください。これはpublicとして定義されますが、内部的な目的のために使用するためのものです。</p>
+
+<h3>デバッグ</h3>
+
+<p>すでに触れたように、<code>_failed</code>フックは失敗したテストをデバッグするのに役に立ちます。現在のテストの状態を保存しユーザーに表示する機会を提供しますが、これに限ったことではありません。</p>
+
+<p>各モジュールはデバッグ中に役立つであろう内部的な値を出力することができます。
+たとえば、PhpBrowserモジュールは新しいページに移動するたびにレスポンスコードと現在のURLを出力します。
+このように、モジュールはブラックボックスではありません。彼らはテスト中に何が発生したのかあなたに見せようとします。これはテストのデバッグにかかる苦痛を軽減します。</p>
+
+<p>追加の情報を表示するためには、モジュールの<code>debug</code>と<code>debugSection</code>メソッドを使います。
+PhpBrowserモジュールでの使用例がこちらです：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">debugSection</span><span class="p">(</span><span class="s1">'Request'</span><span class="p">,</span> <span class="nv">$params</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">client</span><span class="o">-&gt;</span><span class="na">request</span><span class="p">(</span><span class="nv">$method</span><span class="p">,</span> <span class="nv">$uri</span><span class="p">,</span> <span class="nv">$params</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">debug</span><span class="p">(</span><span class="s1">'Response Code: '</span> <span class="o">.</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">client</span><span class="o">-&gt;</span><span class="na">getStatusCode</span><span class="p">());</span>
+
+</code></pre></div>
+<p>このテストをデバッグモードでPhpBrowserモジュールとともに実行すると、次のようなものが表示されるでしょう：</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">I click <span class="s2">"All pages"</span>
+<span class="k">*</span> Request <span class="o">(</span>GET<span class="o">)</span> http://localhost/pages <span class="o">{}</span>
+<span class="k">*</span> Response code: 200
+</code></pre></div>
+<h2>設定</h2>
+
+<p>モジュールとヘルパーはスイート設定もしくはグローバルな<code>codeception.yml</code>によって設定されます。</p>
+
+<p>必須のパラメーターはモジュールクラスの<code>$requiredFields</code>プロパティで定義する必要があります。Dbモジュールでの例を見てみましょう：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">Db</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="nv">$requiredFields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'dsn'</span><span class="p">,</span> <span class="s1">'user'</span><span class="p">,</span> <span class="s1">'password'</span><span class="p">];</span>
+
+</code></pre></div>
+<p>次回、あなたがこれらの値を設定せずにスイートを開始した場合、例外が投げられます。</p>
+
+<p>オプションのパラメーターには、デフォルト値を設定する必要があります。<code>$config</code>プロパティはオプションのパラメーターと同様に、それらの値を定義するために使用されます。WebDriverモジュールでは、Seleniumのデフォルトのサーバーアドレスとポートを使用しています。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">WebDriver</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="nv">$requiredFields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'browser'</span><span class="p">,</span> <span class="s1">'url'</span><span class="p">];</span>    
+    <span class="k">protected</span> <span class="nv">$config</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'host'</span> <span class="o">=&gt;</span> <span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="s1">'port'</span> <span class="o">=&gt;</span> <span class="s1">'4444'</span><span class="p">];</span>
+
+</code></pre></div>
+<p>ホストとポートのパラメーターはスイートの設定で再定義できます。それらの値は設定ファイルの<code>modules:config</code>セクションにあります。</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">WebDriver</span><span class="pi">:</span>
+            <span class="s">url</span><span class="pi">:</span> <span class="s1">'</span><span class="s">http://mysite.com/'</span>
+            <span class="s">browser</span><span class="pi">:</span> <span class="s1">'</span><span class="s">firefox'</span>
+        <span class="pi">-</span> <span class="s">Db</span><span class="pi">:</span>
+            <span class="s">cleanup</span><span class="pi">:</span> <span class="s">false</span>
+            <span class="s">repopulate</span><span class="pi">:</span> <span class="s">false</span>
+</code></pre></div>
+<p>オプションと必須のパラメーターは<code>$config</code>プロパティからアクセスすることができます。その値を取得するには、<code>$this-&gt;config[&#39;parameter&#39;]</code>を使ってください。</p>
+
+<h3>パラメーターを使用した動的設定</h3>
+
+<p>モジュールは環境変数により動的に設定することができます。パラメーターストレージはグローバルな<code>codeception.yml</code>設定ファイルの<code>params</code>セクションに指定してください。パラメーターは環境変数、yamlファイル（Symfony形式）や、.envファイル（Laravel形式）、もしくはiniファイルからロードすることができます。</p>
+
+<p>パラメーターをどのようにロードするかをグローバルな<code>codeception.yml</code>設定ファイルの<code>params</code>セクションに指定してください。パラメータをロードするソースファイルを複数指定することができます。</p>
+
+<p>環境変数からパラメーターをロードする例：</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">params</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">env</span> <span class="c1"># load params from environment vars</span>
+</code></pre></div>
+<p>yamlファイルをロードする例（Symfony）：</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">params</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">app/config/parameters.yml</span>
+</code></pre></div>
+<p>動作環境ファイルからパラメーターをロードする例（Laravel）：</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">params</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">.env</span>
+    <span class="pi">-</span> <span class="s">.env.testing</span>
+</code></pre></div>
+<p>ロードされたパラメーターは、モジュールの設定値として使うことができます。変数名を<code>%</code>プレースホルダーで囲うことで、その値で置換されるでしょう。</p>
+
+<p>クラウドテスティングサービスに対する認証情報を指定したいとします。動作環境から<code>SAUCE_USER</code>と<code>SAUCE_KEY</code>という変数をロード済みとし、<code>WebDriver</code>の設定に実際の値を渡してみましょう：</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml">    <span class="s">modules</span><span class="pi">:</span>
+       <span class="s">enabled</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="s">WebDriver</span><span class="pi">:</span>
+             <span class="s">url</span><span class="pi">:</span> <span class="s">http://mysite.com</span>
+             <span class="s">host</span><span class="pi">:</span> <span class="s1">'</span><span class="s">%SAUCE_USER%:%SAUCE_KEY%@ondemand.saucelabs.com'</span>
+</code></pre></div>
+<p>パラメーターは<code>Db</code>モジュールの認証情報を提供するためにも役に立ちます（Laravelの.envファイルを参考にしています）。</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">module</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">Db</span><span class="pi">:</span>
+            <span class="s">dsn</span><span class="pi">:</span> <span class="s2">"</span><span class="s">mysql:host=%DB_HOST%;dbname=%DB_DATABASE%"</span>
+            <span class="s">user</span><span class="pi">:</span> <span class="s2">"</span><span class="s">%DB_USERNAME%"</span>
+            <span class="s">password</span><span class="pi">:</span> <span class="s2">"</span><span class="s">DB_PASSWORD"</span>
+</code></pre></div>
+<h3>実行時設定</h3>
+
+<p>もし実行時にモジュールを再設定したければ、モジュールの<code>_reconfigure</code>メソッドを使用してください。
+それをヘルパークラスから呼び出し、変更したいすべてのフィールドに渡すことができます。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'WebDriver'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">_reconfigure</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">'browser'</span> <span class="o">=&gt;</span> <span class="s1">'chrome'</span><span class="p">));</span>
+
+</code></pre></div>
+<p>テスト終了時に、変更した設定はオリジナルの値に戻されます。</p>
+
+<h2>まとめ</h2>
+
+<p>モジュールはCodeceptionの真髄です。これらはアクタークラス（UnitTester、FunctionalTester、AcceptanceTesterなど）への複数の継承をエミュレートするために使用されます。Codeceptionはウェブリクエスト、データアクセス、人気のあるPHPライブラリとのインタラクション等をエミュレートするモジュールを提供しています。もし標準のモジュールでは十分でなくても問題ありません。自由に独自モジュールを記述してください！Codceptionで出来ることの枠を超えるようなものについてはヘルパー（カスタムモジュール）を使用してください。ヘルパーを使えば、オリジナルモジュールの機能を拡張することもできます。</p>
+
+        </section>
+        <nav id="nav" class="col-md-3">
+            <h1>ガイド</h1>
+            <div class="well">
+                <ol>
+                    <li><a href="01-Introduction.html">イントロダクション</a></li>
+                    <li><a href="02-GettingStarted.html">はじめに</a></li>
+                    <li><a href="03-AcceptanceTests.html">受け入れテスト</a></li>
+                    <li><a href="04-FunctionalTests.html">機能テスト</a></li>
+                    <li><a href="05-UnitTests.html">単体テスト</a></li>
+                    <li><a href="06-ModulesAndHelpers.html">モジュールとヘルパー</a></li>
+                    <li><a href="06-ReusingTestCode.html">テストコードの再利用</a></li>
+                    <li><a href="07-AdvancedUsage.html">高度な使用法</a></li>
+                    <li><a href="07-BDD.html">振舞駆動開発</a></li>
+                    <li><a href="08-Customization.html">カスタマイズ</a></li>
+                    <li><a href="09-Data.html">データを取り扱う</a></li>
+                    <li><a href="10-WebServices.html">Webサービスをテストする</a></li>
+                    <li><a href="11-Codecoverage.html">コードカバレッジ</a></li>
+                    <li><a href="12-ContinuousIntegration.html">継続的インテグレーション</a></li>
+                    <li><a href="12-ParallelExecution.html">並列実行</a></li>
+                </ol>
+            </div>
+            <h1>目次</h1>
+            <div id="toc" class="well">
+            </div>
+        </nav>
+    </div>
+</div>
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+    <footer class="container inner">
+        <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
+        <p>Last updated: 2016-08-03 09:55:35 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.2.2">Codeception 2.2.2</a></p>
+        <div id="contributors"></div>
+    </footer>
+</div>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-59804278-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+<script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="javascripts/toc.min.js"></script>
+<script src="javascripts/contributors.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#toc').toc({
+            'selectors': 'h2,h3,h4',
+            'container': '#main_content',
+            'anchorName': function(i, heading, prefix) {
+                return prefix + i;
+            }
+        });
+    });
+</script>
+</body>
+</html>

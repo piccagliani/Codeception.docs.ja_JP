@@ -37,7 +37,7 @@
 
 <p>はじめにCodeceptionの構造を見てみましょう。
 あなたはすでに<a href="http://codeception.com/install">インストール</a> を終え、最初のテストをブートストラップしたと思います。
-Codeceptionは単体テスト、機能テスト、受け入れテストの3つを生成しました。これらについては前の章で解説してあります。<strong>/tests</strong> フォルダー内には、これら3つのテストに対応する名前の設定ファイルとディレクトリーが存在します。これらは共通の目的を持つテストのための独立したグループなのです。</p>
+Codeceptionは単体テスト、機能テスト、受け入れテストの3つを生成しました。これらについては前の章で解説してあります。<strong>/tests</strong>フォルダー内には、これら3つのテストに対応する名前の設定ファイルとディレクトリーが存在します。これらは共通の目的を持つテストのための独立したグループなのです。</p>
 
 <h2>アクター</h2>
 
@@ -53,7 +53,7 @@ Codeceptionは単体テスト、機能テスト、受け入れテストの3つ�
 </code></pre></div>
 <p>この設定ファイルで、モジュールの有効化/無効化、必要に応じた再設定を行うことができます。
 設定ファイルを変更した場合、アクタークラスは自動的に再ビルドされます。もし、アクタークラスが期待通りに作成または更新されない場合、<code>build</code>コマンドを使い手動で生成してみてください。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">php codecept build
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar build
 </code></pre></div>
 <h2>シナリオのサンプルを書いてみましょう</h2>
 
@@ -61,50 +61,26 @@ Codeceptionは単体テスト、機能テスト、受け入れテストの3つ�
 
 <p>ではたとえば、<code>tests/acceptance/SigninCept.php</code>というファイルを作ってみたとしましょう。
 以下のコマンドを実行することでそれができ上がります。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">php codecept generate:cept acceptance Signin
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:cept acceptance Signin
 </code></pre></div>
-<p>シナリオはいつも、アクタークラスの初期化とともに開始します。その後、シナリオを書き進めていくには<code>$I-&gt;</code>と書き込み、自動補完機能で現れたリストの中からふさわしいアクションを選びます。それではウェブサイトにログインしてみましょう。</p>
+<p>シナリオはいつも、アクタークラスの初期化とともに開始します。その後、シナリオを書き進めていくには<code>$I-&gt;</code>と書き込み、自動補完機能で現れたリストの中からふさわしいアクションを選びます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'login to website'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
-<p><code>wantTo</code>にはシナリオの簡単な説明を記述します。シナリオの内容を記述するために便利な追加のコメント用のメソッドがあります：</p>
+<p>それではウェブサイトにログインしてみましょう。
+ユーザー名とパスワードの入力によって認証を行う&quot;ログインページ&quot;があります。ログイン後はユーザーページに飛ばされ、<code>Hello, %username%</code>というテキストが表示されます。このシナリオがCodeceptionでどのように記述されるか見てみましょう。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">am</span><span class="p">(</span><span class="s1">'user'</span><span class="p">);</span> <span class="c1">// actor's role
-</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'login to website'</span><span class="p">);</span> <span class="c1">// feature to test
-</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">lookForwardTo</span><span class="p">(</span><span class="s1">'access all website features'</span><span class="p">);</span> <span class="c1">// result to achieve
-</span></code></pre></div>
-<p>このストーリーの背景を説明してから、シナリオを記述してみましょう。</p>
-
-<p>ユーザー名とパスワードとで認証を行う&#39;ログイン&#39;ページがあるとしましょう。そして、マイページへ遷移すると、<code>Hello, %username%</code> という文字列が表示されます。このシナリオをCodeceptionでどのように記述するのか見てみましょう。</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">am</span><span class="p">(</span><span class="s1">'user'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'login to website'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">lookForwardTo</span><span class="p">(</span><span class="s1">'access all website features'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'log in as regular user'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/login'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'Username'</span><span class="p">,</span><span class="s1">'davert'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'Password'</span><span class="p">,</span><span class="s1">'qwerty'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Login'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Hello, davert'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
-<p>おそらく、このシナリオは技術者ではない方々にも読み取ることができるでしょう。括弧や矢印や<code>$</code>といった特別な文字を取り除いてみると、単純な英語の文章になります。</p>
-<div class="highlight"><pre><code class="language-" data-lang="">I am user
-I wantTo login to website
-I lookForwardTo access all website features
-I amOnPage '/login'
-I fillField 'Username','davert'
-I fillField 'Password','qwerty'
-I click 'Login'
-I see 'Hello, davert'
-</code></pre></div>
-<p>Codeceptionは次のコマンドを実行することによって、PHPコードから文章形式の表現を生成します：</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">php codecept generate:scenarios
-</code></pre></div>
-<p>生成されたシナリオはテキストファイルとして <code>_output</code> ディレクトリー内に保存されます。</p>
-
-<p>テストを実行する前に、ローカル上のウェブサーバーでウェブサイトが動作していることを確認してください。<code>tests/acceptance.suite.yml</code>ファイルを開き、URLをあなたのウェブアプリケーションのURLに置き換えてください。</p>
+<p>テストを実行する前に、ローカル上のウェブサーバーでウェブサイトがしっかりと動いていることを確認してください。<code>tests/acceptance.suite.yml</code>ファイルを開き、URLをあなたのウェブアプリケーションのURLに置き換えてください。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">AcceptanceTester</span>
 <span class="s">modules</span><span class="pi">:</span>
     <span class="s">enabled</span><span class="pi">:</span>
@@ -113,11 +89,17 @@ I see 'Hello, davert'
         <span class="pi">-</span> <span class="s">\Helper\Acceptance</span>
 </code></pre></div>
 <p>URLの設定後、<code>run</code>コマンドによってテストを走らせることができます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">php codecept run
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run
 </code></pre></div>
 <p>このようなアウトプットが表示されるはずです。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">Acceptance Tests <span class="o">(</span>1<span class="o">)</span> -------------------------------
-✔ SigninCept: Login to website
+Trying log <span class="k">in </span>as regular user <span class="o">(</span>SigninCept.php<span class="o">)</span>   Ok
+----------------------------------------------------
+
+Functional Tests <span class="o">(</span>0<span class="o">)</span> -------------------------------
+----------------------------------------------------
+
+Unit Tests <span class="o">(</span>0<span class="o">)</span> -------------------------------------
 ----------------------------------------------------
 
 Time: 1 second, Memory: 21.00Mb
@@ -125,22 +107,18 @@ Time: 1 second, Memory: 21.00Mb
 OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span class="o">)</span>
 </code></pre></div>
 <p>アウトプットの詳細を確認してみましょう。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">php codecept run acceptance --steps
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run acceptance --steps
 </code></pre></div>
 <p>実行されたアクションのステップごとのレポートが表示されるはずです。</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">Acceptance Tests <span class="o">(</span>1<span class="o">)</span> -------------------------------
-SigninCept: Login to website
-Signature: SigninCept.php
-Test: tests/acceptance/SigninCept.php
-Scenario --
- I am user
- I look forward to access all website features
- I am on page <span class="s2">"/login"</span>
- I fill field <span class="s2">"Username"</span> <span class="s2">"davert"</span>
- I fill field <span class="s2">"Password"</span> <span class="s2">"qwerty"</span>
- I click <span class="s2">"Login"</span>
- I see <span class="s2">"Hello, davert"</span>
- OK
+Trying to log <span class="k">in </span>as regular user <span class="o">(</span>SigninCept.php<span class="o">)</span>
+Scenario:
+<span class="k">*</span> I am on page <span class="s2">"/login"</span>
+<span class="k">*</span> I fill field <span class="s2">"Username"</span> <span class="s2">"davert"</span>
+<span class="k">*</span> I fill field <span class="s2">"Password"</span> <span class="s2">"qwerty"</span>
+<span class="k">*</span> I click <span class="s2">"Login"</span>
+<span class="k">*</span> I see <span class="s2">"Hello, davert"</span>
+  OK
 ----------------------------------------------------  
 
 Time: 0 seconds, Memory: 21.00Mb
@@ -190,15 +168,12 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
        <span class="c1">// todo: write test
 </span>    <span class="p">}</span>
 <span class="p">}</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>このようなCest形式のファイルはジェネレーターを実行することにより作成することができます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">php codecept generate:cest acceptance PageCrud
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:cest acceptance PageCrud
 </code></pre></div>
 <p>高度な使用法に<a href="http://codeception.com/docs/07-AdvancedUsage#Cest-Classes">Cest形式</a>の詳細があります。</p>
-
-<h2>BDD</h2>
-
-<p>Codeceptionは、CucumberやBehatで使われるものと同様の、Gherkin形式のユーザーストーリーを実行することができます。詳細は<a href="http://codeception.com/docs/07-BDD">BDDの章</a>を参照してください。</p>
 
 <h2>設定</h2>
 
@@ -207,22 +182,22 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
 <h2>テストの実行</h2>
 
 <p>テストは<code>run</code>コマンドによって開始されます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">php codecept run
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run
 </code></pre></div>
 <p>最初の引数を使用すれば、1つのスイートからテストを実行することができます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">php codecept run acceptance
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run acceptance
 </code></pre></div>
 <p>本当に1つだけのテストを行いたいのなら、2つ目の引数を使用します。スイートのディレクトリーから、テストファイルへのローカルパスを指定します。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">php codecept run acceptance SigninCept.php
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run acceptance SigninCept.php
 </code></pre></div>
 <p>または、テストファイルへのフルパスを指定することも可能です。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">php codecept run tests/acceptance/SigninCept.php
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run tests/acceptance/SigninCept.php
 </code></pre></div>
 <p>テストクラスから1つのテストを実行することもできます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">php codecept run tests/acceptance/SignInCest.php:anonymousLogin
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run tests/acceptance/SignInCest.php:anonymousLogin
 </code></pre></div>
 <p>ディレクトリーパスを指定することも可能です。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">php codecept run tests/acceptance/backend
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run tests/acceptance/backend
 </code></pre></div>
 <p>これはバックエンドのディレクトリーからすべてのテストを実行します。</p>
 
@@ -231,12 +206,12 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
 <h3>レポート</h3>
 
 <p><code>--xml</code>オプションを付与すればJUnit XMLのアウトプットが生成され、<code>--html</code>オプションを付与すればHTMLのレポートが生成されます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">php codecept run --steps --xml --html
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar run --steps --xml --html
 </code></pre></div>
 <p>このコマンドはすべてのスイートのすべてのテストをステップごとに表示しながら実行し、HTMLとXMLのレポートを作成します。レポートは<code>tests/_output/</code>ディレクトリー内に保存されます。</p>
 
 <p>以下のコマンドを実行することで、使用できるすべてのオプションを確認することができます。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">php codecept <span class="nb">help </span>run
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar <span class="nb">help </span>run
 </code></pre></div>
 <h2>デバッグ</h2>
 
@@ -252,7 +227,6 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
 <li><code>generate:cest</code> <em>スイート名</em> <em>ファイル名</em> - Cestテストのサンプルを生成します</li>
 <li><code>generate:test</code> <em>スイート名</em> <em>ファイル名</em> - Codeceptionに接続されたPHPUnitテストのサンプルを生成します</li>
 <li><code>generate:phpunit</code> <em>スイート名</em> <em>ファイル名</em> - 標準的なPHPUnitテストを生成します</li>
-<li><code>generate:feature</code> <em>スイート名</em> <em>ファイル名</em> - Gherkin形式のフィーチャ・ファイルを生成します</li>
 <li><code>generate:suite</code> <em>スイート名</em> <em>アクター名</em> - 与えられたアクタークラスを持つ新しいスイートを生成します</li>
 <li><code>generate:scenarios</code> <em>スイート名</em> - テストからシナリオを含んだテキストファイルを生成します</li>
 <li><code>generate:helper</code> <em>ファイル名</em> - ヘルパーファイルのサンプルを生成します</li>
@@ -276,15 +250,12 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
                     <li><a href="03-AcceptanceTests.html">受け入れテスト</a></li>
                     <li><a href="04-FunctionalTests.html">機能テスト</a></li>
                     <li><a href="05-UnitTests.html">単体テスト</a></li>
-                    <li><a href="06-ModulesAndHelpers.html">モジュールとヘルパー</a></li>
                     <li><a href="06-ReusingTestCode.html">テストコードの再利用</a></li>
                     <li><a href="07-AdvancedUsage.html">高度な使用法</a></li>
-                    <li><a href="07-BDD.html">振舞駆動開発</a></li>
                     <li><a href="08-Customization.html">カスタマイズ</a></li>
                     <li><a href="09-Data.html">データを取り扱う</a></li>
                     <li><a href="10-WebServices.html">Webサービスをテストする</a></li>
                     <li><a href="11-Codecoverage.html">コードカバレッジ</a></li>
-                    <li><a href="12-ContinuousIntegration.html">継続的インテグレーション</a></li>
                     <li><a href="12-ParallelExecution.html">並列実行</a></li>
                 </ol>
             </div>
@@ -299,7 +270,7 @@ OK <span class="o">(</span>1 <span class="nb">test</span>, 1 assertions<span cla
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2016-08-03 09:55:35 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.2.2">Codeception 2.2.2</a></p>
+        <p>Last updated: 2016-07-08 09:54:50 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.1.11">Codeception 2.1.11</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

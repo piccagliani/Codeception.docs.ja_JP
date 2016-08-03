@@ -35,16 +35,15 @@
         <section id="main_content" class="col-md-9">
             <h1>データを取り扱う</h1>
 
-<p>テストはお互いに影響を及ぼし合ってはなりません。これが大雑把なルールです。
-テストがデータベースとやり取りする際に内部のデータを変更しかねないため、最終的にデータの不一致や矛盾を生じさせるかもしれないのです。テストはすでに挿入されているレコードを挿入したり、削除されているレコードを検索しようとするかもしれません。テストの失敗を回避するため、データベースは各テストを行う前に初期状態になっていなければなりません。Codeceptionには、データをクリーンにするための方法やアプローチがいくつか存在します。</p>
+<p>テストはお互いに影響を与えるべきではありません。これは経験上の法則です。テストがデータベースと連携する場合、最終的にデータ不整合につながるおそれのあるデータがテストによって変更されるかもしれません。テストはまた、すでに登録済みのデータを登録したり、削除されたレコードを取得しようとするかもしれません。テストが失敗するのを避けるために、データベースは各テストの前に初期状態になっていることが必要です。Codeceptionにはデータを初期化するための様々なメソッドと方法があります。</p>
 
 <p>この章では、前章のクリーンアップに関する注意を要約するとともに、データストレージバックエンドを選択する方法の最善策について提案します。</p>
 
-<p>私たちがデータベースをクリーンアップすると決めた時、私たちはそれをできるだけ速く行うべきです。テストは常に速く実行される必要があります。データベースを一から再構築するのは最良の方法とは言えないかもしれませんが、唯一の方法とも言えるかもしれません。いずれにせよ、テストのためだけに特別なデータベースを使用してください。<strong>絶対に開発環境または本番環境のデータベースでテストを実行しないでください！</strong></p>
+<p>データベースをクリーンアップすると決めたならば、クリーンアップ処理は可能な限り早くすべきです。テストは常に速く実行される必要があります。データベースを一から再構築するのは最良の方法とは言えないかもしれませんが、唯一の方法とも言えるかもしれません。いずれにせよ、テストのための特別なデータベースを使用してください。<strong>絶対に開発環境または本番環境のデータベースでテストを実行しないでください！</strong></p>
 
-<h2>自動クリーンアップ</h2>
+<h2>Db</h2>
 
-<p>Codeceptionにはデータベースと対話をする際に必要なほとんどのタスクを行ってくれる<code>Db</code>モジュールがあります。デフォルトでは、dumpからデータベースを再構築し、各テストが終了した後にクリーンアップを試みます。このモジュールのデータベースのdumpはSQLフォーマットです。<code>codeception.yml</code>内ですでに設定が準備されています。</p>
+<p>Codeceptionにはデータベースと対話をする際に必要なほとんどのタスクを行ってくれる<code>Db</code>モジュールがあります。デフォルトでは、dumpファイルからデータベースを再構築し、各テストの終了後にクリーンアップを試みます。このモジュールはSQL形式のデータベースdumpファイルを使用します。<code>codeception.yml</code>内ですでに設定が準備されています。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
     <span class="s">config</span><span class="pi">:</span>
         <span class="s">Db</span><span class="pi">:</span>
@@ -53,91 +52,162 @@
             <span class="s">password</span><span class="pi">:</span>
             <span class="s">dump</span><span class="pi">:</span> <span class="s">tests/_data/your-dump-name.sql</span>
 </code></pre></div>
-<p>あなたのテストスイートでこのモジュールを有効化したら、自動的にdumpからデータベースにデータが挿入され、各テストの実行時に再構築されます。これらの設定は<code>populate</code>と<code>cleanup</code>オプションの変更によって<code>false</code>に設定することができます。</p>
+<div class="alert alert-notice">
+環境変数もしくはアプリケーション設定ファイルからデータベースの認証情報を設定するためには、[モジュールパラメーター](06-ModulesAndHelpers#Dynamic-Configuration-With-Params)を使用してください。
+</div>
 
-<p><code>Db</code>モジュールはラフなツールです。PDOでサポートされているどのデータベースでも動作します。もし速度が遅くなければ、すべてのテストで使用できます。dumpをロードするのはとても時間がかかりますが、他の手段を使うこともできます。機能テストや単体テストを行う際などにアプリケーションとテストがデータベース接続を共有している時、速度を向上させる最善策はすべてのコードをトランザクションに設置し、テスト終了時にロールバックすることです。</p>
+<p>テストスイートでこのモジュールを有効化したら、自動的にdumpファイルからデータベースにデータが投入され、各テストの実行時に再構築されます。これらの設定は<code>populate</code>と<code>cleanup</code>オプションに<code>false</code>を設定するなどして変更することができます。</p>
 
-<h2>分離された接続</h2>
+<div class="alert alert-notice">
+大きなdumpファイルを使用している場合、データベースをフルにクリーンアップする処理は非常に遅くなります。機能および統合のレベルでより多くのデータテストを行うことをお勧めします。この方法により、ORMを使用してパフォーマンス面でのボーナスを得ることができます。
+</div>
 
-<p>受け入れテストでは、異なるデータベース接続が使用されているため、テスト速度を向上するにはSQLiteファイルのデータベースを使うことができます。また、代替案として、各テストごとにデータベースを作成するのを避け、テスト終了後にすべてのアップデートをクリーンアップすることも考えられます。Dbモジュールはあなたのアプリケーションと同等の機能を提供しており、アサーション（<code>seeInDatabase</code>アクション）のためにデータベースにアクセスしたり、自動クリーンアップしたりします。</p>
+<p>受け入れテストでは、テストはWEBサーバーを介してアプリケーションとやり取りをします。これはつまり、テストとアプリケーションは同じデータベースを使用して動作するということです。アプリケーションが使用しているものと同じ認証情報をDbモジュールに設定することで、アサーション（<code>seeInDatabase</code>アクションなど）のためにデータベースにアクセスすることができ、また自動クリーンアップを行うことができます。</p>
 
-<h2>共有された接続</h2>
+<p>Dbモジュールはデータベース内のデータを作成し、検証するためのアクションを提供します。</p>
 
-<p>あなたのアプリケーションもしくはその一部がCodeceptionプロセス内で実行されている場合、アプリケーション接続をテストで使用することが可能です。接続にアクセスできれば、すべてのデータベース操作はグローバルトランザクションに含むことができ、最後にロールバックされます。それは劇的にパフォーマンスを改善するでしょう。最後にデータベースに何も書かれないため、実際にデータベースの再構築が必要とならないのです。</p>
-
-<h3>ORMモジュール</h3>
-
-<p>アプリケーションがDoctrineやDoctrine2のようなORMを使用しているのでしたら、各モジュールでスイートに接続してください。デフォルトでは、トランザクション内のすべてをカバーします。もしあなたが複数のデータベース接続を使っていない、もしくはORMによって追跡されないトランザクションである場合、このモジュールはあなたの役には立たないでしょう。</p>
-
-<p>ORMモジュールは<code>Db</code>モジュールと接続できますが、デフォルトでは両方ともクリーンアップを行います。従って、あなたが明示的に使用しているモジュールを設定する必要があります。</p>
-
-<p><code>tests/functional.suite.yml</code>は次のようになります。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
-      <span class="s">enabled</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="s">Db</span><span class="pi">:</span>
-          <span class="s">cleanup</span><span class="pi">:</span> <span class="s">false</span>
-        <span class="pi">-</span> <span class="s">Doctrine2</span><span class="pi">:</span>
-            <span class="s">depends</span><span class="pi">:</span> <span class="s">Symfony2</span>
-        <span class="pi">-</span> <span class="s">\Helper\Functional</span>
-</code></pre></div>
-<p>この場合でも、<code>Db</code>モジュールはテスト後にdumpからデータベースの再構築を行います。<code>populate: false</code>を使って、それを無効にしてください。</p>
-
-<h3>Dbhモジュール</h3>
-
-<p>PostgreSQLまたは他のネストされたトランザクションをサポートしているデータベースを使っているのでしたら、<code>Dbh</code>モジュールを使用してください。アプリケーションからPDOインスタンスを取得し、テストの開始でトランザクションを開始して終了後にロールバックします。PDO接続はブートストラップファイルで定義することができます。このモジュールは<code>Db</code>モジュールの<code>seeInDatabase</code>メソッドと<code>dontSeeInDatabase</code>メソッドを上書きします。</p>
-
-<p>再構築に<code>Db</code>モジュールを使用し、クリーンアップに<code>Dhp</code>モジュールを行うには、次のように設定してください。</p>
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
-    <span class="s">enabled</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="s">Db</span><span class="pi">:</span>
-            <span class="s">cleanup</span><span class="pi">:</span> <span class="s">false</span>
-        <span class="pi">-</span> <span class="s">Dbh</span>
-        <span class="pi">-</span> <span class="s">\Helper\Functional</span>
-</code></pre></div>
-<p><code>Dbh</code>モジュールは<code>Db</code>モジュールの後に来なければいけないことに注意してください。これによって<code>Dbh</code>モジュールはアクションを上書きできるようになります。</p>
-
-<h2>フィクスチャ</h2>
-
-<p>フィクスチャはテストで使用できるサンプルデータです。このデータは生成されるか、サンプルデータベースから取得されます。フィクスチャは別のPHPファイルで定義され、テストにロードできます。</p>
-
-<h4>受け入れテストと機能テストのフィクスチャ</h4>
-
-<p><code>tests/functional</code>内に<code>fixtures.php</code>ファイルを作り、テストで使用するデータをデータベースからロードしてみましょう。</p>
+<p>あるテストのために、特別なレコードを作成した場合、<code>Db</code>モジュールの<a href="http://codeception.com/docs/modules/Db#haveInDatabase"><code>haveInDatabase</code></a>を使用することができます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="c1">// サンプルデータベースからユーザーを取得します
-// Dbモジュールを使用します
-</span><span class="nv">$john</span> <span class="o">=</span> <span class="nx">User</span><span class="o">::</span><span class="na">findOneBy</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'john'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
-</code></pre></div>
-<p>受け入れテストと機能テストのサンプルでのフィクスチャの使用方法です:</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="k">require</span> <span class="s1">'fixtures.php'</span><span class="p">;</span>
-
-<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amLoggedAs</span><span class="p">(</span><span class="nv">$john</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Welcome, John'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
-</code></pre></div>
-<p>また、<a href="https://github.com/fzaninotto/Faker">Faker</a>ライブラリーを使ってブートストラップファイル内にテストデータを作成することもできます。</p>
-
-<h3>テストごとのフィクスチャ</h3>
-
-<p>もしあなたが1つのテストに対して特別なデータベースレコードを作りたいのなら、<code>Db</code>モジュールの<a href="http://codeception.com/docs/modules/Db#haveInDatabase"><code>haveInDatabase</code></a>メソッドを使用できます。</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FunctionalTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveInDatabase</span><span class="p">(</span><span class="s1">'posts'</span><span class="p">,</span> <span class="p">[</span>
   <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Top 10 Testing Frameworks'</span><span class="p">,</span>
   <span class="s1">'body'</span> <span class="o">=&gt;</span> <span class="s1">'1. Codeception'</span>
 <span class="p">]);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/posts'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Top 10 Testing Frameworks'</span><span class="p">);</span>
-<span class="cp">?&gt;</span>
+
 </code></pre></div>
-<p><code>haveInDatabase</code>は、与えられた値の行を新しくデータベースに挿入します。追加されたレコードはすべてテスト終了後に削除されます。似たように<code>MongoDB</code>モジュールでは、<a href="http://codeception.com/docs/modules/MongoDb#haveInCollection"><code>haveInCollection</code></a>メソッドが存在します。</p>
+<p><code>haveInDatabase</code>は与えられた値で、データベースに行をインサートします。すべての追加されたレコードはテスト終了時に削除されるでしょう。</p>
+
+<p>作成されたレコードをチェックしたい場合は<a href="http://codeception.com/docs/modules/Db#haveInDatabase"><code>seeInDatabase</code></a>メソッドを使います：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/posts/1'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'comment'</span><span class="p">,</span> <span class="s1">'This is nice!'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Submit'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInDatabase</span><span class="p">(</span><span class="s1">'comments'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'body'</span> <span class="o">=&gt;</span> <span class="s1">'This is nice!'</span><span class="p">]);</span>
+
+</code></pre></div>
+<p>データベーステストに使用できるその他のメソッドについては、<a href="http://codeception.com/docs/modules/Db">モジュールのリファレンス</a>を参照してください。</p>
+
+<p>似たような振る舞いをする、<a href="http://codeception.com/docs/modules/MongoDb">MongoDb</a>、 <a href="http://codeception.com/docs/modules/Redis">Redis</a>、 <a href="http://codeception.com/docs/modules/Memcache">Memcache</a>向けのモジュールもあります。</p>
+
+<h3>Sequence</h3>
+
+<p>データベースのクリーンアップ処理によても長い時間がかかる場合、テスト毎に新しいデータを作成する、という異なる方法を取ることができます。この方法で直面するかもしれない唯一の問題は、データレコードの重複です。<a href="http://codeception.com/docs/modules/Sequence">Sequence</a>はこれを解決するために作成されました。このモジュールは、テストで作成されるデータに対して一意の接尾辞を生成する<code>sq()</code>メソッドを提供します。</p>
+
+<h2>ORMモジュール</h2>
+
+<p>おそらく、あなたのアプリケーションはデータベースとの連携にORMを使用していると思います。このようなケースにおいて、Codeceptionでは、データベースに直接アクセスする代わりにORMのメソッドを使用することができます。これにより、テーブルや行ではなく、ドメインのモデルやエンティティを取り扱うことができます。</p>
+
+<p>機能や統合テストでORMを使用することにより、テストのパフォーマンスを向上することもできます。各テストの終了後にデータベースをクリーンアップする代わりに、ORMモジュールはすべてのデータベースアクションをトランザクション内で行い、終了時にロールバックするでしょう。こうすれば、実際のデータはデータベースへの書き込まれません。このクリーンアップの方法はデフォルトで有効化されており、任意のORMモジュールを<code>cleanup: false</code>と設定することで無効にできます。</p>
+
+<h3>ActiveRecord</h3>
+
+<p>Laravel、YiiそしてPhalconといった有名なフレームワークはデフォルトでActiveRecordを含んでいます。この密結合により、必要なことはフレームワークモジュールを有効にして、データベースアクセス用の設定を使用するだけです。</p>
+
+<p>対応するフレームワークモジュールはORMアクセスのための類似のメソッドを提供します：</p>
+
+<ul>
+<li><code>haveRecord</code></li>
+<li><code>seeRecord</code></li>
+<li><code>dontSeeRecord</code></li>
+<li><code>grabRecord</code></li>
+</ul>
+
+<p>これらはモデル名やモデルのフィールド名により、データの作成およびチェックを行うことができます。次はLaravelでの例です：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="c1">// create record and get its id
+</span><span class="nv">$id</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveRecord</span><span class="p">(</span><span class="s1">'posts'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'body'</span> <span class="o">=&gt;</span> <span class="s1">'My first blogpost'</span><span class="p">,</span> <span class="s1">'user_id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">]);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/posts/'</span><span class="o">.</span><span class="nv">$id</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'My first blogpost'</span><span class="p">,</span> <span class="s1">'article'</span><span class="p">);</span>
+<span class="c1">// check record exists
+</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeRecord</span><span class="p">(</span><span class="s1">'posts'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">]);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Delete'</span><span class="p">);</span>
+<span class="c1">// record was deleted
+</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSeeRecord</span><span class="p">(</span><span class="s1">'posts'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">]);</span>
+
+</code></pre></div>
+<div class="alert alert-notice">
+Laravel5モジュールは、ダミーデータを使用してモデルを生成するためのファクトリを使用する、`haveModel`、`makeModel`メソッドについても提供します。
+</div>
+
+<p>機能テストのためだけにORMを使用したい場合は、フレームワークモジュールを<code>ORM</code>パーツのみ有効化して使用してください。</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">Laravel5</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="s">part</span><span class="pi">:</span> <span class="s">ORM</span>
+</code></pre></div><div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">Yii2</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="s">part</span><span class="pi">:</span> <span class="s">ORM</span>
+</code></pre></div>
+<p>これにより、<code>$I</code>オブジェクトにはWEB用のアクションが追加されなくなります。</p>
+
+<p>受け入れテストの内部で、データの取り扱いにORMを使用したい場合、やはりORMパーツのみをインクルードする必要があります。受け入れテストにおいてWEBアプリケーションはWEBサーバー内で動作するため、トランザクションをロールバックすることでデータをクリーンアップすることはできません。そのため、clearnupオプションを無効にし、テスト間のデータべースのクリーンアップには<code>Db</code>モジュールを使用します。設定のサンプルです：</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">WebDriver</span><span class="pi">:</span>
+            <span class="s">url</span><span class="pi">:</span> <span class="s">http://localhost</span>
+            <span class="s">browser</span><span class="pi">:</span> <span class="s">firefox</span>
+        <span class="pi">-</span> <span class="s">Laravel5</span><span class="pi">:</span>
+            <span class="s">cleanup</span><span class="pi">:</span> <span class="s">false</span>
+        <span class="pi">-</span> <span class="s">Db</span>
+</code></pre></div>
+<h3>DataMapper</h3>
+
+<p>Doctrineもまた有名なORMで、DataMapperパターンを実装し、いずれのフレームワークと結びついていない点が他とは異なります。<a href="http://codeception.com/docs/modules/Doctrine2">Doctrine2</a>モジュールは動作に<code>EntityManager</code>を必要とします。これは、（Doctrineを使用するよう設定された）SymfonyやZend Frameworkから得ることができます。</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">Symfony</span>
+        <span class="pi">-</span> <span class="s">Doctrine2</span><span class="pi">:</span>
+            <span class="s">depends</span><span class="pi">:</span> <span class="s">Symfony</span>
+</code></pre></div><div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">ZF2</span>
+        <span class="pi">-</span> <span class="s">Doctrine2</span><span class="pi">:</span>
+            <span class="s">depends</span><span class="pi">:</span> <span class="s">ZF2</span>
+</code></pre></div>
+<p>Doctrineと共に使用しているフレームワークがない場合、<code>connection_callback</code>オプションに<code>EntityManager</code>のインスタンスを返す有効なコールバックを設定する必要があります。</p>
+
+<p>Doctrine2はデータの作成とチェックのための次のメソッドも提供します：</p>
+
+<ul>
+<li><code>haveInRepository</code></li>
+<li><code>grabFromRepository</code></li>
+<li><code>seeInRepository</code></li>
+<li><code>dontSeeInRepository</code></li>
+</ul>
+
+<h3>DataFactory</h3>
+
+<p>テスト用のデータを準備することは非常に創造的であるにもかかわらず、退屈な作業です。もしレコードを作成する場合、モデルのすべてのフィールドを埋める必要があるでしょう。その作業に<a href="https://github.com/fzaninotto/Faker">Faker</a>を使用することで、より簡単に、そしてモデルに対するデータの生成ルールをより効果的にセットアップできるでしょう。そのようなルールセットは <em>ファクトリ</em> と呼ばれ、<a href="http://codeception.com/docs/modules/DataFactory">DataFactory</a>モジュールによって提供されます。</p>
+
+<p>一度設定すれば簡単にレコードを作成できます：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="c1">// creates a new user
+</span><span class="nv">$user_id</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">have</span><span class="p">(</span><span class="s1">'App\Model\User'</span><span class="p">);</span>
+<span class="c1">// creates 3 posts
+</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveMultiple</span><span class="p">(</span><span class="s1">'App\Model\Post'</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+</code></pre></div>
+<p>作成されたレコードはテストの終了時に削除されます。DataFactoryはORMとしか動作しませんので、ORMモジュールのいずれかを有効化する必要があります：</p>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">Yii2</span><span class="pi">:</span>
+            <span class="s">configFile</span><span class="pi">:</span> <span class="s">path/to/config.php</span>
+        <span class="pi">-</span> <span class="s">DataFactory</span><span class="pi">:</span>
+            <span class="s">depends</span><span class="pi">:</span> <span class="s">Yii2</span>
+</code></pre></div><div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">modules</span><span class="pi">:</span>
+    <span class="s">enabled</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">Symfony</span>
+        <span class="pi">-</span> <span class="s">Doctrine2</span><span class="pi">:</span>
+            <span class="s">depends</span><span class="pi">:</span> <span class="s">Symfony</span>
+        <span class="pi">-</span> <span class="s">DataFactory</span><span class="pi">:</span>
+            <span class="s">depends</span><span class="pi">:</span> <span class="s">Doctrine2</span>            
+</code></pre></div>
+<p>DataFactoryは統合/機能/受け入れの各テストにおけるデータ管理に対して、強力なソリューションを提供します。このモジュールをどうのようにセットアップするかについては<a href="http://codeception.com/docs/modules/DataFactory">リファレンス</a>を読んでください。</p>
 
 <h2>まとめ</h2>
 
-<p>Codeceptionは、データを取り扱う開発者を見捨てたりしません。データベースを構築したりクリーンアップするためのツールは<code>Db</code>モジュール内にバンドルされています。テストでサンプルデータを操作するには、ブートストラップファイル内で定義されるフィクスチャを使用してください。</p>
+<p>Codeceptionはデータを取り扱う際に開発者を見捨てません。データベースへの投入とクリーンアップを行うツールは<code>Db</code>モジュールにバンドルされています。ORMを使用している場合は、データ抽象化レイヤーを介してデータベースと動作するために提供されるフレームワークモジュールのいずれかを使用することができ、そして簡単に新しいレコードを作成するためにDataFactoryモジュールを使用することができます。</p>
 
         </section>
         <nav id="nav" class="col-md-3">
@@ -149,12 +219,15 @@
                     <li><a href="03-AcceptanceTests.html">受け入れテスト</a></li>
                     <li><a href="04-FunctionalTests.html">機能テスト</a></li>
                     <li><a href="05-UnitTests.html">単体テスト</a></li>
+                    <li><a href="06-ModulesAndHelpers.html">モジュールとヘルパー</a></li>
                     <li><a href="06-ReusingTestCode.html">テストコードの再利用</a></li>
                     <li><a href="07-AdvancedUsage.html">高度な使用法</a></li>
+                    <li><a href="07-BDD.html">振舞駆動開発</a></li>
                     <li><a href="08-Customization.html">カスタマイズ</a></li>
                     <li><a href="09-Data.html">データを取り扱う</a></li>
                     <li><a href="10-WebServices.html">Webサービスをテストする</a></li>
                     <li><a href="11-Codecoverage.html">コードカバレッジ</a></li>
+                    <li><a href="12-ContinuousIntegration.html">継続的インテグレーション</a></li>
                     <li><a href="12-ParallelExecution.html">並列実行</a></li>
                 </ol>
             </div>
@@ -169,7 +242,7 @@
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2016-07-08 09:54:50 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.1.11">Codeception 2.1.11</a></p>
+        <p>Last updated: 2016-08-03 09:55:35 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.2.2">Codeception 2.2.2</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

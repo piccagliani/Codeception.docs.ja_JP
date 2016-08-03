@@ -38,13 +38,13 @@
 <p>CodeceptionはWebサイトのテストと同じ方法で、Webサービスをテストすることができます。Webサービスを手動でテストすることはとても大変なので、テストを自動化することはとても良いアイディアです。CodeceptionにはSOAPとRESTに対応したモジュールが標準で備えられています。この章ではそれらのモジュールについて説明します。</p>
 
 <p>新しくテストスイートを作成するところからはじめましょう。これは<code>bootstrap</code>コマンドでは提供されていません。テストスイートの名前は<strong>api</strong>とし、<code>ApiTester</code>クラスを使いましょう。</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept generate:suite api
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:suite api
 </code></pre></div>
 <p>ここにAPIのテストを記述していきます。</p>
 
 <h2>REST</h2>
 
-<p>REST方式のWebサービスは、HTTPの標準的なメソッドである<code>GET</code>、<code>POST</code>、<code>PUT</code>、<code>DELETE</code>を介してアクセスされます。これにより、ユーザーはWebサービスからエンティティを受け取り、操作することができます。WebサービスへのアクセスにはHTTPクライアントが必要であるため、<code>PhpBrowser</code>やいずれかのフレームワーク用モジュールのセットアップを行う必要があります。Webサーバーを無視し、Webサービスを内部的にテストするために、たとえば、Symfony2で実装されたアプリケーションであれば、<code>Symfony</code>モジュールを使用します。</p>
+<p>REST方式のWebサービスは、HTTPの標準的なメソッドである<code>GET</code>、<code>POST</code>、<code>PUT</code>、<code>DELETE</code>を介してアクセスされます。これにより、ユーザーはWebサービスからエンティティを受け取り、操作することができます。WebサービスへのアクセスにはHTTPクライアントが必要であるため、<code>PhpBrowser</code>やいずれかのフレームワーク用モジュールのセットアップを行う必要があります。Webサーバーを無視し、Webサービスを内部的にテストするために、たとえば、Symfony2で実装されたアプリケーションであれば、<code>Symfony2</code>モジュールを使用します。</p>
 
 <p><code>api.suite.yml</code>にモジュールの設定を行います。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">ApiTester</span>
@@ -63,7 +63,7 @@
             <span class="s">depends</span><span class="pi">:</span> <span class="s">PhpBrowser</span>
             <span class="s">part</span><span class="pi">:</span> <span class="s">Json</span>
 </code></pre></div>
-<p>APIテストは機能テストとして、そしてSymfony、Laravel5、Zend、または他のフレームワークモジュールを使って実行することができます。そのためには設定ファイルを少し更新する必要があります：</p>
+<p>APIテストは機能テストとして、そしてSymfony2、Laravel4、Laravel5、Zend、または他のフレームワークモジュールを使って実行することができます。そのためには設定ファイルを少し更新する必要があります：</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">ApiTester</span>
 <span class="s">modules</span><span class="pi">:</span>
     <span class="s">enabled</span><span class="pi">:</span>
@@ -72,7 +72,7 @@
             <span class="s">depends</span><span class="pi">:</span> <span class="s">Laravel5</span>
 </code></pre></div>
 <p>新しいテストスイートを設定できたら、最初のサンプルテストを作りましょう：</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept generate:cept api CreateUser
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:cept api CreateUser
 </code></pre></div>
 <p>これを<code>CreateUserCept.php</code>と呼ぶこととします。REST APIを介したユーザーの作成をテストするために使用します。</p>
 
@@ -83,12 +83,11 @@
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amHttpAuthenticated</span><span class="p">(</span><span class="s1">'service_user'</span><span class="p">,</span> <span class="s1">'123456'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveHttpHeader</span><span class="p">(</span><span class="s1">'Content-Type'</span><span class="p">,</span> <span class="s1">'application/x-www-form-urlencoded'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendPOST</span><span class="p">(</span><span class="s1">'/users'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'davert'</span><span class="p">,</span> <span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s1">'davert@codeception.com'</span><span class="p">]);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseCodeIs</span><span class="p">(</span><span class="nx">\Codeception\Util\HttpCode</span><span class="o">::</span><span class="na">OK</span><span class="p">);</span> <span class="c1">// 200
-</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseIsJson</span><span class="p">();</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseCodeIs</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseIsJson</span><span class="p">();</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseContains</span><span class="p">(</span><span class="s1">'{"result":"ok"}'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
-<p><code>seeResponseCodeIs</code>と<code>dontSeeResponseCodeIs</code>メソッドでレスポンスコードのチェックをする際に、数値の代わりに<code>Codeception\Util\HttpCode</code>に定義されているHTTPコード定数を使うことができます。</p>
-
 <h3>JSONレスポンスのテスト</h3>
 
 <p>前のサンプルコードの最終行では、与えられた文字列がレスポンスに含まれることを検証しています。しかしながら、内容の形式によっては同じデータでも異なる結果を受け取ることができるので、この方法に頼るべきではありません。私たちに実際に必要なことは、レスポンスが解析できることを確認することであり、それには期待する何らかの値が含まれています。JSONの場合には<code>seeResponseContainsJson</code>メソッドを使うことができます。</p>
@@ -97,25 +96,27 @@
 </span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseContainsJson</span><span class="p">([</span><span class="s1">'result'</span> <span class="o">=&gt;</span> <span class="s1">'ok'</span><span class="p">]);</span>
 <span class="c1">// it can match tree-like structures as well
 </span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseContainsJson</span><span class="p">([</span>
-  <span class="s1">'user'</span> <span class="o">=&gt;</span> <span class="p">[</span>
-      <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'davert'</span><span class="p">,</span>
-      <span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s1">'davert@codeception.com'</span><span class="p">,</span>
-      <span class="s1">'status'</span> <span class="o">=&gt;</span> <span class="s1">'inactive'</span>
-  <span class="p">]</span>
+    <span class="s1">'user'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'davert'</span><span class="p">,</span>
+            <span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s1">'davert@codeception.com'</span><span class="p">,</span>
+            <span class="s1">'status'</span> <span class="o">=&gt;</span> <span class="s1">'inactive'</span>
+    <span class="p">]</span>
 <span class="p">]);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>レスポンスに対して、より複雑な検証を行いたい場合があると思います。そのためには <a href="http://codeception.com/docs/06-ReusingTestCode#Helpers">ヘルパー</a>クラスに独自のメソッドを記述します。最後のJSONレスポンスにアクセスするためには、<code>REST</code>モジュールの<code>response</code>プロパティーを使用します。次に示す<code>seeResponseIsHtml</code>メソッドで説明しましょう。
 （訳注：「ヘルパー」のリンク先は正しくは<a href="http://codeception.com/docs/06-ReusingTestCode#Modules-and-Helpers">こちら</a>）</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php">namespace Helper;
-
-class Api extends \Codeception\Module
-{
-  public function seeResponseIsHtml()
-  {
-    $response = $this-&gt;getModule('REST')-&gt;response;
-    $this-&gt;assertRegExp('~^<span class="cp">&lt;!DOCTYPE HTML(.*?)&lt;html&gt;</span>.*?<span class="err">&lt;</span>\/html&gt;~m', $response);
-  }
-}
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">namespace</span> <span class="nx">Helper</span><span class="p">;</span>
+<span class="k">class</span> <span class="nc">Api</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">seeResponseIsHtml</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$response</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'REST'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">response</span><span class="p">;</span>
+        <span class="nx">\PHPUnit_Framework_Assert</span><span class="o">::</span><span class="na">assertRegex</span><span class="p">(</span><span class="s1">'~^&lt;!DOCTYPE HTML(.*?)&lt;html&gt;.*?&lt;\/html&gt;~m'</span><span class="p">,</span> <span class="nv">$response</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>同じ方法で、リクエストパラメーターや、ヘッダー情報を取得することができます。</p>
 
@@ -128,17 +129,16 @@ class Api extends \Codeception\Module
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ApiTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'validate structure of GitHub api responses'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendGET</span><span class="p">(</span><span class="s1">'/users'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseCodeIs</span><span class="p">(</span><span class="nx">HttpCode</span><span class="o">::</span><span class="na">OK</span><span class="p">);</span> <span class="c1">// 200
-</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseIsJson</span><span class="p">();</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseIsJson</span><span class="p">();</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseJsonMatchesJsonPath</span><span class="p">(</span><span class="s1">'$[0].user.login'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseJsonMatchesXpath</span><span class="p">(</span><span class="s1">'//user/login'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>レスポンス内のフィールドの型を検証する必要がある場合、より詳細な確認が可能です。
 JSONレスポンスの構造を定義する<a href="http://codeception.com/docs/modules/REST#seeResponseMatchesJsonType">seeResponseMatchesJsonType</a>アクションを使用して行うことができます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendGET</span><span class="p">(</span><span class="s1">'/users/1'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseCodeIs</span><span class="p">(</span><span class="nx">HttpCode</span><span class="o">::</span><span class="na">OK</span><span class="p">);</span> <span class="c1">// 200
-</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseIsJson</span><span class="p">();</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseIsJson</span><span class="p">();</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseMatchesJsonType</span><span class="p">([</span>
     <span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="s1">'integer'</span><span class="p">,</span>
     <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'string'</span><span class="p">,</span>
@@ -147,6 +147,7 @@ JSONレスポンスの構造を定義する<a href="http://codeception.com/docs/
     <span class="s1">'created_at'</span> <span class="o">=&gt;</span> <span class="s1">'string:date'</span><span class="p">,</span>
     <span class="s1">'is_active'</span> <span class="o">=&gt;</span> <span class="s1">'boolean'</span>
 <span class="p">]);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>Codeceptionは、<a href="http://codeception.com/docs/modules/REST#seeResponseMatchesJsonType">容易に学習・拡張</a>できるよう、このシンプルで軽量な定義フォーマットを使用しています。</p>
 
@@ -160,16 +161,16 @@ JSONレスポンスの構造を定義する<a href="http://codeception.com/docs/
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ApiTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'validate structure of GitHub api responses'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendGET</span><span class="p">(</span><span class="s1">'/users.xml'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseCodeIs</span><span class="p">(</span><span class="nx">\Codeception\Util\HttpCode</span><span class="o">::</span><span class="na">OK</span><span class="p">);</span> <span class="c1">// 200
-</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseIsXml</span><span class="p">();</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeResponseIsXml</span><span class="p">();</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeXmlResponseMatchesXpath</span><span class="p">(</span><span class="s1">'//user/login'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeXmlResponseIncludes</span><span class="p">(</span><span class="nx">XmlUtils</span><span class="o">::</span><span class="na">toXml</span><span class="p">(</span>
-    <span class="s1">'user'</span> <span class="o">=&gt;</span> <span class="p">[</span>
-      <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'davert'</span><span class="p">,</span>
-      <span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s1">'davert@codeception.com'</span><span class="p">,</span>
-      <span class="s1">'status'</span> <span class="o">=&gt;</span> <span class="s1">'inactive'</span>
-  <span class="p">]</span>
+        <span class="s1">'user'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'davert'</span><span class="p">,</span>
+            <span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s1">'davert@codeception.com'</span><span class="p">,</span>
+            <span class="s1">'status'</span> <span class="o">=&gt;</span> <span class="s1">'inactive'</span>
+    <span class="p">]</span>
 <span class="p">));</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>XML構造をきれいな方法で構築することのできるXmlUtilsクラスを使っています。<code>toXml</code>メソッドは文字列もしくは配列をとり、\DOMDocumentインスタンスを返します。もしXMLに属性が含まれていいる関係によりPHPの配列で表現できない場合は、<a href="http://codeception.com/docs/reference/XmlBuilder">XmlBuilder</a>を使ってXMLを作成することができます。次のセクションでもう少し見てみましょう。</p>
 
@@ -185,31 +186,33 @@ XmlBuilderのインスタンスを作成するためには、`\Codeception\Util\
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">class_name</span><span class="pi">:</span> <span class="s">ApiTester</span>
 <span class="s">modules</span><span class="pi">:</span>
     <span class="s">enabled</span><span class="pi">:</span>
-    <span class="pi">-</span> <span class="s">SOAP</span><span class="pi">:</span>
-      <span class="s">depends</span><span class="pi">:</span> <span class="s">PhpBrowser</span>
-      <span class="s">endpoint</span><span class="pi">:</span> <span class="s">http://serviceapp/api/v1/</span>
+        <span class="pi">-</span> <span class="s">SOAP</span><span class="pi">:</span>
+            <span class="s">depends</span><span class="pi">:</span> <span class="s">PhpBrowser</span>
+            <span class="s">endpoint</span><span class="pi">:</span> <span class="s">http://serviceapp/api/v1/</span>
 </code></pre></div>
 <p>SOAPリクエストには認証や支払いのようなアプリケーション固有の情報を含みます。この情報はXMLリクエストの<code>&lt;soap:Header&gt;</code>要素に含まれるSOAPヘッダーによって提供されます。もしこのようなヘッダーを送信したい場合、<code>haveSoapHeader</code>メソッドを使用することができます。たとえば次のようになります。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveSoapHeader</span><span class="p">(</span><span class="s1">'Auth'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'username'</span> <span class="o">=&gt;</span> <span class="s1">'Miles'</span><span class="p">,</span> <span class="s1">'password'</span> <span class="o">=&gt;</span> <span class="s1">'123456'</span><span class="p">));</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>このコードは次のXMLヘッダーを生成します。</p>
 <div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;soap:Header&gt;</span>
 <span class="nt">&lt;Auth&gt;</span>
-  <span class="nt">&lt;username&gt;</span>Miles<span class="nt">&lt;/username&gt;</span>
-  <span class="nt">&lt;password&gt;</span>123456<span class="nt">&lt;/password&gt;</span>
+    <span class="nt">&lt;username&gt;</span>Miles<span class="nt">&lt;/username&gt;</span>
+    <span class="nt">&lt;password&gt;</span>123456<span class="nt">&lt;/password&gt;</span>
 <span class="nt">&lt;/Auth&gt;</span>
 <span class="nt">&lt;/soap:Header&gt;</span>
 </code></pre></div>
 <p>リクエストのボディーを定義するためには<code>sendSoapRequest</code>を使用します。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendSoapRequest</span><span class="p">(</span><span class="s1">'CreateUser'</span><span class="p">,</span> <span class="s1">'&lt;name&gt;Miles Davis&lt;/name&gt;&lt;email&gt;miles@davis.com&lt;/email&gt;'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>この呼び出しは次のXMLに変換されます。</p>
 <div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;soap:Body&gt;</span>
 <span class="nt">&lt;ns:CreateUser&gt;</span>
-  <span class="nt">&lt;name&gt;</span>Miles Davis<span class="nt">&lt;/name&gt;</span>
-  <span class="nt">&lt;email&gt;</span>miles@davis.com<span class="nt">&lt;/email&gt;</span>
+    <span class="nt">&lt;name&gt;</span>Miles Davis<span class="nt">&lt;/name&gt;</span>
+    <span class="nt">&lt;email&gt;</span>miles@davis.com<span class="nt">&lt;/email&gt;</span>
 <span class="nt">&lt;/ns:CreateUser&gt;</span>
 <span class="nt">&lt;/soap:Body&gt;</span>
 </code></pre></div>
@@ -219,6 +222,7 @@ XmlBuilderのインスタンスを作成するためには、`\Codeception\Util\
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseIncludes</span><span class="p">(</span><span class="s1">'&lt;result&gt;1&lt;/result&gt;'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseContainsStructure</span><span class="p">(</span><span class="s1">'&lt;user&gt;&lt;name&gt;&lt;/name&gt;&lt;email&gt;&lt;/email&gt;'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseContainsXPath</span><span class="p">(</span><span class="s1">'//result/user/name[@id=1]'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>もし長いXMLを記述したくない場合、<a href="http://codeception.com/docs/reference/XmlBuilder">XmlBuilder</a>クラスの利用を考えてみてください。これはjQueryのようなスタイルで複雑なXMLを構築するのに役に立ちます。
 次の例では通常のXMLに替えて、<code>XmlBuilder</code>を使用しています。</p>
@@ -229,11 +233,12 @@ XmlBuilderのインスタンスを作成するためには、`\Codeception\Util\
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'create user'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveSoapHeader</span><span class="p">(</span><span class="s1">'Session'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'token'</span> <span class="o">=&gt;</span> <span class="s1">'123456'</span><span class="p">));</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">sendSoapRequest</span><span class="p">(</span><span class="s1">'CreateUser'</span><span class="p">,</span> <span class="nx">Xml</span><span class="o">::</span><span class="na">build</span><span class="p">()</span>
-  <span class="o">-&gt;</span><span class="na">user</span><span class="o">-&gt;</span><span class="na">email</span><span class="o">-&gt;</span><span class="na">val</span><span class="p">(</span><span class="s1">'miles@davis.com'</span><span class="p">));</span>
+    <span class="o">-&gt;</span><span class="na">user</span><span class="o">-&gt;</span><span class="na">email</span><span class="o">-&gt;</span><span class="na">val</span><span class="p">(</span><span class="s1">'miles@davis.com'</span><span class="p">));</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeSoapResponseIncludes</span><span class="p">(</span><span class="nx">Xml</span><span class="o">::</span><span class="na">build</span><span class="p">()</span>
-  <span class="o">-&gt;</span><span class="na">result</span><span class="o">-&gt;</span><span class="na">val</span><span class="p">(</span><span class="s1">'Ok'</span><span class="p">)</span>
-    <span class="o">-&gt;</span><span class="na">user</span><span class="o">-&gt;</span><span class="na">attr</span><span class="p">(</span><span class="s1">'id'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">result</span><span class="o">-&gt;</span><span class="na">val</span><span class="p">(</span><span class="s1">'Ok'</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">user</span><span class="o">-&gt;</span><span class="na">attr</span><span class="p">(</span><span class="s1">'id'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p><code>XmlBuilder</code>を使うか、プレーンなXMLを利用するかは、どちらでも構いません。<code>XmlBuilder</code>も同様にXML文字列を返します。</p>
 
@@ -242,12 +247,13 @@ XmlBuilderのインスタンスを作成するためには、`\Codeception\Util\
 <span class="k">namespace</span> <span class="nx">Helper</span><span class="p">;</span>
 <span class="k">class</span> <span class="nc">Api</span> <span class="k">extends</span> <span class="nx">\Codeception\Module</span> <span class="p">{</span>
 
-  <span class="k">public</span> <span class="k">function</span> <span class="nf">seeResponseIsValidOnSchema</span><span class="p">(</span><span class="nv">$schema</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="nv">$response</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'SOAP'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">response</span><span class="p">;</span>
-    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nv">$response</span><span class="o">-&gt;</span><span class="na">schemaValidate</span><span class="p">(</span><span class="nv">$schema</span><span class="p">));</span>
-  <span class="p">}</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">seeResponseIsValidOnSchema</span><span class="p">(</span><span class="nv">$schema</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$response</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getModule</span><span class="p">(</span><span class="s1">'SOAP'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">response</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nv">$response</span><span class="o">-&gt;</span><span class="na">schemaValidate</span><span class="p">(</span><span class="nv">$schema</span><span class="p">));</span>
+    <span class="p">}</span>
 <span class="p">}</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <h2>まとめ</h2>
 
@@ -263,15 +269,12 @@ XmlBuilderのインスタンスを作成するためには、`\Codeception\Util\
                     <li><a href="03-AcceptanceTests.html">受け入れテスト</a></li>
                     <li><a href="04-FunctionalTests.html">機能テスト</a></li>
                     <li><a href="05-UnitTests.html">単体テスト</a></li>
-                    <li><a href="06-ModulesAndHelpers.html">モジュールとヘルパー</a></li>
                     <li><a href="06-ReusingTestCode.html">テストコードの再利用</a></li>
                     <li><a href="07-AdvancedUsage.html">高度な使用法</a></li>
-                    <li><a href="07-BDD.html">振舞駆動開発</a></li>
                     <li><a href="08-Customization.html">カスタマイズ</a></li>
                     <li><a href="09-Data.html">データを取り扱う</a></li>
                     <li><a href="10-WebServices.html">Webサービスをテストする</a></li>
                     <li><a href="11-Codecoverage.html">コードカバレッジ</a></li>
-                    <li><a href="12-ContinuousIntegration.html">継続的インテグレーション</a></li>
                     <li><a href="12-ParallelExecution.html">並列実行</a></li>
                 </ol>
             </div>
@@ -286,7 +289,7 @@ XmlBuilderのインスタンスを作成するためには、`\Codeception\Util\
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2016-08-03 09:55:35 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.2.2">Codeception 2.2.2</a></p>
+        <p>Last updated: 2016-07-08 09:54:50 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.1.11">Codeception 2.1.11</a></p>
         <div id="contributors"></div>
     </footer>
 </div>

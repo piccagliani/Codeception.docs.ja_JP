@@ -44,16 +44,32 @@ AcceptanceTesterの言葉から記録されたかのようCodeceptionは、テ�
 どんな時でも、あなたのウェブサイトにテストを加えるということは良い考えだと言えるでしょう。
 少なくとも、最後の変更からアプリケーションがしっかりと機能していることに確信が持てるでしょう。</p>
 
-<h2>サンプルシナリオ</h2>
+<h2>シナリオサンプル</h2>
 
 <p>おそらく、最初に実行したいテストはサインインする機能でしょう。そのようなテストを書くためには、基本的なPHPとHTMLの知識が必要です。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'sign in'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/login'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'username'</span><span class="p">,</span> <span class="s1">'davert'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'password'</span><span class="p">,</span> <span class="s1">'qwerty'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'LOGIN'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Welcome, Davert!'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
+<p>このシナリオは、おそらく非技術者の人でも読めます。Codeceptionはシナリオを平易な英語に変換し、&#39;自然言語化&#39;することさえできます:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">I WANT TO SIGN IN
+I am on page <span class="s1">'/login'</span>
+I fill field <span class="s1">'username'</span>, <span class="s1">'davert'</span>
+I fill field <span class="s1">'password'</span>, <span class="s1">'qwerty'</span>
+I click <span class="s1">'LOGIN'</span>
+I see <span class="s1">'Welcome, Davert!'</span>
+</code></pre></div>
+<p>そのような自然言語への翻訳は、コマンドによって行われます:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>php codecept.phar generate:scenarios
+</code></pre></div>
+<p>作成されたシナリオは<strong>output</strong>ディレクトリーにテキストファイルとして格納されます。</p>
+
 <p><strong>このシナリオテストはシンプルなPHP BrowserでもSelenium WebDriverを使ったブラウザーでも実行することができます。</strong> まずはPHP Browserで受け入れテストを書いて行きましょう。</p>
 
 <h2>PHP Browser</h2>
@@ -81,20 +97,38 @@ PHP Browserの利点は、PHPとcURLだけでどんな環境でも実行でき�
             <span class="s">url</span><span class="pi">:</span> 
         <span class="pi">-</span> <span class="s">\Helper\Acceptance</span>
 </code></pre></div>
-<p>それでは、<code>tests/acceptance</code>ディレクトリーに&#39;Cept&#39;ファイルを作成してください。ファイル名は<code>SigninCept.php</code>とします。
+<p>それでは、 <strong>tests/acceptance</strong> ディレクトリーに&#39;Cept&#39;ファイルを作成してください。ファイル名は <strong>SigninCept.php</strong> とします。
 最初の行に以下のように書きます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'sign in'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'sign in with valid account'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
+<p><code>wantTo</code>という部分はシナリオを簡潔に説明しています。
+他にもBDDのようなCodeceptionのシナリオを書くための有用なコメント追加メソッドがあります。GherkinでBDDのシナリオを書いたことがある人なら、以下のようにフィーチャーを書くことができます。</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">As an Account Holder
+I want to withdraw cash from an ATM
+So that I can get money when the bank is closed
+</code></pre></div>
+<p>Codeceptionでは以下のように書きます:</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">am</span><span class="p">(</span><span class="s1">'Account Holder'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'withdraw cash from an ATM'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">lookForwardTo</span><span class="p">(</span><span class="s1">'get money when the bank is closed'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>ストーリーの前提を説明した上で、シナリオを書き始めましょう。</p>
+
 <p>この <code>$I</code>オブジェクトは、すべての動作を記述するために使われます。<code>$I</code>オブジェクトのメソッドは<code>PhpBrowser</code>モジュールから取得されています。
 簡単にそれを説明します：</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/login'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
-<p><code>am</code>と<code>have</code>からはじまるすべてのアクションは、初期状態を記述することを想定しています。<code>amOnPage</code>アクションはテストが<code>/login</code>ページから始まることを設定しています。</p>
+<p>常に<code>am</code>アクションは、最初の状態を記述するように想定しています。<code>amOnPage</code>アクションは<strong>/login</strong>ページが最初の状態だと設定しています。</p>
 
-<p><code>PhpBrowser</code>を使って、リンクをクリックしたり、フォームに入力することができます。これらは、最も良く使われるアクションだと思います。</p>
+<p><code>PhpBrowser</code>では、リンクのクリックとフォームを埋めることができます。これらは、おそらく最も多い動作だと思います。</p>
 
 <h4>クリック</h4>
 
@@ -108,6 +142,7 @@ PHP Browserの利点は、PHPとcURLだけでどんな環境でも実行でき�
 </span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'//a[@id=login]'</span><span class="p">);</span>
 <span class="c1">// 第二引数としてコンテキストを使用する場合
 </span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Login'</span><span class="p">,</span> <span class="s1">'.nav'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>Codeceptionは、テキストやname属性、CSSセレクター、XPathのどれかで要素を検索しようとします。
 locatorの種類を配列として渡すことで、指定することもできます。私たちは<strong>strict locator</strong>と呼んでいます。
@@ -125,9 +160,16 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <span class="c1">// locatorの種類で指定する場合
 </span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">([</span><span class="s1">'link'</span> <span class="o">=&gt;</span> <span class="s1">'Login'</span><span class="p">]);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">([</span><span class="s1">'class'</span> <span class="o">=&gt;</span> <span class="s1">'btn'</span><span class="p">]);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
-<p>複雑はXPathロケーターを生成する際に便利な<a href="http://codeception.com/docs/reference/Locator"><code>Codeception\Util\Locator</code></a>という特別なクラスがあります。たとえば次のように、テーブルの最終行にある要素のクリックを簡単に行えます：</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php">$I-&gt;click('Edit' , \Codeception\Util\Locator::elementAt('//table/tr', -1));
+<p>リンクをクリックする前に、本当にリンクが存在するかどうかチェックすることもできます。
+その場合<code>seeLink</code>メソッドを使用します。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="c1">// 実際にリンクが存在するかチェックする
+</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeLink</span><span class="p">(</span><span class="s1">'Login'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeLink</span><span class="p">(</span><span class="s1">'Login'</span><span class="p">,</span><span class="s1">'/login'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeLink</span><span class="p">(</span><span class="s1">'#login a'</span><span class="p">,</span><span class="s1">'/login'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <h4>フォーム</h4>
 
@@ -156,6 +198,7 @@ locatorの種類を配列として渡すことで、指定することもでき�
 </span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'user[email]'</span><span class="p">,</span><span class="s1">'miles@davis.com'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">selectOption</span><span class="p">(</span><span class="s1">'Gender'</span><span class="p">,</span><span class="s1">'Male'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Update'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>それぞれのフィールドをラベルで検索するためには、labelタグに<code>for</code>属性を書く必要があります。</p>
 
@@ -167,6 +210,7 @@ locatorの種類を配列として渡すことで、指定することもでき�
      <span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s1">'Davis'</span><span class="p">,</span>
      <span class="s1">'gender'</span> <span class="o">=&gt;</span> <span class="s1">'m'</span>
 <span class="p">)));</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p><code>submitForm</code>メソッドはユーザーの行動をエミュレートしてはいませんが、フォームが適切にフォーマットされていない時に、非常に有効です。
 たとえば、ラベルがついていなかったり、不適切なname属性やid属性がつけられているフォームやjavascriptによって送信されているフォームです。</p>
@@ -185,6 +229,7 @@ locatorの種類を配列として渡すことで、指定することもでき�
      <span class="s1">'gender'</span> <span class="o">=&gt;</span> <span class="s1">'m'</span><span class="p">,</span>
      <span class="s1">'submitButton'</span> <span class="o">=&gt;</span> <span class="s1">'Update'</span>
 <span class="p">)));</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <h4>アサーション</h4>
 
@@ -198,14 +243,16 @@ locatorの種類を配列として渡すことで、指定することもでき�
 // この要素は'notice'というクラス属性を持っています
 </span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Thank you, Miles'</span><span class="p">,</span> <span class="s1">'.notice'</span><span class="p">);</span>
 <span class="c1">// XPathを使用することもできます
-</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Thank you, Miles'</span><span class="p">,</span> <span class="s2">"//table/tr[2]"</span><span class="p">);</span>
+</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Thank you, Miles'</span><span class="p">,</span> <span class="s2">"descendant-or-self::*[contains(concat(' ', normalize-space(@class), ' '), ' notice ')]"</span><span class="p">);</span>
 <span class="c1">// このメッセージがページに無いことをチェックしています
 </span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSee</span><span class="p">(</span><span class="s1">'Form is filled incorrectly'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>特定の要素がページに存在する（あるいは存在しない）ことをチェックできます。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeElement</span><span class="p">(</span><span class="s1">'.notice'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSeeElement</span><span class="p">(</span><span class="s1">'.error'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>私達は、他にもチェックを実行するために役立つメソッドを用意しています。それらがすべて<code>see</code>というプレフィックスから始まっていることに注目してください。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
@@ -213,6 +260,7 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeCheckboxIsChecked</span><span class="p">(</span><span class="s1">'#agree'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInField</span><span class="p">(</span><span class="s1">'user[name]'</span><span class="p">,</span> <span class="s1">'Miles'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeLink</span><span class="p">(</span><span class="s1">'Login'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <h4>条件付きアサーション</h4>
 
@@ -222,20 +270,10 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">canSeeInCurrentUrl</span><span class="p">(</span><span class="s1">'/user/miles'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">canSeeCheckboxIsChecked</span><span class="p">(</span><span class="s1">'#agree'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">cantSeeInField</span><span class="p">(</span><span class="s1">'user[name]'</span><span class="p">,</span> <span class="s1">'Miles'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>それぞれの失敗したアサーションはテスト結果に示されますが、アサーションが失敗することでテストが止まることは無いでしょう。</p>
 
-<h4>コメント</h4>
-
-<p>長いシナリオにおいては、どのアクションを実行しようとしていて、その結果何を期待しているのか、説明するべきです。
-<code>amGoingTo</code>、<code>expect</code>、<code>expectTo</code>といったコマンドはテストをよりわかりやすくするために役立ちます。</p>
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amGoingTo</span><span class="p">(</span><span class="s1">'submit user form with invalid values'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'user[email]'</span><span class="p">,</span> <span class="s1">'miles'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Update'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">expect</span><span class="p">(</span><span class="s1">'the form is not submitted'</span><span class="p">);</span>
-<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Form is filled incorrectly'</span><span class="p">);</span>
-</code></pre></div>
 <h4>グラバー</h4>
 
 <p>これらのメソッドはテストで使われるデータを取得します。あなたのサイトがすべてのユーザーごとにパスワードを発行指定、そのパスワードでユーザーがサイトにログインできることをチェックしたいという場面を想像してください。</p>
@@ -247,12 +285,26 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'email'</span><span class="p">,</span> <span class="s1">'miles@davis.com'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'password'</span><span class="p">,</span> <span class="nv">$password</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Log in!'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>グラバーは現在のページから1つの値を取得できるメソッドです。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$token</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabTextFrom</span><span class="p">(</span><span class="s1">'.token'</span><span class="p">);</span>
 <span class="nv">$password</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabTextFrom</span><span class="p">(</span><span class="s2">"descendant::input/descendant::*[@id = 'password']"</span><span class="p">);</span>
 <span class="nv">$api_key</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabValueFrom</span><span class="p">(</span><span class="s1">'input[name=api]'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<h4>コメント</h4>
+
+<p>長いシナリオ内では、これから実行しようとしている行動とそれによって得られる結果を説明するべきです。
+<code>amGoingTo</code>, <code>expect</code>, <code>expectTo</code>というメソッドは、よりわかりやすいテストを作成する助けとなります。</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amGoingTo</span><span class="p">(</span><span class="s1">'submit user form with invalid values'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'user[email]'</span><span class="p">,</span> <span class="s1">'miles'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Update'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">expect</span><span class="p">(</span><span class="s1">'the form is not submitted'</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Form is filled incorrectly'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <h4>クッキー、URL、タイトル、その他</h4>
 
@@ -261,11 +313,13 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">setCookie</span><span class="p">(</span><span class="s1">'auth'</span><span class="p">,</span> <span class="s1">'123345'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabCookie</span><span class="p">(</span><span class="s1">'auth'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeCookie</span><span class="p">(</span><span class="s1">'auth'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>ページのタイトルを扱うためのメソッド:</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInTitle</span><span class="p">(</span><span class="s1">'Login'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">dontSeeInTitle</span><span class="p">(</span><span class="s1">'Register'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>URLを扱うためのメソッド:</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
@@ -273,6 +327,7 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeCurrentUrlMatches</span><span class="p">(</span><span class="s1">'~$/users/(\d+)~'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeInCurrentUrl</span><span class="p">(</span><span class="s1">'user/1'</span><span class="p">);</span>
 <span class="nv">$user_id</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabFromCurrentUrl</span><span class="p">(</span><span class="s1">'~$/user/(\d+)/~'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <h2>Selenium WebDriver</h2>
 
@@ -297,6 +352,7 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <p>この場合、<code>seeElement</code>メソッドはページにその要素が存在する事だけをチェックするのではなく、実際のユーザーからの可視性もチェックします。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">seeElement</span><span class="p">(</span><span class="s1">'#modal'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <h4>Wait</h4>
 
@@ -307,15 +363,46 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">waitForElement</span><span class="p">(</span><span class="s1">'#agree_button'</span><span class="p">,</span> <span class="mi">30</span><span class="p">);</span> <span class="c1">// secs
 </span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'#agree_button'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>この場合には、agree buttonが表示されるまで待機し、表示されたらクリックします。30秒経過しても表示されなかったときは、テストは失敗します。他にも使える<code>wait</code>メソッドがあります。</p>
 
-<p>詳細なリファレンスはCodeceptionの <a href="http://codeception.com/docs/modules/WebDriver">WebDriverモジュールのドキュメント</a>を参照してください。</p>
+<p>詳細なリファレンスはCodeception&#39;s <a href="http://codeception.com/docs/modules/WebDriver">WebDriver module documentation</a>を参照してください。</p>
+
+<h3>セッションのスナップショット</h3>
+
+<p>ユーザーセッションを複数のテストに渡って保持したい、ということはよくあることです。
+もしテスト用ユーザーを認証する必要がある場合、それぞれのテストの開始時にログインフォームを埋めることでそれを行うことができます。
+これらのステップにかかる時間、特に（それ自体が遅い）Seleniumを使ったテストにおいては、この時間は問題になるかもしれません。
+Codeceptionは複数のテスト間でCookieを共有することができるため、一度ログインしたユーザーは他のテストでも認証状態を保つことができます。</p>
+
+<p>デモのため、<code>test_login</code>関数を記述してテストの中で使ってみましょう：</p>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="k">function</span> <span class="nf">test_login</span><span class="p">(</span><span class="nv">$I</span><span class="p">)</span>
+<span class="p">{</span>
+     <span class="c1">// もしスナップショットが存在した場合、ログインをスキップする
+</span>     <span class="k">if</span> <span class="p">(</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">loadSessionSnapshot</span><span class="p">(</span><span class="s1">'login'</span><span class="p">))</span> <span class="k">return</span><span class="p">;</span>
+     <span class="c1">// ログインする
+</span>     <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/login'</span><span class="p">);</span>
+     <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'jon'</span><span class="p">);</span>
+     <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">fillField</span><span class="p">(</span><span class="s1">'password'</span><span class="p">,</span> <span class="s1">'123345'</span><span class="p">);</span>
+     <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">click</span><span class="p">(</span><span class="s1">'Login'</span><span class="p">);</span>
+     <span class="c1">// スナップショットを保存する
+</span>     <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">saveSessionSnapshot</span><span class="p">(</span><span class="s1">'login'</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">// テストで使う:
+</span><span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nx">test_login</span><span class="p">(</span><span class="nv">$I</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div>
+<p>上で示した<code>test_login</code>関数は、<code>AcceptanceTester</code>クラス内に実装することを推奨します。</p>
 
 <h3>複数セッションのテスト</h3>
 
 <p>Codeceptionは同時に複数のセッションを実行できます。サイト上でユーザー同士がリアルタイムにメッセージをやり取りする場合が最もわかりやすいです。そのためには2つのブラウザーウィンドウを同じテスト中に同時に立ち上げる必要があるでしょう。Codeceptionはこのための<strong>Friends</strong>と呼ばれるとってもスマートな方法が用意されています。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="nv">$I</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AcceptanceTester</span><span class="p">(</span><span class="nv">$scenario</span><span class="p">);</span>
+<span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wantTo</span><span class="p">(</span><span class="s1">'try multi session'</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">amOnPage</span><span class="p">(</span><span class="s1">'/messages'</span><span class="p">);</span>
 <span class="nv">$nick</span> <span class="o">=</span> <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">haveFriend</span><span class="p">(</span><span class="s1">'nick'</span><span class="p">);</span>
 <span class="nv">$nick</span><span class="o">-&gt;</span><span class="na">does</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="nx">AcceptanceTester</span> <span class="nv">$I</span><span class="p">)</span> <span class="p">{</span>
@@ -326,6 +413,7 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <span class="p">});</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">wait</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
 <span class="nv">$I</span><span class="o">-&gt;</span><span class="na">see</span><span class="p">(</span><span class="s1">'Hello all!'</span><span class="p">,</span> <span class="s1">'.message'</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
 <p>この場合には、2つ目のウィンドウでfriendオブジェクトが<code>does</code>メソッドを使用していくつかの行動をしました。</p>
 
@@ -337,35 +425,11 @@ locatorの種類を配列として渡すことで、指定することもでき�
     <span class="c1">// Admin does ...
 </span><span class="p">});</span>
 <span class="nv">$nickAdmin</span><span class="o">-&gt;</span><span class="na">leave</span><span class="p">();</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
-<h3>クラウドテスティング</h3>
-
-<p>Selenium WebDriverは、テストを異なるプラットフォーム上の実際のブラウザー内で実行することができます。ただ、環境によっては再現が難しいものもあり、特にWindows XPがインストールされた環境が手元にない場合、Windows XP上のインターネットエクスプローラー6～8を使ったテストは困難です。クラウドテスティングサービスが便利なのはこのような点においてです。<a href="https://saucelabs.com">SauceLabs</a>や<a href="https://www.browserstack.com/">BrowserStack</a>、<a href="http://codeception.com/docs/modules/WebDriver#Cloud-Testing">その他</a>のサービスは、オンデマンドでSelenium Serverや必要となるブラウザーがセットアップされた仮想マシンを作成することができます。テストはクラウドのリモートマシン上で実行され、ローカルファイルへのアクセスはクラウドテスティングサービスが提供する <strong>Tunnel</strong> と呼ばれる特別なアプリケーションによって行われます。Tunnelはセキュリティーで保護されたプロトコル上で動作し、クラウドで実行されるブラウザーは、ローカルウェブサーバーに接続することができます。</p>
-
-<p>クラウドテスティングサービスは標準的なWebDriverプロトコルで動作するため、その設定は非常に簡単です。<a href="http://codeception.com/docs/modules/WebDriver#Cloud-Testing">WebDriverモジュールの設定</a>を行うだけです：</p>
-
-<ul>
-<li>接続先ホストの指定（クラウドサービスに依存）</li>
-<li>認証情報（あなたのアカウントを使ってください）</li>
-<li>ブラウザー</li>
-<li>OS</li>
-</ul>
-
-<p>認証情報は<a href="http://codeception.com/docs/06-ModulesAndHelpers#Dynamic-Configuration-With-Params">params</a> を使って設定することを推奨しています。</p>
-
-<p>注意点として、クラウドテスティングサービスは無料ではありません。料金体系を調査して、あなたのニーズにあったものを選定してください。また、ローカルサーバーとクラウド間のping値が高すぎる場合には動作が非常に遅くなるため、受け入れテストのランダムな失敗を引き起こします。</p>
-
-<h3>AngularJSのテスト</h3>
-
-<p>モダンなSPAでは、サーバーに代わりブラウザーがユーザーインターフェースを作成します。伝統的なウェブアプリケーションとは異なり、ユーザーの操作によってウェブページは再読み込みされません。すべてのサーバーとのやり取りは非同期通信を用いたjavascript内で完結します。しかしながら、SPAのテストは困難な作業になる可能性があります。「描画が完了したかどうか」のような、アプリケーションの状態に関する情報が何もない可能性があります。このようなケースでできることとしては、<code>wait*</code> メソッドを多用することや、javascriptを実行してアプリケーションの状態をチェックすることです。</p>
-
-<p>AngularJSのバージョン1.xで構築されたアプリケーション向けに、（Angularアプリの公式テスティングツールである）Protactorをベースとした<a href="http://codeception.com/docs/modules/AngularJS">AngularJSモジュール</a>を実装しました。内部的には、前のアクションが完了する前にステップの実行を一時停止し、AngularJS APIを利用してアプリケーションの状態をチェックする、ということを行っています。</p>
-
-<p>AngularJSモジュールはWebDriverを継承していますので、WebDriverのすべての設定オプションを利用可能です。</p>
-
 <h3>クリーンアップ</h3>
 
-<p>テストをしている中で、あなたの行動はサイト上のデータを変えてしまうかもしれません。2度同じデータを生成したり、アップデートしようとしてテストは失敗する事になるでしょう。この問題を避けるために、データベースはそれぞれのテストごとに再構築する必要があります。Codeceptionはそのために<code>Db</code>モジュールを提供しています。テストを通過した後にデータベースのdumpをロードします。データベースの再構築を機能させるためには、データベースをdumpしてsqlファイルを作成し、<code>/tests/_data</code>ディレクトリーに配置してください。Codeceptionのglobalの設定にデータベースへの接続情報とパスをセットしてください。</p>
+<p>テストをしている中で、あなたの行動はサイト上のデータを変えてしまうかもしれません。2度同じデータを生成したり、アップデートしようとしてテストは失敗する事になるでしょう。この問題を避けるために、データベースはそれぞれのテストごとに再構築する必要があります。Codeceptionはそのために<code>Db</code>モジュールを提供しています。テストを通過した後にデータベースのdumpをロードします。データベースの再構築を機能させるためには、データベースをdumpしてsqlファイルを作成し、 <strong>/tests/_data</strong> ディレクトリーに配置してください。Codeceptionのglobalの設定にデータベースへの接続情報とパスをセットしてください。</p>
 <div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># in codeception.yml:</span>
 <span class="s">modules</span><span class="pi">:</span>
     <span class="s">config</span><span class="pi">:</span>
@@ -382,8 +446,9 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <p>Codeceptionモジュールは実行中に価値のある情報を出力できます。実行中の詳細を見るために<code>--debug</code>オプションをテスト起動時に付けるだけです。出力をカスタマイズするには<code>codecept_debug</code>ファンクションを使います。</p>
 <div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nx">codecept_debug</span><span class="p">(</span><span class="nv">$I</span><span class="o">-&gt;</span><span class="na">grabTextFrom</span><span class="p">(</span><span class="s1">'#name'</span><span class="p">));</span>
+<span class="cp">?&gt;</span>
 </code></pre></div>
-<p>テストの失敗ごとに、最後に表示されていたページのスナップショットを<code>tests/_output</code>ディレクトリーに保存します。PhpBrowserはHTMLのコードを保存し、WebDriverはページのスクリーンショットを保存します。</p>
+<p>テストの失敗ごとに、最後に表示されていたページのスナップショットを <strong>tests/_output</strong> ディレクトリーに保存します。PhpBrowserはHTMLのコードを保存し、WebDriverはページのスクリーンショットを保存します。</p>
 
 <p>テストによって開かれたウェブページを調査したくなるときがあると思います。そのような場合にはWebDriverモジュールの<a href="http://codeception.com/docs/modules/WebDriver#pauseExecution">pauseExecution</a>メソッドを利用することができます。</p>
 
@@ -403,15 +468,12 @@ locatorの種類を配列として渡すことで、指定することもでき�
                     <li><a href="03-AcceptanceTests.html">受け入れテスト</a></li>
                     <li><a href="04-FunctionalTests.html">機能テスト</a></li>
                     <li><a href="05-UnitTests.html">単体テスト</a></li>
-                    <li><a href="06-ModulesAndHelpers.html">モジュールとヘルパー</a></li>
                     <li><a href="06-ReusingTestCode.html">テストコードの再利用</a></li>
                     <li><a href="07-AdvancedUsage.html">高度な使用法</a></li>
-                    <li><a href="07-BDD.html">振舞駆動開発</a></li>
                     <li><a href="08-Customization.html">カスタマイズ</a></li>
                     <li><a href="09-Data.html">データを取り扱う</a></li>
                     <li><a href="10-WebServices.html">Webサービスをテストする</a></li>
                     <li><a href="11-Codecoverage.html">コードカバレッジ</a></li>
-                    <li><a href="12-ContinuousIntegration.html">継続的インテグレーション</a></li>
                     <li><a href="12-ParallelExecution.html">並列実行</a></li>
                 </ol>
             </div>
@@ -426,7 +488,7 @@ locatorの種類を配列として渡すことで、指定することもでき�
 <div id="footer_wrap" class="outer">
     <footer class="container inner">
         <p class="copyright">Codeception.docs.ja maintained by <a target="_blank" href="https://github.com/piccagliani">piccagliani</a></p>
-        <p>Last updated: 2016-08-03 09:55:35 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.2.2">Codeception 2.2.2</a></p>
+        <p>Last updated: 2016-07-08 09:54:50 +0900, Based on <a target="_blank" href="https://github.com/Codeception/Codeception/tree/2.1.11">Codeception 2.1.11</a></p>
         <div id="contributors"></div>
     </footer>
 </div>
