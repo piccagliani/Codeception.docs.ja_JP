@@ -15,91 +15,91 @@ Codeceptionの[公式ドキュメント](https://github.com/Codeception/Codecept
 
 ## ChangeLog
 - [2.2.2](http://piccagliani.github.io/Codeception.docs.ja_JP/)
-  - 2016-08-02公開
-  - 変更ファイル
-    - [全体的に](https://github.com/piccagliani/Codeception.docs.ja_JP/pull/37/files)
-    - 07-BDDの和訳は2.2.3に持ち越し
+    - 2016-08-02公開
+    - 変更ファイル
+        - [全体的に](https://github.com/piccagliani/Codeception.docs.ja_JP/pull/37/files)
+        - 07-BDDの和訳は2.2.3に持ち越し
 - [2.1.11](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.11)
-  - 2016-07-08公開
-  - 変更ファイルなし
+    - 2016-07-08公開
+    - 変更ファイルなし
 - [2.1.10](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.10/)
-  - 2016-06-07公開
-  - 変更ファイルなし
+    - 2016-06-07公開
+    - 変更ファイルなし
 - [2.1.9](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.9/)
-  - 2016-06-07公開
-  - 変更ファイル
-    - 03-AcceptanceTests.md
+    - 2016-06-07公開
+    - 変更ファイル
+        - 03-AcceptanceTests.md
 - [2.1.8](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.8/)
-  - 2016-04-19公開
-  - 変更ファイル
-    - 05-UnitTests.md
-    - 06-ReusingTestCode.md（修正点は文法・リンク修正のみ、日本語訳変更なし）
+    - 2016-04-19公開
+    - 変更ファイル
+        - 05-UnitTests.md
+        - 06-ReusingTestCode.md（修正点は文法・リンク修正のみ、日本語訳変更なし）
 - [2.1.7](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.7/)
-  - 2016-04-05公開
-  - 変更ファイル
-    - 11-Codecoverage.md
+    - 2016-04-05公開
+    - 変更ファイル
+        - 11-Codecoverage.md
 - [2.1.6](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.6/)
-  - 2016-03-03公開
-  - 変更ファイルなし
+    - 2016-03-03公開
+    - 変更ファイルなし
 - [2.1.5](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.5/)
-  - 2015-12-28公開
-  - 変更ファイル
-    - 04-FunctionalTests.md（リンク修正のみ、日本語訳変更なし）
-    - 05-UnitTests.md（修正点はtypoのみ、日本語訳変更なし）
-    - 06-ReusingTestCode.md（修正点はtypo・サンプルコードのみ、日本語訳変更なし）
-    - 07-AdvancedUsage.md（修正点はtypoのみ、日本語訳変更なし）
-    - 08-Customization.md（修正点はtypoのみ、日本語訳変更なし）
-    - 10-WebServices.md（修正点はtypoのみ、日本語訳変更なし）
-    - 11-Codecoverage.md（修正点はサンプルコードのみ、日本語訳変更なし）
-    - 12-ParallelExecution.md（修正点はtypoのみ、日本語訳変更なし）
+    - 2015-12-28公開
+    - 変更ファイル
+        - 04-FunctionalTests.md（リンク修正のみ、日本語訳変更なし）
+        - 05-UnitTests.md（修正点はtypoのみ、日本語訳変更なし）
+        - 06-ReusingTestCode.md（修正点はtypo・サンプルコードのみ、日本語訳変更なし）
+        - 07-AdvancedUsage.md（修正点はtypoのみ、日本語訳変更なし）
+        - 08-Customization.md（修正点はtypoのみ、日本語訳変更なし）
+        - 10-WebServices.md（修正点はtypoのみ、日本語訳変更なし）
+        - 11-Codecoverage.md（修正点はサンプルコードのみ、日本語訳変更なし）
+        - 12-ParallelExecution.md（修正点はtypoのみ、日本語訳変更なし）
 - [2.1.4](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.4/)
-  - 2015-11-26公開
-  - 変更ファイル
-    - 05-UnitTests.md（修正点はサンプルコードのみ、日本語訳変更なし）
-    - 06-ReusingTestCode.md
-    - 10-WebServices.md
+    - 2015-11-26公開
+    - 変更ファイル
+        - 05-UnitTests.md（修正点はサンプルコードのみ、日本語訳変更なし）
+        - 06-ReusingTestCode.md
+        - 10-WebServices.md
 - [2.1.3](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.3/)
-  - 2015-10-13公開
-  - 変更ファイル
-    - 02-GettingStarted.md（リンク修正のみ、日本語訳変更なし）
-    - 06-ReusingTestCode.md（修正点はtypo・サンプルコードのみ、日本語訳変更なし）
-    - 07-AdvancedUsage.md（文法に関係する修正のみ、日本語訳変更なし）
-    - 10-WebServices.md
+    - 2015-10-13公開
+    - 変更ファイル
+        - 02-GettingStarted.md（リンク修正のみ、日本語訳変更なし）
+        - 06-ReusingTestCode.md（修正点はtypo・サンプルコードのみ、日本語訳変更なし）
+        - 07-AdvancedUsage.md（文法に関係する修正のみ、日本語訳変更なし）
+        - 10-WebServices.md
 - [2.1.2](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.2/)
-  - 2015-08-21公開
-  - 変更ファイル
-    - 02-GettingStarted.md（修正点はtypoのみ、日本語訳変更なし）
-    - 06-ReusingTestCode.md（修正点はサンプルコードのみ、日本語訳変更なし）
-    - 08-Customization.md
-    - 10-WebServices.md（修正点はサンプルコードのみ、日本語訳変更なし）
+    - 2015-08-21公開
+    - 変更ファイル
+        - 02-GettingStarted.md（修正点はtypoのみ、日本語訳変更なし）
+        - 06-ReusingTestCode.md（修正点はサンプルコードのみ、日本語訳変更なし）
+        - 08-Customization.md
+        - 10-WebServices.md（修正点はサンプルコードのみ、日本語訳変更なし）
 - [2.1.1](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.1/)
-  - 2015-07-22公開
-  - 変更ファイル
-    - 02-GettingStarted.md
-    - 03-AcceptanceTests.md
-    - 06-ReusingTestCode.md
+    - 2015-07-22公開
+    - 変更ファイル
+        - 02-GettingStarted.md
+        - 03-AcceptanceTests.md
+        - 06-ReusingTestCode.md
 - [2.1.0](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.0/)
-  - 2015-07-10公開
-  - 変更ファイル
-    - [全体的に](https://github.com/piccagliani/Codeception.docs.ja_JP/pull/24/files)
+    - 2015-07-10公開
+    - 変更ファイル
+        - [全体的に](https://github.com/piccagliani/Codeception.docs.ja_JP/pull/24/files)
 - [2.0.15](http://piccagliani.github.io/Codeception.docs.ja_JP/2.0.15/)
-  - 2015-06-29公開
-  - 変更ファイル
-    - なし
+    - 2015-06-29公開
+    - 変更ファイル
+        - なし
 - [2.0.14](http://piccagliani.github.io/Codeception.docs.ja_JP/2.0.14/)
-  - 2015-06-01公開
-  - 変更ファイル（修正点はtypoのみ、日本語訳変更なし）
-    - 05-FunctionalTests.md
-    - 08-Customization.md
-    - 10-WebServices.md
-    - 12-ParallelExecution.md
+    - 2015-06-01公開
+    - 変更ファイル（修正点はtypoのみ、日本語訳変更なし）
+        - 05-FunctionalTests.md
+        - 08-Customization.md
+        - 10-WebServices.md
+        - 12-ParallelExecution.md
 - [2.0.13](http://piccagliani.github.io/Codeception.docs.ja_JP/2.0.13/)
-  - 2015-06-01公開
-  - 変更ファイル
-    - 06-UnitTests.md
+    - 2015-06-01公開
+    - 変更ファイル
+        - 06-UnitTests.md
 - [2.0.12](http://piccagliani.github.io/Codeception.docs.ja_JP/2.0.12/)
-  - 2015-04-03公開
-  - 変更ファイル
-    - 11-Codecoverage.md
+    - 2015-04-03公開
+    - 変更ファイル
+        - 11-Codecoverage.md
 - [2.0.11](http://piccagliani.github.io/Codeception.docs.ja_JP/2.0.11/)
-  - 2015-03-05公開
+    - 2015-03-05公開
