@@ -14,7 +14,12 @@ Codeceptionの[公式ドキュメント](https://github.com/Codeception/Codecept
 ということなので、guidesのみを対象としています。
 
 ## ChangeLog
-- [2.1.11](http://piccagliani.github.io/Codeception.docs.ja_JP/)
+- [2.2.2](http://piccagliani.github.io/Codeception.docs.ja_JP/)
+  - 2016-08-02公開
+  - 変更ファイル
+    - [全体的に](https://github.com/piccagliani/Codeception.docs.ja_JP/pull/37/files)
+    - 07-BDDの和訳は2.2.3に持ち越し
+- [2.1.11](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.11)
   - 2016-07-08公開
   - 変更ファイルなし
 - [2.1.10](http://piccagliani.github.io/Codeception.docs.ja_JP/2.1.10/)

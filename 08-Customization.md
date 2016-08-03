@@ -4,7 +4,7 @@
 
 ## 複数アプリケーションのための1つのランナー
 
-プロジェクトが複数のアプリケーション（frontend, admin, api）で構成されていたり、バンドルとともにSymfony2を使っている場合、すべてのアプリケーション（バンドル）に対するすべてのテストを1ランナーで実行することに興味があるのではないでしょうか。
+プロジェクトが複数のアプリケーション（frontend, admin, api）で構成されていたり、バンドルとともにSymfonyを使っている場合、すべてのアプリケーション（バンドル）に対するすべてのテストを1ランナーで実行することに興味があるのではないでしょうか。
 ここではプロジェクト全体をカバーする1つのレポートを取得してみます。
 
 `codeception.yml`ファイルをプロジェクトのルートフォルダーに配置して、インクルードしたい他の`codeception.yml`へのパスを指定します。
@@ -32,7 +32,7 @@ settings:
 名前空間を持つテストスイートを作成するためには、ブートストラップコマンドに`--namespace`オプションを付与します。
 
 ``` bash
-$ php codecept.phar bootstrap --namespace frontend
+$ php codecept bootstrap --namespace frontend
 ```
 
 これにより、`namespace: frontend`パラメーターを持つ`codeception.yml`ファイルとともに、新しいプロジェクトが作成されます。
@@ -43,13 +43,12 @@ $ php codecept.phar bootstrap --namespace frontend
 <?php use frontend\AcceptanceTester;
 $I = new AcceptanceTester($scenario);
 //...
-?>
 ```
 
 それぞれのアプリケーション（バンドル）が自身の名前空間と異なるヘルパーやアクタークラスを持つようになって、すべてのテストを1ランナーで実行できるようになります。先ほど作成したメタ設定を使って、通常どおりCodeceptionを実行します。
 
 ```bash
-$ php codecept.phar run
+$ php codecept run
 ```
 
 これにより、3つのすべてのアプリケーションのテストスイートが起動し、すべてのテストレポートがマージされます。これはつまり、継続的インテグレーションサーバー上でテストを実行し、1つのJUnitとHTML形式のレポートを取得したい場合に大変役に立ちます。コードカバレッジレポートについても同じくマージされます。
@@ -65,7 +64,7 @@ Codeceptionはコアな機能を拡張する限定的な機能を持っていま
 これにより、`-g failed`オプションをつけることで失敗したテストを再実行することができます。
 
 ```
-php codecept.phar run -g failed
+php codecept run -g failed
 ```
 
 Codeceptionには`ext`ディレクトリーに配置された拡張機能が付属しています。たとえば、Monologを使ってテスト実行のログを記録するLogger拡張を有効にすることができます。
@@ -134,7 +133,6 @@ class MyCustomExtension extends \Codeception\Platform\Extension
 
     public function print(\Codeception\Event\PrintResultEvent $e) {}
 }
-?>
 ```  
 
 イベントハンドラーメソッドを実行することにより、渡されたオブジェクトを更新してもイベントをリッスンすることができます。
@@ -178,16 +176,32 @@ extensions:
 
 とても基本的な拡張機能である[Notifier](https://github.com/Codeception/Notifier)を確認してください。
 
+### カスタムコマンド
+
+Codeceptionにあなた専用のコマンドを追加することができます。
+
+カスタムコマンドは、コマンド名を取得するための関数が存在しなければならないため、`Codeception\CustomCommandInterface`インタフェースを実装する必要があります。
+
+`codeception.yml`にコマンドを登録してください
+
+```yaml
+extensions:
+    commands: [Project\Command\MyCustomCommand]
+```
+一つ以上の```codeception.yml```ファイルを使用しているなど、グローバルにカスタムコマンドを有効化したい場合、
+プロジェクトのルートフォルダーにある```codeception.dist.yml```にコマンドを登録してください・
+
+完全な例は[こちら](https://gist.github.com/sd-tm/37d5f9bca871c72648cb)を見て下さい。
+
 ## グループオブジェクト
 
 グループオブジェクトは特定のグループに属すテストのイベントをリッスンするための拡張機能です。
 テストが次のグループに追加されたとき、
 
 ```php
-<?php 
+<?php
 $scenario->group('admin');
 $I = new AcceptanceTester($scenario);
-?>
 ```
 
 このテストは次のイベントを発生させます。
@@ -225,10 +239,9 @@ class Admin extends \Codeception\GroupObject
         // ...
     }
 }
-?>
 ```
 
-グループクラスは`php codecept.phar generate:group groupname`コマンドによって作成することができます。
+グループクラスは`php codecept generate:group groupname`コマンドによって作成することができます。
 グループクラスは`tests/_support/Group`ディレクトリーに格納されます。
 
 拡張クラスと同様、`codeception.yml`にてグループクラスを有効にすることができます。
@@ -239,6 +252,26 @@ extensions:
 ```
 
 これでAdminグループクラスは`admin`グループに属すテストのすべてのイベントをリッスンするようになります。
+
+## カスタムレポーター
+
+出力をカスタマイズするため、[SimpleOutput Extension](https://github.com/Codeception/Codeception/blob/master/ext%2FSimpleOutput.php)のように、エクステンションを使うことができます。
+では、`--xml`や`--json`オプションによって出力されるXMLやJSONの結果出力を変更するためには何が必要になるのでしょうか？
+
+CodeceptionはPHPUnitの出力機能を利用しており、そのいくつかをオーバーライドしています。もし標準のレポーターのいずれかをカスタマイズしたい場合はそれらをオーバーライドすることができます。
+もし独自のレポーターを実装する場合は、`codeception.yml`に`reporters`セクションを追加して、標準レポーターをあなたのものでオーバーライドしてください。
+
+```yaml
+reporters:
+    xml: Codeception\PHPUnit\Log\JUnit
+    html: Codeception\PHPUnit\ResultPrinter\HTML
+    tap: PHPUnit_Util_Log_TAP
+    json: PHPUnit_Util_Log_JSON
+    report: Codeception\PHPUnit\ResultPrinter\Report
+```
+
+すべてのレポーターは[PHPUnit_Framework_TestListener](https://phpunit.de/manual/current/en/extending-phpunit.html#extending-phpunit.PHPUnit_Framework_TestListener)インターフェイスを実装します。
+オーバーライドする前にオリジナルのレポーターのコードを読むことをおすすめます。
 
 ## まとめ
 

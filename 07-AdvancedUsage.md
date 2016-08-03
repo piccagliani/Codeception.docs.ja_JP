@@ -10,7 +10,7 @@ Cest形式はとても単純でCept形式のシナリオと完全な互換性が
 次のコマンドによりCestを作成することができます。
 
 ```bash
-$ php codecept.phar generate:cest suitename CestName
+$ php codecept generate:cest suitename CestName
 ```
 
 生成されたファイルは次のようになります。
@@ -28,11 +28,10 @@ class BasicCest
     }
 
     // tests
-    public function tryToTest(\AcceptanceTester $I) 
+    public function tryToTest(\AcceptanceTester $I)
     {    
     }
 }
-?>
 ```
 
 **それぞれのpublicなメソッド（「_」で始まるものを除く）はテストとして実行され**、最初の引数としてアクタークラスを、2つ目の引数して`$scenario`変数を受け取ります。
@@ -46,7 +45,7 @@ class BasicCest
 class BasicCest
 {
     // test
-    public function checkLogin(\AcceptanceTester $I) 
+    public function checkLogin(\AcceptanceTester $I)
     {
         $I->wantTo('log in to site');
         $I->amOnPage('/');
@@ -58,10 +57,9 @@ class BasicCest
         $I->seeInCurrentUrl('/account');
     }
 }
-?>
 ```
 
-このように、Cestクラスは`\Codeception\TestCase\Test`や`PHPUnit_Framework_TestCase`といった親クラスを持ちません。意図的にそうしています。これにより、子クラスで使用することができる共通の振る舞いや処理を伴ってクラスを拡張することができます。ただし、それらのメソッドはテストとして実行されないよう`protected`なメソッドとして定義することを忘れないでください。
+このように、Cestクラスは`\Codeception\Test\Unit`や`PHPUnit_Framework_TestCase`といった親クラスを持ちません。意図的にそうしています。これにより、子クラスで使用することができる共通の振る舞いや処理を伴ってクラスを拡張することができます。ただし、それらのメソッドはテストとして実行されないよう`protected`なメソッドとして定義することを忘れないでください。
 
 また、テストが`error`となったり失敗した時に呼ばれる`_failed`メソッドについてもCestクラスに定義することができます。
 
@@ -103,7 +101,6 @@ class SignUpCest
         ]);
     }
 }
-?>
 ```
 
 テストクラスの例：
@@ -133,10 +130,9 @@ class MathTest extends \Codeception\TestCase\Test
         $this->assertEquals(1, $this->math->subtract(3, 2));
     }
 }
-?>
 ```
 
-とはいえ、DIはこれに限定されるものではありません。Codeceptionが把握している引数とともに作成できる、**どのようなクラスでも注入**することができます。
+とはいえ、DIはこれに限定されるものではありません。Codeceptionが把握している引数とともに作成できる、**どのようなクラスでも注入** することができます。
 
 この作業を自動化するためには、必要な引数とともに`_inject()`メソッドを実装する必要があります。Codeceptionがどのオブジェクトを渡せばよいか推測するために、引数の型を指定することが重要となります。`_inject()`メソッドはテストケースオブジェクト（CestまたはTest）の作成後に1度のみ呼ばれます。同じ方法でヘルパークラスとアクタークラスについてもDIは働きます。
 
@@ -155,10 +151,66 @@ class UserCest
         $I->see('Profile of Bill','h1');
     }
 }
-?>
 ```
 
-さらに、Codeceptionは、再帰的な依存関係（`A`が`B`に、そして`B`が`C`に依存する等）の解決や、デフォルト値を伴うプリミティブ型のパラメーター（`$param = 'default'`のような）を扱うことができます。もちろん、*依存関係のループ*は禁止です。
+さらに、Codeceptionは、再帰的な依存関係（`A`が`B`に、そして`B`が`C`に依存する等）の解決や、デフォルト値を伴うプリミティブ型のパラメーター（`$param = 'default'`のような）を扱うことができます。もちろん、*依存関係のループ* は禁止です。
+
+### Examples
+
+もし、あるテストシナリオを異なるデータで実行したい場合 、どうすればよいでしょうか。そのようなケースでは、異なるデータを提供するためにExampleを利用することができ、`\Codeception\Example`インスタンスとして注入することができます。データはJSONまたはDoctrine形式（単一行に限ります）を使用した`@example`アノテーションによって定義されます。
+
+```php
+<?php
+ /**
+  * @example ["/api/", 200]
+  * @example ["/api/protected", 401]
+  * @example ["/api/not-found-url", 404]
+  * @example ["/api/faulty", 500]
+  */
+  public function checkEndpoints(ApiTester $I, \Codeception\Example $example)
+  {
+    $I->sendGET($example[0]);
+    $I->seeResponseCodeIs($example[1]);
+  }
+```
+
+<div class="alert alert-notice">
+JSONを使うときは、その標準仕様に従い、すべてのキーと値をダブルクォーテーションで囲う必要があることを忘れないでください。
+</div>
+
+Exampleをキーバリューデータとして渡すこともでき、同じようにテストで使用することができます。
+
+```php
+ /**
+  * @example { "url": "/", "title": "Welcome" }
+  * @example { "url": "/info", "title": "Info" }
+  * @example { "url": "/about", "title": "About Us" }
+  * @example { "url": "/contact", "title": "Contact Us" }
+  */
+  public function staticPages(AcceptanceTester $I, \Codeception\Example $example)
+  {
+    $I->amOnPage($example['url']);
+    $I->see($example['title'], 'h1');
+    $I->seeInTitle($example['title']);
+  }
+```
+
+これらのExampleはDoctrine形式のアノテーション文法としても記述することができます：
+
+```php
+ /**
+  * @example(url="/", title="Welcome")
+  * @example(url="/info", title="Info")
+  * @example(url="/about", title="About Us")
+  * @example(url="/contact", title="Contact Us")
+  */
+  public function staticPages(AcceptanceTester $I, \Codeception\Example $example)
+  {
+    $I->amOnPage($example['url']);
+    $I->see($example['title'], 'h1');
+    $I->seeInTitle($example['title']);
+  }
+```
 
 ### Before/Afterアノテーション
 
@@ -185,7 +237,7 @@ class ModeratorCest {
         $I->see('Ban', '.button');
         $I->click('Ban');
     }
-    
+
     /**
      * @before login
      * @before cleanup
@@ -199,7 +251,6 @@ class ModeratorCest {
         $I->click('Ban');
     }
 }
-?>
 ```
 
 `@before`と`@after`アノテーションはインクルードされた関数に対しても使えます。ただし、1つのメソッドに対して同じ種類のアノテーションを複数記述することはできません。1つのメソッドに対して、1つの`@before`と1つの`@after`アノテーションのみです。
@@ -254,7 +305,7 @@ paths:
 環境設定ファイルは`generate:environment`コマンドによって生成することができます：
 
 ```bash
-$ php codecept.phar g:env chrome
+$ php codecept g:env chrome
 ```
 
 そしてその中でオーバーライドしたいオプションを指定してください：
@@ -270,13 +321,13 @@ $ php codecept.phar g:env chrome
 設定ファイルは`--env`オプションを指定して実行することで簡単に切り替えることができます。PhantomJSのみテストを実行したい場合は、`--env phantom`を指定します：
 
 ```bash
-$ php codecept.phar run acceptance --env phantom
+$ php codecept run acceptance --env phantom
 ```
 
 3ブラウザーすべてのテストを実行するには、ただすべての環境を列挙します：
 
 ```bash
-$ php codecept.phar run acceptance --env phantom --env chrome --env firefox
+$ php codecept run acceptance --env phantom --env chrome --env firefox
 ```
 
 テストはそれぞれのブラウザーごとに3回実行されるでしょう。
@@ -284,7 +335,7 @@ $ php codecept.phar run acceptance --env phantom --env chrome --env firefox
 セパレーターとしてカンマを使うことで、複数の環境を1つにマージすることもできます：
 
 ```bash
-$ php codecept.phar run acceptance --env dev,phantom --env dev,chrome --env dev,firefox
+$ php codecept run acceptance --env dev,phantom --env dev,chrome --env dev,firefox
 ```
 
 設定は与えられた順番でマージされます。この方法で環境設定の複数の組み合わせを簡単に作ることができます。
@@ -312,24 +363,11 @@ class UserCest
 ?>
 ```
 
-Cept形式では`$scenario->env()`を使ってください：
+Cept形式では単純なコメントを使ってください
 
 ```php
-<?php
-$scenario->env('firefox');
-$scenario->env('phantom');
-// or
-$scenario->env(['phantom', 'firefox']);
-?>
-```
-
-もしマージされた環境を使っている場合は複数の必要な環境を指定してください（指定順序は気にしません）：
-
-```php
-<?php
-$scenario->env('firefox,dev');
-$scenario->env('dev,phantom');
-?>
+// @env firefox
+// @env phantom
 ```
 
 この方法によりそれぞれの環境でどのテストを実行するのか、容易にコントロールすることができます。
@@ -349,10 +387,31 @@ $scenario->current('modules');
 
 // テスト名
 $scenario->current('name');
-?>
+
+// ブラウザー名 (WebDriverモジュールが有効な場合)
+$scenario->current('browser');
+
+// ケーパビリティ  (WebDriverモジュールが有効な場合)
+$scenario->current('capabilities');
+
 ```
 
-### Dependsアノテーション
+Cept形式とCest形式で、`\Codeception\Scenario`にアクセスすることができます。Cept形式では、デフォルトで`$scenario`変数が用意されており、一方のCest形式ではディペンデンシーインジェクションによって受け取ってください。
+
+```php
+<?php
+public function myTest(\AcceptanceTester $I, \Codeception\Scenario $scenario)
+{
+    if ($scenario->current('browser') == 'phantomjs') {
+      // emulate popups for PhantomJS
+      $I->executeScript('window.alert = function(){return true;}');
+    }
+}
+```
+`Codeception\Scenario`はアクタークラスやStepObjectからも利用可能です。`$this->getScenario()`を使用してアクセスできます。
+
+
+### 依存関係
 
 `@depends`アノテーションを使って現在のテストが事前にどのテストにパスしているべきか、指定することができます。もし事前のテストが失敗したら、対象のテストはスキップされます。
 依存しているテストのメソッド名をアノテーションに記述してください。
@@ -374,10 +433,15 @@ class ModeratorCest {
         // bans user
     }
 }
-?>
 ```
 
-ヒント：`@depends`アノテーションは`@before`アノテーションと組み合わせることができます。
+依存関係は`Cest`形式と`Codeception\Test\Unit`形式に適用されます。依存関係は、異なるクラス間で設定することができます。異なるファイルが依存するテストを指定するためには、*テストシグネチャ* を与える必要があります。一般的なテストシグネチャは`className:methodName`という形式になります。`--steps`オプションをつけてテストを実行することで正確なテストシグネチャを確認することができます：
+
+```
+Signature: ModeratorCest:login`
+```
+
+Codeceptionは、常に依存元のテストが依存先のテストよりも後に実行されるよう、テストを並び替えます。
 
 ## インタラクティブ・コンソール
 
@@ -388,7 +452,7 @@ class ModeratorCest {
 次のコマンドでコンソールを起動することができます。
 
 ``` bash
-$ php codecept.phar console suitename
+$ php codecept console suitename
 ```
 
 これで、アクタークラスに対応したすべてのコマンドを実行することができ、結果をすぐに確認できます。特に、`WebDriver`モジュールと使用する場合に便利です。Selenuimとブラウザーの起動にはいつも長い時間がかかります。ところが、コンソールを使って別のセレクター、異なるコマンドを試すことで、実行された際に確実にパスするテストを書くことができます。
@@ -397,19 +461,19 @@ $ php codecept.phar console suitename
 
 ## 異なるフォルダーからテストを実行する
 
-もしCodeceptionを使ったプロジェクトが複数あったとしても、すべてのテストを1つの`codecept.phar`で実行することができます。
+もしCodeceptionを使ったプロジェクトが複数あったとしても、すべてのテストを1つの`codecept`で実行することができます。
 異なるディレクトリーのCodeceptionを実行するために、`bootstrap`を除くすべてのコマンドに`-c`オプションが用意されています。
 
 ```bash
-$ php codecept.phar run -c ~/projects/ecommerce/
-$ php codecept.phar run -c ~/projects/drupal/
-$ php codecept.phar generate:cept acceptance CreateArticle -c ~/projects/drupal/
+$ php codecept run -c ~/projects/ecommerce/
+$ php codecept run -c ~/projects/drupal/
+$ php codecept generate:cept acceptance CreateArticle -c ~/projects/drupal/
 ```
 
 現在の場所と異なるディレクトリー内にプロジェクトを作成するには、パラメーターとしてパスを指定するだけです。
 
 ```bash
-$ php codecept.phar bootstrap ~/projects/drupal/
+$ php codecept bootstrap ~/projects/drupal/
 ```
 
 基本的に`-c`オプションにはパスを指定しますが、使用する設定ファイルを指定することもできます。従って、テストスイートに対して複数の`codeception.yml`を持つことができます。さまざまな環境や設定を指定するためにこのオプションを使用することができます。特定の設定ファイルを使ってテストを実行するためには、`-c`オプションにファイル名を渡してください。
@@ -419,30 +483,16 @@ $ php codecept.phar bootstrap ~/projects/drupal/
 テストをグルーピングして実行する方法はいくつかあります。特定のディレクトリーを指定して実行することもできます。
 
 ```bash
-$ php codecept.phar run tests/acceptance/admin
+$ php codecept run tests/acceptance/admin
 ```
 
 また、特定の（もしくは複数の）グループを指定して実行することもできます。
 
 ```bash
-$ php codecept.phar run -g admin -g editor
+$ php codecept run -g admin -g editor
 ```
 
-このケースでは`admin`と`editor`グループに属すすべてのテストが実行されます。グループの概念はPHPUnitから取り入れたもので、従来のPHPUnitと同様の振る舞いをします。Ceptをグループに追加するには、`scenario`変数を使います。
-
-```php
-<?php
-$scenario->group('admin');
-$scenario->group('editor');
-// or
-$scenario->group(['admin', 'editor'])
-// or
-$scenario->groups(['admin', 'editor'])
-
-$I = new AcceptanceTester($scenario);
-$I->wantToTest('admin area');
-?>
-```
+このケースでは`admin`と`editor`グループに属すすべてのテストが実行されます。グループの概念はPHPUnitから取り入れたもので、従来のPHPUnitと同様の振る舞いをします。
 
 Test形式とCest形式のテストでは、テストをグループに追加するために`@group`アノテーションを使います。
 
@@ -453,12 +503,25 @@ Test形式とCest形式のテストでは、テストをグループに追加す
  */
 public function testAdminUser()
 {
-    $this->assertEquals('admin', User::find(1)->role);
 }
-?>
 ```
 
-Cestクラスでも同じアノテーションを使用できます。
+Cest形式では、コメントで疑似アノテーションを使用します：
+
+```php
+<?php
+// @group admin
+// @group editor
+$I = new AcceptanceTester($scenario);
+$I->wantToTest('admin area');
+```
+
+フィーチャーファイル（Gherkin）ではタグを使用します：
+
+```gherkin
+@admin @editor
+Feature: Admin area
+```
 
 ### グループファイル
 
@@ -494,26 +557,6 @@ groups:
 ```
 
 これは、`tests/_data`内の`p*`パターンに一致するすべてのファイルをグループとしてロードします。
-
-## カスタムレポーター
-
-出力をカスタマイズするため、[SimpleOutput Extension](https://github.com/Codeception/Codeception/blob/master/ext%2FSimpleOutput.php)のように、エクステンションを使うことができます。
-では、`--xml`や`--json`オプションによって出力されるXMLやJSONの結果出力を変更するためには何が必要になるのでしょうか？
-
-CodeceptionはPHPUnitの出力機能を利用しており、そのいくつかをオーバーライドしています。もし標準のレポーターのいずれかをカスタマイズしたい場合はそれらをオーバーライドすることができます。
-もし独自のレポーターを実装する場合は、`codeception.yml`に`reporters`セクションを追加して、標準レポーターをあなたのものでオーバーライドしてください。
-
-```yaml
-reporters:
-    xml: Codeception\PHPUnit\Log\JUnit
-    html: Codeception\PHPUnit\ResultPrinter\HTML
-    tap: PHPUnit_Util_Log_TAP
-    json: PHPUnit_Util_Log_JSON
-    report: Codeception\PHPUnit\ResultPrinter\Report
-```
-
-すべてのレポーターは[PHPUnit_Framework_TestListener](https://phpunit.de/manual/current/en/extending-phpunit.html#extending-phpunit.PHPUnit_Framework_TestListener)インターフェイスを実装します。
-オーバーライドする前にオリジナルのレポーターのコードを読むことをおすすめます。
 
 ## まとめ
 
