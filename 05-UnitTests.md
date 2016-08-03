@@ -333,7 +333,7 @@ Cestはアサーション用の関数、モックやスタブを作成する関�
 
 ```php
 <?php
-$t->expectException(new Exception, {
+$t->expectException(Exception::class, function() {
    throw new Exception;
 });
 ```
